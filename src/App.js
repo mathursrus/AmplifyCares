@@ -1,25 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import Leaderboard from "./Leaderboard";
+import SubmitTimePage from "./SubmitTime";
+import SummaryPage from "./SummaryPage";
+import TeamList from "./TeamList";
+import TestF12 from "./TestF12";
+//import React from 'react';
 
-function App() {
+const AppPage = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    //<SubmitTimePage />
+    //<SummaryPage />
+    //<Leaderboard />
+    <TeamList/>
+    //<TestF12/>
   );
-}
+};
 
-export default App;
+export default AppPage;

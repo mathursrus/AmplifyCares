@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/0eadca5d-7b06-4932-83d5-0f8e27074b57/AppServices/subscriptions/0eadca5d-7b06-4932-83d5-0f8e27074b57/resourceGroups/AmplifyCares/providers/Microsoft.Web/sites/amplifycares",
+    "appService.deploySubpath": "."
+}

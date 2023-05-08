@@ -1,0 +1,478 @@
+// MongoDB Playground
+
+// aggregate each of the times for Sid
+use('amplifycares-db');
+db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, 
+{$group: {_id:"$name", 
+total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
+total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},
+total_spiritual_health: {$sum:{$add:[{$toInt: "$spiritual_health_time"}]}},
+total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
+}}])
+
+// how many users 
+use('amplifycares-db');
+db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, {$group: {_id:"$name", total_count:{$sum:1}}}, {$group: {_id:null, num_users:{$sum:1}}}])
+
+// all users with number of entries
+use('amplifycares-db');
+db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, {$group: {_id:"$name", total_count:{$sum:1}}}, {$sort: {"_id": -1}}])
+
+// all teams
+use('amplifycares-db');
+db.team_info.find();
+
+// 
+
+/* Find median of mental health time across everyone */
+use('amplifycares-db');
+db.self_care_stats.aggregate([
+  {
+    $group: {
+      _id: "$name",
+      values: { $push: {$toInt: "$mental_health_time"} }
+    }
+  },
+  {
+    $sort: { "values": 1 }
+  },
+  {
+    $project: {
+      values: 1,
+      count: { $size: "$values" }
+    }
+  },
+  {
+    $project: {
+      median: {
+        $cond: [
+          { $eq: [{ $mod: [ "$count", 2 ] }, 0 ] },
+          { $avg: [{ $slice: ["$values", { $divide: ["$count", 2] }, 2] }] },
+          { $arrayElemAt: [ "$values", { $divide: [ { $subtract: [ "$count", 1 ] }, 2 ] } ] }
+        ]
+      }
+    }
+  },
+  {
+    $sort: { "_id": 1 }
+  }
+])
+
+/* Find median of mental health time across everyday */
+use('amplifycares-db');
+db.self_care_stats.aggregate([
+  {
+    $group: {
+      _id: "$DateTime",
+      values: { $push: {$toInt: "$mental_health_time"} }
+    }
+  },
+  {
+    $sort: { "values": 1 }
+  },
+  {
+    $project: {
+      values: 1,
+      count: { $size: "$values" }
+    }
+  },
+  {
+    $project: {
+      median: {
+        $cond: [
+          { $eq: [{ $mod: [ "$count", 2 ] }, 0 ] },
+          { $avg: [{ $slice: ["$values", { $divide: ["$count", 2] }, 2] }] },
+          { $arrayElemAt: [ "$values", { $divide: [ { $subtract: [ "$count", 1 ] }, 2 ] } ] }
+        ]
+      }
+    }
+  },
+  {
+    $sort: { "_id": 1 }
+  }
+])
+
+/* Find the total self care time for a particular person across everyday */
+use('amplifycares-db');
+let x="Alice";
+db.self_care_stats.aggregate([
+  {
+    $match: {
+      name:x
+    }
+  },
+  {
+    $group: {
+      _id: { $dateToString: { format: "%Y-%m-%d", date: "$DateTime" } },
+      total_health_time: {
+       $sum: {
+            $add: [
+            { $toInt: "$mental_health_time" },
+            { $toInt: "$physical_health_time" },
+            { $toInt: "$spiritual_health_time" },
+            { $toInt: "$societal_health_time" }
+            ]
+       }
+      }
+    }
+  },
+]);
+
+
+/* Find Xth %ile of total self care time across everyday across everybody */
+use('amplifycares-db');
+let x=10;
+db.self_care_stats.aggregate([
+  {
+    $group: {
+      _id: {
+        DateTime: { $dateToString: { format: "%Y-%m-%d", date: "$DateTime" } },
+        Name: "$name"
+      },
+      total_health_time: {
+        $sum: {
+            $add: [
+            { $toInt: "$mental_health_time" },
+            { $toInt: "$physical_health_time" },
+            { $toInt: "$spiritual_health_time" },
+            { $toInt: "$societal_health_time" }
+            ]
+        }
+      }
+    }
+  },
+  {
+    $sort: {"_id.DateTime":1, "total_health_time": 1 }
+  },
+  {
+    $group: {
+      _id: "$_id.DateTime",
+      values: { $push: "$total_health_time" },
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      ptile: {
+        $arrayElemAt: ["$values", {$floor: {$multiply: ["$count", x/100]}}]
+      }
+    }
+  },
+]);
+
+/* Find median of mental health time across teams */
+use('amplifycares-db');
+db.team_info.aggregate([
+  {
+    $match: {
+      "team_members": { $exists: true, $not: {$size: 0} }
+    }
+  },
+  {
+    $lookup: {
+      from: "self_care_stats",
+      localField: "team_members.member_id",
+      foreignField: "name",
+      as: "team_members"
+    }
+  },
+  {
+    $unwind: "$team_members"
+  },
+  {
+    $match: {
+      "team_members.DateTime": {
+        $gte: new Date("2023-02-01"),
+        $lte: new Date("2023-02-28")
+      }
+    }
+  },
+  {
+    $group: {
+      _id: {
+        team_name: "$team_name",
+        team_member_name: "$team_members.name"
+      },
+      total_time: {
+        $sum: {
+          $add: [
+            "$team_members.mental_health_time",
+            "$team_members.physical_health_time",
+            "$team_members.spiritual_health_time",
+            "$team_members.societal_health_time"
+          ]
+        }
+      }
+    }
+  },
+  {
+    $sort: { "team_name":1, "total_time": -1 }
+  },
+  {
+    $group: {
+      _id: "$_id.team_name",
+      times: { $push: "$total_time" }
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      times: 1,
+      count: { $size: "$times" }
+    }
+  },
+  {
+    $project: {
+      median: {
+        $cond: [
+          { $eq: [{ $mod: [ "$count", 2 ] }, 0 ] },
+          { $avg: [{ $slice: ["$times", { $subtract: [ { $divide: ["$count", 2] }, 1 ]}, 2] }] },
+          { $arrayElemAt: [ "$times", { $divide: [ { $subtract: [ "$count", 1 ] }, 2 ] } ] }
+        ]
+      }
+    }
+  },
+   {
+    $sort: { "median": -1 }
+  },
+]);
+
+
+
+/* All details on a particular date */
+use('amplifycares-db');
+db.self_care_stats.find({DateTime:{$eq: new Date('2023-03-26')}}).sort({"_id":1});
+
+/* All details for a person */
+use('amplifycares-db');
+db.self_care_stats.find({name:"Gordon"});
+
+/* All details for a person on a particular date */
+use('amplifycares-db');
+db.self_care_stats.find({name:"Gordon", DateTime:{$eq: new Date('2023-02-10')}});
+
+// aggregate each of the times for Sid
+/*db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, 
+{$group: {_id:"$name", 
+total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
+total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},
+total_spiritual_health: {$sum:{$add:[{$toInt: "$spiritual_health_time"}]}},
+total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
+}}])*/
+
+// count the number of mental health time entries for name sid
+use('amplifycares-db');
+db.self_care_stats.aggregate([{$match:{name:"Sid"}}, {$group: {_id:"$name", total_count:{$sum:1}}}])
+
+
+
+// query non integer values
+use('amplifycares-db');
+db.self_care_stats.find({ mental_health_time: { $not: { $type: "number" } } })
+
+
+/* DDL */
+
+// version number
+use('amplifycares-db');
+db.version()
+
+// set compatibility
+use('amplifycares-db');
+db.runCommand({collMod: "self_care_stats", "validator": {}, "validationLevel": "off", "validationAction": "warn", "indexOptionDefaults": {"background": true}, "storageEngine": {"wiredTiger": {}}, "viewOn": null, "pipeline": null, "collation": {"locale": "en_US", "caseLevel": false, "caseFirst": "off", "strength": 2, "numericOrdering": false, "alternate": "non-ignorable", "maxVariable": "punct", "normalization": false, "backwards": false, "version": "57.1"}, "maxTimeMS": null, "expireAfterSeconds": null, "autoIndexId": true, "readConcern": {"level": "local"}, "writeConcern": {"w": "majority", "wtimeout": 0, "provenance": null, "journal": true}, "readPreference": {"mode": "primary", "tagSet": null, "maxStalenessSeconds": null, "hedge": null, "nonStale": false, "readOnly": false, "nearest": null, "secondaryAcceptableLatencyMS": null, "acceptableLatencyMS": null, "tags": []}, "hint": null, "comment": null, "minWireVersion": null, "maxWireVersion": null, "retryWrites": true, "features": {}, "scale": 1, "writeConcernMajorityJournalDefault": true, "shardDistribution": null, "key": {"_id": 1}, "unique": null, "version": null, "collationAlternate": null, "hidden": false, "excludeIndexesForCopy": null, "bypassDocumentValidation": false, "featureCompatibilityVersion": "4.0"})
+
+// update all fields to be integers
+use('amplifycares-db');
+db.self_care_stats.updateMany(
+  {},
+  {
+      $set: {
+        mental_health_time: {
+          $convert: {
+          input: "$mental_health_time",
+          to: "int"
+         }
+        }
+      }
+  }
+)
+
+// add a new column for datetime
+use('amplifycares-db');
+db.self_care_stats.updateMany(
+  {},
+  {
+    $set: {
+      DateTime: new Date()
+    }
+  },
+  { upsert: true }
+);
+
+// create a collection for teams
+use('amplifycares-db');
+db.createCollection("team_info", {
+   validator: { $jsonSchema: {
+      bsonType: "object",
+      required: [ "team_name", "team_members" ],
+      properties: {
+         team_name: {
+            bsonType: "string",
+            description: "must be a string and is required"
+         },
+         team_members: {
+            bsonType: "array",
+            description: "must be an array of strings and is required",
+            items: {
+               bsonType: "string"
+            }
+         }
+      }
+   } }
+});
+
+// ensure no 2 teams with same name
+use('amplifycares-db');
+db.team_info.createIndex({ "team_name": 1 }, { unique: true});
+
+// ensure a single person cannot be part of more than 1 team
+use('amplifycares-db');
+db.team_info.createIndex({ "team_members.member_id": 1 }, { unique: true});
+
+// drop the index 
+use('amplifycares-db');
+db.team_details.dropIndex({ "team_members.member_id": 1 });
+
+/* DML */
+
+/* Replace all names */
+use('amplifycares-db');
+db.self_care_stats.updateMany(
+   { name: "3rd person" },
+   { $set: { name: "Jill" } }
+)
+
+
+/* set dates in succession */
+use('amplifycares-db');
+const startDate = new Date('2023-02-10T00:00:00Z');
+const documents = db.self_care_stats.find({name:"Jill"}).sort({_id: 1});
+let currentDate = new Date(startDate);
+while (documents.hasNext()) {
+  const document = documents.next();
+  db.self_care_stats.updateOne({_id: document._id}, {$set: {DateTime: currentDate}});
+  currentDate = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)); // add 1 day in milliseconds
+}
+
+/* add data for a few fake users */
+use('amplifycares-db');
+const names = ["Alice", "Bob", "Charlie", "David", "Emma", "Frank", "Grace", "Henry", "Isabella", "John", "Kate", "Liam", "Mia", "Nora", "Oliver", "Penny", "Quinn", "Ruby", "Sophia", "Thomas", "Una", "Violet", "William", "Xander", "Yara", "Zoe"];
+const startDate = new Date('2023-02-10T00:00:00Z');
+for (let i = 0; i < names.length; i++) {
+  const name = names[i];
+  for (let j = 0; j < 30; j++) {
+    db.self_care_stats.insertOne({
+      name: name,
+      mental_health_time: Math.floor(Math.random() * 30),
+      physical_health_time: Math.floor(Math.random() * 30),
+      spiritual_health_time: Math.floor(Math.random() * 30),
+      societal_health_time: Math.floor(Math.random() * 30),
+      DateTime: new Date((startDate).getTime() + j*24*60*60*1000),
+    });
+  }
+}
+
+
+/* add data for a few fake teams */
+use('amplifycares-db');
+db.team_info.insertOne({
+  team_name: "Team1",
+  team_members: [
+    { member_id: "Alice" },
+    { member_id: "Bob" },
+    { member_id: "Charlie" },
+    { member_id: "David" }
+  ]
+});
+
+use('amplifycares-db');
+db.team_info.insertOne({
+  team_name: "Team2",
+  team_members: [
+    { member_id: "Emma" },
+    { member_id: "Frank" },
+    { member_id: "Grace" },
+    { member_id: "Henry" },
+    { member_id: "Isabella" }
+  ]
+});
+
+use('amplifycares-db');
+db.team_info.insertOne({
+  team_name: "Team3",
+  team_members: [
+    { member_id: "John"}, 
+    { member_id: "Kate" },
+    { member_id: "Liam" },
+    { member_id: "Mia" },
+    { member_id: "Oliver" },
+    { member_id: "Nora" }
+  ]
+});
+
+
+use('amplifycares-db');
+db.team_info.insertOne({
+  team_name: "Team4",
+  team_members: [
+    { member_id: "Oliver"}, 
+    { member_id: "Penny" },
+    { member_id: "Quinn" },
+    { member_id: "Ruby" },
+    { member_id: "Sophia" },
+    { member_id: "Una" },
+    { member_id: "Violet" },
+    { member_id: "Thomas" }
+  ]
+});
+
+use('amplifycares-db');
+db.team_info.insertOne({
+  team_name: "Team5",
+  team_members: [
+    { member_id: "William"}, 
+    { member_id: "Xander" },
+    { member_id: "Yara" },
+    { member_id: "Zoe" }
+  ]
+});
+
+use('amplifycares-db');
+db.team_info.deleteOne({team_name: "Team3"});
+
+use('amplifycares-db');
+db.team_info.find();
+
+// Select the database to use.
+use('amplifycares-db');
+
+// db.self_care_stats;
+
+//db.self_care_stats.countDocuments();
+
+// db.self_care_stats.count({name:{$ne:"Sid"}});
+
+//db.self_care_stats.aggregate([{$project:{name:1, mental_health_time:{$toInt:"$mental_health_time"}}}])
+//db.self_care_stats.find({name:"Sid"}, {name:1, mental_health_time:{$toInt:"$mental_health_time"}});
+
+// aggregate each of the times for Sid
+/*db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, 
+{$group: {_id:"$name", 
+total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
+total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},
+total_spiritual_health: {$sum:{$add:[{$toInt: "$spiritual_health_time"}]}},
+total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
+}}])*/
+
+// count the number of mental health time entries for name sid
+db.self_care_stats.aggregate([{$match:{name:"Sid"}}, {$group: {_id:"$name", total_mental_health: {$sum:1}}}])
