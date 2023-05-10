@@ -13,6 +13,7 @@ function Layout() {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
+                <Nav.Link as={Link} to="/submit-time-page">Submit Time</Nav.Link>
                 <Nav.Link as={Link} to="/summary-page">Summary Page</Nav.Link>
                 <Nav.Link as={Link} to="/leaderboard">Leaderboard</Nav.Link>
                 <Nav.Link as={Link} to="/team-list">Team List</Nav.Link>
