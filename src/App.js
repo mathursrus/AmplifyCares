@@ -12,7 +12,7 @@ export default function AppPage() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout/>}>
-            <Route index element={<SubmitTimePage/>}/>
+            <Route index path="submit-time-page" element={<SubmitTimePage/>}/>
             <Route path="summary-page" element={<SummaryPage/>}/>
             <Route path="leaderboard" element={<Leaderboard/>}/>
             <Route path="team-list" element={<TeamList/>}/>
@@ -21,6 +21,3 @@ export default function AppPage() {
       </BrowserRouter>
   );
 };
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<AppPage />);
