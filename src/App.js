@@ -12,7 +12,8 @@ export default function AppPage() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout/>}>
-            <Route index path="submit-time-page" element={<SubmitTimePage/>}/>
+            <Route index element={<SubmitTimePage/>}/>
+            <Route path="submit-time-page" element={<SubmitTimePage/>}/>
             <Route path="summary-page" element={<SummaryPage/>}/>
             <Route path="leaderboard" element={<Leaderboard/>}/>
             <Route path="team-list" element={<TeamList/>}/>
