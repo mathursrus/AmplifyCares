@@ -1,10 +1,7 @@
-function getServerString() {
+import { getApiHost } from "./utils/urlUtil";
 
-    if (true)
-        return "http://localhost:8080/";
-    else
-        return ""
-    
+function getServerString() {
+    return getApiHost();
 }
 
 export default getServerString;

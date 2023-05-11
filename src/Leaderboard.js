@@ -3,6 +3,7 @@ import "./Leaderboard.css";
 import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMedal } from "@fortawesome/free-solid-svg-icons";
+import { getApiHost } from './utils/urlUtil';
 
 function Leaderboard() {
   
@@ -16,7 +17,7 @@ function Leaderboard() {
 
   useEffect(() => {
     async function fetchData() {
-        const response = await fetch("http://localhost:8080/getteamstats/");
+        const response = await fetch( getApiHost() + "/getteamstats/");
         const data = await response.json();
         const myleaders = JSON.parse(data);
         setLeaders(myleaders);

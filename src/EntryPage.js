@@ -2,6 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Confetti from "react-confetti";
 import './App.css';
+import { getApiHost } from './utils/urlUtil';
 
 const React = require('react');
 const { useState } = React;
@@ -49,7 +50,7 @@ const EntryPage = () => {
       societal_health_time: SocietalHealth,
     }
     console.log(itemData)
-    const response = await fetch("http://localhost:8080/writeselfcare/?item="+JSON.stringify(itemData));
+    const response = await fetch( getApiHost() + "/writeselfcare/?item="+JSON.stringify(itemData));
 
     if (!response.ok) {
       console.log("Ugh");

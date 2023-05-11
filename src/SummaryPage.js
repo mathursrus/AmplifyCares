@@ -1,7 +1,7 @@
-import { set } from 'mongoose';
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { getApiUrl } from './utils/urlUtil';
 
 const SummaryPage = () => {
 
@@ -13,9 +13,9 @@ const SummaryPage = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const selfCareData = await getAggregateStats("http://localhost:8080/getselfcarestats/?item="+user);
-      const medianCareData = await getAggregateStats("http://localhost:8080/getpercentiles?item=50");
-      const highCareData = await getAggregateStats("http://localhost:8080/getpercentiles?item=90");
+      const selfCareData = await getAggregateStats(getApiUrl("/getselfcarestats/?item="+user));
+      const medianCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=50"));
+      const highCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=90"));
 
       /*
       const selfCareData = [
