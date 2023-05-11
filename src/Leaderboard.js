@@ -1,6 +1,6 @@
 import React from "react";
 import "./Leaderboard.css";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMedal } from "@fortawesome/free-solid-svg-icons";
 import { getApiHost } from './utils/urlUtil';

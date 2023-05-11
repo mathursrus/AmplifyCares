@@ -1,6 +1,6 @@
 import React from "react";
 import './App.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { getApiHost } from './utils/urlUtil';
 
 function TeamList() {

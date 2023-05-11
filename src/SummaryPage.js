@@ -1,6 +1,6 @@
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { getApiUrl } from './utils/urlUtil';
 
 const SummaryPage = () => {

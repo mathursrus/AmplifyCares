@@ -1,4 +1,3 @@
-import ReactDOM from "react-dom/client";
 import Leaderboard from "./Leaderboard";
 import SubmitTimePage from "./SubmitTime";
 import SummaryPage from "./SummaryPage";
