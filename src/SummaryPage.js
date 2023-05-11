@@ -7,7 +7,7 @@ const SummaryPage = () => {
 
   const user = "Bob";
   const [chartData, setChartData] = useState([]);
-  const [duration, setDuration] = useState(7); // duration of data in days
+
   //const endDay = new Date(Date.parse("2023-02-27"));
   
 
