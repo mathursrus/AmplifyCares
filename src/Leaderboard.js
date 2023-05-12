@@ -40,17 +40,6 @@ function Leaderboard() {
         <div>
             <div className="medal-podium">        
                 <div className="medal-container">
-                    <FontAwesomeIcon className="medal-icon-silver-medal" icon={faMedal} />
-                    <br></br>
-                    <center><b>{leaders[1]._id}</b></center>
-                    <br></br>
-                    <center>{leaders[1].median}</center>
-                    <div className="bar-chart-container">
-                        <div className="bar-chart-silver" style={{ height: `${(leaders[1].total_health_time / leaders[0].total_health_time) * 100}%` }}></div>
-                    </div>
-                </div>
-
-                <div className="medal-container">
                     <FontAwesomeIcon className="medal-icon-gold-medal" icon={faMedal} />
                     <br></br>
                     <center><b>{leaders[0]._id}</b></center>
@@ -58,6 +47,17 @@ function Leaderboard() {
                     <center>{leaders[0].median}</center>
                     <div className="bar-chart-container">
                         <div className="bar-chart-gold" style={{ height: `${(leaders[0].total_health_time / leaders[0].total_health_time) * 100}%` }}></div>            
+                    </div>
+                </div>
+
+                <div className="medal-container">
+                    <FontAwesomeIcon className="medal-icon-silver-medal" icon={faMedal} />
+                    <br></br>
+                    <center><b>{leaders[1]._id}</b></center>
+                    <br></br>
+                    <center>{leaders[1].median}</center>
+                    <div className="bar-chart-container">
+                        <div className="bar-chart-silver" style={{ height: `${(leaders[1].total_health_time / leaders[0].total_health_time) * 100}%` }}></div>
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@ function Leaderboard() {
             </div>
 
             <div className="other-participants-container">
-                <center><h2>In Calm Pursuit ...</h2></center>
+                <center><h2 className="title-box">In Calm Pursuit, the runner ups ...</h2></center>
                 {leaders.slice(3).map((player, index) => (
                     <div key={index} className="player">
                         <span className="name"><b>{player._id}</b>       </span>
