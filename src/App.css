@@ -47,3 +47,10 @@
   font-weight: 400;
   color: #757575;
 }
+
+.formLabel {
+  display: flex;
+  justify-content: flex-start;
+}
+
+input::placeholder { font-size: 16px; }

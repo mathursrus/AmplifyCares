@@ -72,22 +72,22 @@ const EntryPage = () => {
         <br></br>
         <form>
           <div className='row'>
-            <label><b>Mental Health:    </b></label>
+            <label className='formLabel'><b>Mental Health</b></label>
             <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} />
           </div>
           <br></br>
           <div className='row'>
-            <label><b>Physical Health: </b></label>
+            <label className='formLabel'><b>Physical Health</b></label>
             <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} />
           </div>
           <br></br>
           <div className='row'>
-            <label><b>Spiritual Health: </b></label>
+            <label className='formLabel'><b>Spiritual Health</b></label>
             <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} />
           </div>
           <br></br>
           <div className='row'>
-            <label><b>Societal Health:   </b></label>
+            <label className='formLabel'><b>Societal Health</b></label>
             <input type="number" class="text-field" value={SocietalHealth} onChange={(e) => setSocietalHealth(e.target.value)} />
           </div>
           <br></br>
