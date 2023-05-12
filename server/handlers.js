@@ -141,7 +141,7 @@ async function readTeamList() {
 }
 
 
-async function readTeamStats() {
+async function readTeamStats(startDay, endDay) {
   console.log(`Get Team Stats request`);
   const result=await team_container.aggregate([
     {
@@ -163,8 +163,8 @@ async function readTeamStats() {
     {
       $match: {
         "team_members.DateTime": {
-          $gte: new Date("2023-02-01"),
-          $lte: new Date("2023-02-28")
+          $gte: new Date(startDay),
+          $lte: new Date(endDay)
         }
       }
     },
