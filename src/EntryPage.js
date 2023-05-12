@@ -66,7 +66,8 @@ const EntryPage = () => {
   return (
     <Container className="p-3">
       <center>
-        <h1 className="header">Welcome! Enter your time in minutes</h1>
+        <h1 className="header">Welcome to AmplifyCares</h1>
+        <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
         <br></br>
         <br></br>
         <form>
