@@ -85,7 +85,7 @@ function Leaderboard() {
             </div>
         </div>
        ) : (
-            <p>Loading...</p>
+            <p>No Results</p>
        ) }
     </div>
   );
