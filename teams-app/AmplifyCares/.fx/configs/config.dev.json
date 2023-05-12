@@ -14,5 +14,9 @@
             "color": "resources/color.png",
             "outline": "resources/outline.png"
         }
+    },
+    "host": {
+        "endpoint": "https://e4f5-71-31-99-114.ngrok-free.app",
+        "domain": "e4f5-71-31-99-114.ngrok-free.app"
     }
 }
