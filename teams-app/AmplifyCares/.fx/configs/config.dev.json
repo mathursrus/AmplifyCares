@@ -3,12 +3,12 @@
     "description": "You can customize the TeamsFx config for different environments. Visit https://aka.ms/teamsfx-env-config to learn more about this.",
     "manifest": {
         "appName": {
-            "short": "AmplifyCares",
-            "full": "Full name for AmplifyCares"
+            "short": "Amplify Cares",
+            "full": "Amplify Cares - mental health and wellness"
         },
         "description": {
-            "short": "Short description of AmplifyCares",
-            "full": "Full description of AmplifyCares"
+            "short": "Taking care of our mental health",
+            "full": "Track, share and celebrate with Amplify when you take care of your mental health"
         },
         "icons": {
             "color": "resources/color.png",

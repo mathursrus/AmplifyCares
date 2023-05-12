@@ -1,6 +1,4 @@
-import './writetodb.js'
-import './handlers.js'
-import {writeEntry, readEntries, readPercentile, readTeamStats, readIndividualStats, readTeamList} from './handlers.js';
+const handlers = require('./handlers');
 
 const writeSelfCareEntry = {
     method: 'get',
@@ -8,7 +6,7 @@ const writeSelfCareEntry = {
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
         const item = await req.query.item;        
-        const response = await writeEntry(JSON.parse(item));
+        const response = await handlers.writeEntry(JSON.parse(item));
         res.status(200).json(response);
     }
 }
@@ -20,7 +18,7 @@ const getSelfCareStats = {
         console.log("Got req: ", req.query);
         const item = await req.query.item;  
         console.log("Got item: ", item);      
-        const response = await readEntries(item);
+        const response = await handlers.readEntries(item);
         res.status(200).json(response);
     }
 }
@@ -32,7 +30,7 @@ const getPercentiles = {
         console.log("Got perc req: ", req.query);
         const item = await req.query.item;  
         console.log("Got perc item: ", item);      
-        const response = await readPercentile(item);
+        const response = await handlers.readPercentile(item);
         res.status(200).json(response);
     }
 }
@@ -42,7 +40,7 @@ const getIndividualStats = {
     path: '/getindividualstats',
     handler: async (req, res) => {
         console.log("Got individual stats req: ", req.query);
-        const response = await readIndividualStats();
+        const response = await handlers.readIndividualStats();
         res.status(200).json(response);
     }
 }
@@ -52,7 +50,7 @@ const getTeamList = {
     path: '/getteamlist',
     handler: async (req, res) => {
         console.log("Got team list req: ", req.query);
-        const response = await readTeamList();
+        const response = await handlers.readTeamList();
         res.status(200).json(response);
     }
 }
@@ -62,9 +60,9 @@ const getTeamStats = {
     path: '/getteamstats',
     handler: async (req, res) => {
         console.log("Got team stats req: ", req.query);
-        const response = await readTeamStats();
+        const response = await handlers.readTeamStats();
         res.status(200).json(response);
     }
 }
 
-export {writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats};
+module.exports = { writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats};

@@ -52,5 +52,8 @@
   },
   "devDependencies": {
     "eslint-reporter": "^1.0.5"
+  },
+  "devServer": {
+    "disableHostCheck": true
   }
 }
