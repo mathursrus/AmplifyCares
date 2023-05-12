@@ -93,7 +93,7 @@ const EntryPage = () => {
           <br></br>
           <br></br>
           <div className='row'>
-              <Button onClick={handleSubmit}><b> Submit self-care time </b></Button>
+              <Button onClick={handleSubmit}><b>Submit Your Self-Care Time</b></Button>
               {/* Use conditional rendering to show the corresponding animation component */}
               {animation === 1 && <Confetti/>}
               {animation === 2 && <Confetti/>}
