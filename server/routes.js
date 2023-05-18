@@ -57,10 +57,11 @@ const getTeamList = {
 
 const getTeamStats = {
     method: 'get',
-    path: '/getteamstats',
+    path: '/getteamstats/startDay/:startDay/endDay/:endDay',
     handler: async (req, res) => {
         console.log("Got team stats req: ", req.query);
-        const response = await handlers.readTeamStats();
+        const response = await handlers.readTeamStats(Number(req.params.startDay), Number(req.params.endDay));
+
         res.status(200).json(response);
     }
 }

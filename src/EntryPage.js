@@ -66,33 +66,34 @@ const EntryPage = () => {
   return (
     <Container className="p-3">
       <center>
-        <h1 className="header">Welcome! Enter your time in minutes</h1>
+        <h1 className="header">Welcome to AmplifyCares</h1>
+        <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
         <br></br>
         <br></br>
         <form>
           <div className='row'>
-            <label><b>Mental Health:    </b></label>
+            <label className='formLabel'><b>Mental Health</b></label>
             <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} />
           </div>
           <br></br>
           <div className='row'>
-            <label><b>Physical Health: </b></label>
+            <label className='formLabel'><b>Physical Health</b></label>
             <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} />
           </div>
           <br></br>
           <div className='row'>
-            <label><b>Spiritual Health: </b></label>
+            <label className='formLabel'><b>Spiritual Health</b></label>
             <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} />
           </div>
           <br></br>
           <div className='row'>
-            <label><b>Societal Health:   </b></label>
+            <label className='formLabel'><b>Societal Health</b></label>
             <input type="number" class="text-field" value={SocietalHealth} onChange={(e) => setSocietalHealth(e.target.value)} />
           </div>
           <br></br>
           <br></br>
           <div className='row'>
-              <Button onClick={handleSubmit}><b> Submit self-care time </b></Button>
+              <Button onClick={handleSubmit}><b>Submit Your Self-Care Time</b></Button>
               {/* Use conditional rendering to show the corresponding animation component */}
               {animation === 1 && <Confetti/>}
               {animation === 2 && <Confetti/>}

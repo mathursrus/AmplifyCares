@@ -20,6 +20,7 @@ function TeamList() {
 
   return (
     <div>
+      <div style={{marginTop: '1rem'}}/>
       <center><h1>Team List</h1></center>
       { teams.length > 0 ?
       (

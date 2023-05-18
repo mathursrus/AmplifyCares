@@ -170,7 +170,11 @@ const SummaryPage = () => {
   return (
     <div>
       <center>
-        <h1>{user}, here are your Self-Care Stats</h1>
+        <div style={{marginTop: '1rem'}}/>
+        <h1 className="header">{user}'s Personal Self Care Data</h1>
+        <h2 className="subheader">See your self care journey and how it's comparing to others.</h2>
+        <br></br>
+        <br></br>
         {/*
           chartData.length > 0 ? (
           <div>
