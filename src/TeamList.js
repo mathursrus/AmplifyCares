@@ -1,6 +1,7 @@
 import React from "react";
 import './App.css';
 import { useState, useEffect, useRef } from 'react';
+import getServerString from './Utils';
 
 function TeamList() {
   
@@ -8,7 +9,7 @@ function TeamList() {
 
   useEffect(() => {
     async function fetchData() {
-        const response = await fetch("http://localhost:8080/getteamlist/");
+        const response = await fetch(getServerString()+"getteamlist/");
         const data = await response.json();
         const teams = JSON.parse(data);
         setTeams(teams);

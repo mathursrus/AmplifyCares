@@ -1,9 +1,9 @@
 function getServerString() {
 
-    if (true)
+    if (false)
         return "http://localhost:8080/";
     else
-        return ""
+        return "https://amplifycaresserver.azurewebsites.net/";
     
 }
 
