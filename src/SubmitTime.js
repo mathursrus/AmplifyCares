@@ -49,15 +49,15 @@ const SubmitTimePage = () => {
         console.log(e);
         // Submit form data
         const itemData = {
-        name:'3rd person',
+        name:'4th person',
         time: getSubmissionTime(),
-        mental_health_time: MentalHealth,
-        physical_health_time: PhysicalHealth,
-        spiritual_health_time: SpiritualHealth,
-        societal_health_time: SocietalHealth,
+        mental_health_time: MentalHealth===''?"0":MentalHealth,
+        physical_health_time: PhysicalHealth===''?"0":PhysicalHealth,
+        spiritual_health_time: SpiritualHealth===''?"0":SpiritualHealth,
+        societal_health_time: SocietalHealth===''?"0":SocietalHealth,
         }
         console.log(itemData)
-        const response = await fetch(getApiHost()+"writeselfcare/?item="+JSON.stringify(itemData));
+        const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(itemData));
 
         if (!response.ok) {
         console.log("Ugh");
@@ -67,7 +67,7 @@ const SubmitTimePage = () => {
         clapSound.play();
         setTimeout(() => {
             setAnimation(null);
-        }, 6000);
+        }, 12000);
     };
 
     return (

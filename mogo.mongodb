@@ -10,6 +10,14 @@ total_spiritual_health: {$sum:{$add:[{$toInt: "$spiritual_health_time"}]}},
 total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
 }}])
 
+
+// fina all self care entries with non-integer time values
+use('amplifycares-db');
+db.self_care_stats.find({ mental_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
+db.self_care_stats.find({ physical_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
+db.self_care_stats.find({ spiritual_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
+db.self_care_stats.find({ societal_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
+
 // how many users 
 use('amplifycares-db');
 db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, {$group: {_id:"$name", total_count:{$sum:1}}}, {$group: {_id:null, num_users:{$sum:1}}}])

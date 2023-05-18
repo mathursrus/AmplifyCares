@@ -17,7 +17,7 @@ function Leaderboard() {
 
   useEffect(() => {
     async function fetchData() {
-        const response = await fetch( getApiHost() + `/getteamstats/startDay/${ago(endDay, 7)}/endDay/${endDay}`);
+        const response = await fetch( getApiHost() + `/getteamstats/?startDay=${ago(endDay, 7)}&endDay=${endDay}`);
         const data = await response.json();
         const myleaders = JSON.parse(data);
         setLeaders(myleaders);
