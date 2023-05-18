@@ -1,0 +1,22 @@
+{
+    "$schema": "https://aka.ms/teamsfx-env-config-schema",
+    "description": "You can customize the TeamsFx config for different environments. Visit https://aka.ms/teamsfx-env-config to learn more about this.",
+    "manifest": {
+        "appName": {
+            "short": "Amplify Cares",
+            "full": "Amplify Cares - mental health and wellness"
+        },
+        "description": {
+            "short": "Taking care of our mental health",
+            "full": "Track, share and celebrate with Amplify when you take care of your mental health"
+        },
+        "icons": {
+            "color": "resources/color.png",
+            "outline": "resources/outline.png"
+        }
+    },
+    "host": {
+        "endpoint": "https://e4f5-71-31-99-114.ngrok-free.app",
+        "domain": "e4f5-71-31-99-114.ngrok-free.app"
+    }
+}

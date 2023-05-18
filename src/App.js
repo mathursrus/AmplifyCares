@@ -2,17 +2,22 @@ import Leaderboard from "./Leaderboard";
 import SubmitTimePage from "./SubmitTime";
 import SummaryPage from "./SummaryPage";
 import TeamList from "./TeamList";
-import TestF12 from "./TestF12";
-//import React from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from "./Layout";
 
-const AppPage = () => {
+export default function AppPage() {
   return (
-    //<SubmitTimePage />
-    //<SummaryPage />
-    //<Leaderboard />
-    <TeamList/>
-    //<TestF12/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout/>}>
+            <Route index element={<SubmitTimePage/>}/>
+            <Route path="submit-time-page" element={<SubmitTimePage/>}/>
+            <Route path="summary-page" element={<SummaryPage/>}/>
+            <Route path="leaderboard" element={<Leaderboard/>}/>
+            <Route path="team-list" element={<TeamList/>}/>
+          </Route>
+        </Routes>
+      </BrowserRouter>
   );
 };
-
-export default AppPage;

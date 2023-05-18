@@ -1,7 +1,7 @@
 import React from "react";
 import './App.css';
-import { useState, useEffect, useRef } from 'react';
-import getServerString from './Utils';
+import { useState, useEffect } from 'react';
+import { getApiHost } from './utils/urlUtil';
 
 function TeamList() {
   
@@ -9,7 +9,7 @@ function TeamList() {
 
   useEffect(() => {
     async function fetchData() {
-        const response = await fetch(getServerString()+"getteamlist/");
+        const response = await fetch(getApiHost() + "/getteamlist/");
         const data = await response.json();
         const teams = JSON.parse(data);
         setTeams(teams);
@@ -20,6 +20,7 @@ function TeamList() {
 
   return (
     <div>
+      <div style={{marginTop: '1rem'}}/>
       <center><h1>Team List</h1></center>
       { teams.length > 0 ?
       (

@@ -8,12 +8,18 @@ import './App.css';
 const React = require('react');
 const { useState } = React;
 
+const placeholderStrings = {
+    MentalHealth: 'Enter the amount of minutes you dedicated to mental health today.',
+    PhysicalHealth: 'Enter the amount of minutes you dedicated to physical health today.',
+    SpiritualHealth: 'Enter the amount of minutes you dedicated to spirtual health today.',
+    SocietalHealth: 'Enter the amount of minutes you dedicated to societal health today.'
+}
 
 const SubmitTimePage = () => {
-    const [MentalHealth, setMentalHealth] = useState('0');
-    const [PhysicalHealth, setPhysicalHealth] = useState('0');
-    const [SpiritualHealth, setSpiritualHealth] = useState('0');
-    const [SocietalHealth, setSocietalHealth] = useState('0');
+    const [MentalHealth, setMentalHealth] = useState('');
+    const [PhysicalHealth, setPhysicalHealth] = useState('');
+    const [SpiritualHealth, setSpiritualHealth] = useState('');
+    const [SocietalHealth, setSocietalHealth] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     const clapSound = new Audio('/yourock.mp3');
@@ -67,33 +73,34 @@ const SubmitTimePage = () => {
     return (
         <Container className="p-3">
             <center>
-            <h1 className="header">Welcome! Enter your time in minutes</h1>
+            <h1 className="header">Welcome to AmplifyCares</h1>
+            <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
             <br></br>
             <br></br>
             <form>
                 <div className='row'>
-                <label><b>Mental Health:    </b></label>
-                <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} />
+                <label className='formLabel'><b>Mental Health</b></label>
+                <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} placeholder={placeholderStrings.MentalHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label><b>Physical Health: </b></label>
-                <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} />
+                <label className='formLabel'><b>Physical Health</b></label>
+                <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} placeholder={placeholderStrings.PhysicalHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label><b>Spiritual Health: </b></label>
-                <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} />
+                <label className='formLabel'><b>Spiritual Health</b></label>
+                <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} placeholder={placeholderStrings.SpiritualHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label><b>Societal Health:   </b></label>
-                <input type="number" class="text-field" value={SocietalHealth} onChange={(e) => setSocietalHealth(e.target.value)} />
+                <label className='formLabel'><b>Societal Health</b></label>
+                <input type="number" class="text-field" value={SocietalHealth} onChange={(e) => setSocietalHealth(e.target.value)}  placeholder={placeholderStrings.SocietalHealth}/>
                 </div>
                 <br></br>
                 <br></br>
                 <div className='row'>
-                    <Button onClick={handleSubmit}><b> Submit self-care time </b></Button>
+                    <Button onClick={handleSubmit}><b>Submit Your Self-Care Time</b></Button>
                     {/* Use conditional rendering to show the corresponding animation component */}
                     {animation === 1 && <Confetti/>}
                     {animation === 2 && <Confetti/>}

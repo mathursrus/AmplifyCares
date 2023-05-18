@@ -1,22 +1,21 @@
-import { set } from 'mongoose';
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import getServerString from './Utils';
+import { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { getApiUrl } from './utils/urlUtil';
 
 const SummaryPage = () => {
 
   const user = "Bob";
   const [chartData, setChartData] = useState([]);
-  const [duration, setDuration] = useState(7); // duration of data in days
+
   //const endDay = new Date(Date.parse("2023-02-27"));
   
 
   useEffect(() => {
     async function fetchData() {
-      const selfCareData = await getAggregateStats(getServerString()+"getselfcarestats/?item="+user);
-      const medianCareData = await getAggregateStats(getServerString()+"getpercentiles?item=50");
-      const highCareData = await getAggregateStats(getServerString()+"getpercentiles?item=90");
+      const selfCareData = await getAggregateStats(getApiUrl("/getselfcarestats/?item="+user));
+      const medianCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=50"));
+      const highCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=90"));
 
       /*
       const selfCareData = [
@@ -171,7 +170,11 @@ const SummaryPage = () => {
   return (
     <div>
       <center>
-        <h1>{user}, here are your Self-Care Stats</h1>
+        <div style={{marginTop: '1rem'}}/>
+        <h1 className="header">{user}'s Personal Self Care Data</h1>
+        <h2 className="subheader">See your self care journey and how it's comparing to others.</h2>
+        <br></br>
+        <br></br>
         {/*
           chartData.length > 0 ? (
           <div>

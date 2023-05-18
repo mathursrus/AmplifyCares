@@ -1,10 +1,7 @@
-function getServerString() {
+import { getApiHost } from "./utils/urlUtil";
 
-    if (false)
-        return "http://localhost:8080/";
-    else
-        return "https://amplifycaresserver.azurewebsites.net/";
-    
+function getServerString() {
+    return getApiHost();
 }
 
 export default getServerString;
