@@ -2,7 +2,7 @@
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Confetti from "react-confetti";
-import getServerString from './Utils';
+import { getApiHost } from './utils/urlUtil';
 import './App.css';
 
 const React = require('react');
@@ -57,7 +57,7 @@ const SubmitTimePage = () => {
         societal_health_time: SocietalHealth,
         }
         console.log(itemData)
-        const response = await fetch(getServerString()+"writeselfcare/?item="+JSON.stringify(itemData));
+        const response = await fetch(getApiHost()+"writeselfcare/?item="+JSON.stringify(itemData));
 
         if (!response.ok) {
         console.log("Ugh");
