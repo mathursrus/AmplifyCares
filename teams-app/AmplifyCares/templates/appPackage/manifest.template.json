@@ -5,10 +5,10 @@
     "id": "{{state.fx-resource-appstudio.teamsAppId}}",
     "packageName": "com.microsoft.teams.extension",
     "developer": {
-        "name": "Teams App, Inc.",
-        "websiteUrl": "https://www.example.com",
-        "privacyUrl": "https://www.example.com/termofuse",
-        "termsOfUseUrl": "https://www.example.com/privacy"
+        "name": "Microsoft Corporation",
+        "websiteUrl": "https://www.microsoft.com",
+        "privacyUrl": "https://www.microsoft.com",
+        "termsOfUseUrl": "https://www.microsoft.com"
     },
     "icons": {
         "color": "{{config.manifest.icons.color}}",
@@ -27,7 +27,7 @@
     "composeExtensions": [],
     "configurableTabs": [
         {
-            "configurationUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/config",
+            "configurationUrl": "{{config.host.endpoint}}/config",
             "canUpdateConfiguration": true,
             "scopes": [
                 "team",
@@ -38,9 +38,9 @@
     "staticTabs": [
         {
             "entityId": "index0",
-            "name": "Personal Tab",
-            "contentUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/tab",
-            "websiteUrl": "{{{state.fx-resource-frontend-hosting.endpoint}}}{{{state.fx-resource-frontend-hosting.indexPath}}}/tab",
+            "name": "Home",
+            "contentUrl": "{{config.host.endpoint}}",
+            "websiteUrl": "{{config.host.endpoint}}",
             "scopes": [
                 "personal"
             ]
@@ -51,6 +51,7 @@
         "messageTeamMembers"
     ],
     "validDomains": [
-        "{{state.fx-resource-frontend-hosting.domain}}"
+        "{{config.host.domain}}",
+        "delightful-wave-085181710.3.azurestaticapps.net"
     ]
 }

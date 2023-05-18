@@ -1,25 +1,48 @@
-import './writetodb.js'
-import {CosmosClient} from "@azure/cosmos";
-import MongoClient from 'mongodb';
-
+const MongoClient = require('mongodb');
 const databaseId = "amplifycares-db";
 const containerId = "self_care_stats";
 const teamId = "team_info";
 
-const client = await new MongoClient("mongodb://amplifycares-server:iRIAx1TOBoMR0c035T1u6oB9DjEQUX0ySCwwyXF8G7CT02b92BbdYOGezGDn7Fv2JGKRdUWVxKnPACDb30unbw==@amplifycares-server.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@amplifycares-server@")
-console.log(client)
-const db = await client.db(databaseId);
-console.log(db);
-const container = await db.collection(containerId);
-console.log(container);
-const team_container = await db.collection(teamId);
+let dbClient = null;
+let team_container = null;
+let container = null;
+
+async function getMongoDbClient() {
+  if (!dbClient) {
+    const client = await new MongoClient("mongodb://amplifycares-server:iRIAx1TOBoMR0c035T1u6oB9DjEQUX0ySCwwyXF8G7CT02b92BbdYOGezGDn7Fv2JGKRdUWVxKnPACDb30unbw==@amplifycares-server.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@amplifycares-server@")
+    console.log(client)
+    dbClient = await client.db(databaseId);
+    console.log('db client:', dbClient);
+  }
+  return dbClient;
+}
+
+async function getContainer() {
+  if (!container) {
+    var cl = await getMongoDbClient();
+    container = await cl.collection(containerId);
+    console.log(container);
+  }
+  return container;
+}
+
+async function getTeamContainer() {
+  if (!team_container) {
+    var cl = await getMongoDbClient();
+    team_container = await cl.collection(teamId);
+    console.log(team_container);
+  }
+  return team_container;
+}
+
 console.log(team_container);
 
 
 async function writeEntry(item) {
     try {
         console.log('Handler got item: ', item)
-        const result = await container.insertOne(item);
+        const ct = await getContainer();
+        const result = await ct.insertOne(item);
         console.log('Item inserted now:', result.insertedId);
         //return result.insertedId;
       } catch (err) {
@@ -30,7 +53,8 @@ async function writeEntry(item) {
 
 async function readEntries(itemId) {
   console.log(`Got called with id: ${itemId}`);
-  const result=await container.aggregate([
+  const ct = await getContainer();
+  const result=await ct.aggregate([
     {
       $match: {
         name:itemId
@@ -61,7 +85,8 @@ async function readEntries(itemId) {
 async function readPercentile(percentile) {
   console.log(`Median called with percentile: ${percentile}`);
   percentile= parseInt(percentile);
-  const result= await container.aggregate([
+  const ct = await getContainer();
+  const result= await ct.aggregate([
     {
       $group: {
         _id: {
@@ -105,7 +130,8 @@ async function readPercentile(percentile) {
 
 async function readIndividualStats() {
   console.log(`Get Individual Stats request`);
-  const result=await container.aggregate([
+  const ct = await getContainer();
+  const result=await ct.aggregate([
     {
       $group: {
         _id: {Name:"$name"},
@@ -133,7 +159,8 @@ async function readIndividualStats() {
 
 async function readTeamList() {
   console.log(`Get team list got called`);
-  const result=await team_container.find().toArray();
+  const tct = await getTeamContainer();
+  const result=await tct.find().toArray();
   console.log(`Team list is: ${result}`);
   const final = JSON.stringify(result);
   console.log(`Final team list is ${final}`);
@@ -143,7 +170,8 @@ async function readTeamList() {
 
 async function readTeamStats(startDay, endDay) {
   console.log(`Get Team Stats request`);
-  const result=await team_container.aggregate([
+  const tct = await getTeamContainer();
+  const result=await tct.aggregate([
     {
       $match: {
         "team_members": { $exists: true, $not: {$size: 0} }
@@ -226,7 +254,8 @@ async function readTeamStats(startDay, endDay) {
 async function readHighBar(itemId) {
   console.log(`Got called with id: ${itemId}`);
   //const { resource: item } = await container.item(itemId, itemId).read();
-  const result= await container.aggregate([{$match:{name:"$itemId"}}, 
+  const ct = await getContainer();
+  const result= await ct.aggregate([{$match:{name:"$itemId"}}, 
     {$group: {_id:"$name", 
       total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
       total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},
@@ -240,13 +269,15 @@ async function readHighBar(itemId) {
 
   async function updateItem(itemId, item) {
     item.id = itemId;
-    const { resource: updatedItem } = await container.item(itemId, itemId).replace(item);
+    const ct = await getContainer();
+    const { resource: updatedItem } = await ct.item(itemId, itemId).replace(item);
     console.log(`Updated item with id: ${updatedItem.id}`);
   }
   
   async function deleteItem(itemId) {
-    const { resource: deletedItem } = await container.item(itemId, itemId).delete();
+    const ct = await getContainer();
+    const { resource: deletedItem } = await ct.item(itemId, itemId).delete();
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-  export {writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats};
+module.exports = {writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats};
