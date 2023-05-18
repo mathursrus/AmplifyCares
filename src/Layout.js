@@ -16,7 +16,10 @@ function Layout() {
                 <Nav.Link as={Link} to="/submit-time-page">Submit Time</Nav.Link>
                 <Nav.Link as={Link} to="/summary-page">Self Care Data</Nav.Link>
                 <Nav.Link as={Link} to="/leaderboard">Leaderboard</Nav.Link>
-                <Nav.Link as={Link} to="/team-list">Team List</Nav.Link>
+                <Nav.Link as={Link} to="/team-list">Team List</Nav.Link>                
+            </Nav>
+            <Nav className="justify-content-end">
+              <Nav.Link as={Link} to="https://microsoft-my.sharepoint-df.com/:w:/p/sidm/ES-DIlQMHbJEgLz9cLSRcSsBdieBfDoaM-r5-cAjWcBwMw?e=hPhdPs">The Hypothesis behind AmplifyCares</Nav.Link> 
             </Nav>
             </Navbar.Collapse>
         </Container>

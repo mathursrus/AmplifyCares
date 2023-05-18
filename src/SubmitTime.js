@@ -9,17 +9,17 @@ const React = require('react');
 const { useState } = React;
 
 const placeholderStrings = {
-    MentalHealth: 'Enter the amount of minutes you dedicated to mental health today.',
-    PhysicalHealth: 'Enter the amount of minutes you dedicated to physical health today.',
-    SpiritualHealth: 'Enter the amount of minutes you dedicated to spirtual health today.',
-    SocietalHealth: 'Enter the amount of minutes you dedicated to societal health today.'
+    MentalHealth: 'Minutes you dedicated to mental health today. (eg meditation, learning, brain games, ..)',
+    PhysicalHealth: 'Minutes you dedicated to physical health today. (eg exercise, sports, doctor visit, ..)',
+    SpiritualHealth: 'Minutes you dedicated to spirtual health today. (eg prayers, religious activities, ...)',
+    SocialHealth: 'Minutes you dedicated to social health today. (eg volunteering, praising, family time, ...)'
 }
 
 const SubmitTimePage = () => {
     const [MentalHealth, setMentalHealth] = useState('');
     const [PhysicalHealth, setPhysicalHealth] = useState('');
     const [SpiritualHealth, setSpiritualHealth] = useState('');
-    const [SocietalHealth, setSocietalHealth] = useState('');
+    const [SocialHealth, setSocialHealth] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     const clapSound = new Audio('/yourock.mp3');
@@ -54,7 +54,7 @@ const SubmitTimePage = () => {
         mental_health_time: MentalHealth===''?"0":MentalHealth,
         physical_health_time: PhysicalHealth===''?"0":PhysicalHealth,
         spiritual_health_time: SpiritualHealth===''?"0":SpiritualHealth,
-        societal_health_time: SocietalHealth===''?"0":SocietalHealth,
+        societal_health_time: SocialHealth===''?"0":SocialHealth,
         }
         console.log(itemData)
         const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(itemData));
@@ -95,7 +95,7 @@ const SubmitTimePage = () => {
                 <br></br>
                 <div className='row'>
                 <label className='formLabel'><b>Societal Health</b></label>
-                <input type="number" class="text-field" value={SocietalHealth} onChange={(e) => setSocietalHealth(e.target.value)}  placeholder={placeholderStrings.SocietalHealth}/>
+                <input type="number" class="text-field" value={SocialHealth} onChange={(e) => setSocialHealth(e.target.value)}  placeholder={placeholderStrings.SocialHealth}/>
                 </div>
                 <br></br>
                 <br></br>
