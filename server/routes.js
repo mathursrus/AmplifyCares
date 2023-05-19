@@ -59,8 +59,9 @@ const getTeamStats = {
     method: 'get',
     path: '/getteamstats', 
     handler: async (req, res) => {
-        console.log("Got team stats req: ", req.query, ", with startDay: ", req.query.startDay);
-        const response = await handlers.readTeamStats(req.query.startDay, req.query.endDay);
+        const urlParams = new URLSearchParams(req.query);
+        console.log("Got team stats req: ", req.query, ", with startDay: ", urlParams.get('startDay'), ", endDay: ", urlParams.get('endDay'));
+        const response = await handlers.readTeamStats(parseInt(urlParams.get('startDay')), parseInt(urlParams.get('endDay')));
 
         res.status(200).json(response);
     }

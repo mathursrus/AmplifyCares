@@ -39,17 +39,7 @@ function Leaderboard() {
       (
         <div>
             <div className="medal-podium">        
-                <div className="medal-container">
-                    <FontAwesomeIcon className="medal-icon-gold-medal" icon={faMedal} />
-                    <br></br>
-                    <center><b>{leaders[0]._id}</b></center>
-                    <br></br>
-                    <center>{leaders[0].median}</center>
-                    <div className="bar-chart-container">
-                        <div className="bar-chart-gold" style={{ height: `${(leaders[0].total_health_time / leaders[0].total_health_time) * 100}%` }}></div>            
-                    </div>
-                </div>
-
+                
                 <div className="medal-container">
                     <FontAwesomeIcon className="medal-icon-silver-medal" icon={faMedal} />
                     <br></br>
@@ -58,6 +48,17 @@ function Leaderboard() {
                     <center>{leaders[1].median}</center>
                     <div className="bar-chart-container">
                         <div className="bar-chart-silver" style={{ height: `${(leaders[1].total_health_time / leaders[0].total_health_time) * 100}%` }}></div>
+                    </div>
+                </div>
+
+                <div className="medal-container">
+                    <FontAwesomeIcon className="medal-icon-gold-medal" icon={faMedal} />
+                    <br></br>
+                    <center><b>{leaders[0]._id}</b></center>
+                    <br></br>
+                    <center>{leaders[0].median}</center>
+                    <div className="bar-chart-container">
+                        <div className="bar-chart-gold" style={{ height: `${(leaders[0].total_health_time / leaders[0].total_health_time) * 100}%` }}></div>            
                     </div>
                 </div>
 
