@@ -2,18 +2,24 @@
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Confetti from "react-confetti";
-import getServerString from './Utils';
+import { getApiHost } from './utils/urlUtil';
 import './App.css';
 
 const React = require('react');
 const { useState } = React;
 
+const placeholderStrings = {
+    MentalHealth: 'Minutes you dedicated to mental health today. (eg meditation, learning, brain games, ..)',
+    PhysicalHealth: 'Minutes you dedicated to physical health today. (eg exercise, sports, doctor visit, ..)',
+    SpiritualHealth: 'Minutes you dedicated to spirtual health today. (eg prayers, religious activities, ...)',
+    SocialHealth: 'Minutes you dedicated to social health today. (eg volunteering, praising, family time, ...)'
+}
 
 const SubmitTimePage = () => {
-    const [MentalHealth, setMentalHealth] = useState('0');
-    const [PhysicalHealth, setPhysicalHealth] = useState('0');
-    const [SpiritualHealth, setSpiritualHealth] = useState('0');
-    const [SocietalHealth, setSocietalHealth] = useState('0');
+    const [MentalHealth, setMentalHealth] = useState('');
+    const [PhysicalHealth, setPhysicalHealth] = useState('');
+    const [SpiritualHealth, setSpiritualHealth] = useState('');
+    const [SocialHealth, setSocialHealth] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     const clapSound = new Audio('/yourock.mp3');
@@ -43,15 +49,15 @@ const SubmitTimePage = () => {
         console.log(e);
         // Submit form data
         const itemData = {
-        name:'3rd person',
+        name:'4th person',
         time: getSubmissionTime(),
-        mental_health_time: MentalHealth,
-        physical_health_time: PhysicalHealth,
-        spiritual_health_time: SpiritualHealth,
-        societal_health_time: SocietalHealth,
+        mental_health_time: MentalHealth===''?"0":MentalHealth,
+        physical_health_time: PhysicalHealth===''?"0":PhysicalHealth,
+        spiritual_health_time: SpiritualHealth===''?"0":SpiritualHealth,
+        societal_health_time: SocialHealth===''?"0":SocialHealth,
         }
         console.log(itemData)
-        const response = await fetch(getServerString()+"writeselfcare/?item="+JSON.stringify(itemData));
+        const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(itemData));
 
         if (!response.ok) {
         console.log("Ugh");
@@ -61,39 +67,40 @@ const SubmitTimePage = () => {
         clapSound.play();
         setTimeout(() => {
             setAnimation(null);
-        }, 6000);
+        }, 12000);
     };
 
     return (
         <Container className="p-3">
             <center>
-            <h1 className="header">Welcome! Enter your time in minutes</h1>
+            <h1 className="header">Welcome to AmplifyCares</h1>
+            <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
             <br></br>
             <br></br>
             <form>
                 <div className='row'>
-                <label><b>Mental Health:    </b></label>
-                <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} />
+                <label className='formLabel'><b>Mental Health</b></label>
+                <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} placeholder={placeholderStrings.MentalHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label><b>Physical Health: </b></label>
-                <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} />
+                <label className='formLabel'><b>Physical Health</b></label>
+                <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} placeholder={placeholderStrings.PhysicalHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label><b>Spiritual Health: </b></label>
-                <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} />
+                <label className='formLabel'><b>Spiritual Health</b></label>
+                <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} placeholder={placeholderStrings.SpiritualHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label><b>Societal Health:   </b></label>
-                <input type="number" class="text-field" value={SocietalHealth} onChange={(e) => setSocietalHealth(e.target.value)} />
+                <label className='formLabel'><b>Societal Health</b></label>
+                <input type="number" class="text-field" value={SocialHealth} onChange={(e) => setSocialHealth(e.target.value)}  placeholder={placeholderStrings.SocialHealth}/>
                 </div>
                 <br></br>
                 <br></br>
                 <div className='row'>
-                    <Button onClick={handleSubmit}><b> Submit self-care time </b></Button>
+                    <Button onClick={handleSubmit}><b>Submit Your Self-Care Time</b></Button>
                     {/* Use conditional rendering to show the corresponding animation component */}
                     {animation === 1 && <Confetti/>}
                     {animation === 2 && <Confetti/>}
