@@ -3,7 +3,9 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Confetti from "react-confetti";
 import { getApiHost } from './utils/urlUtil';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
+import * as microsoftTeams from '@microsoft/teams-js';
 
 const React = require('react');
 const { useState } = React;
@@ -23,6 +25,19 @@ const SubmitTimePage = () => {
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     const clapSound = new Audio('/yourock.mp3');
+    const navigate = useNavigate();
+    var userName = "Bob";
+
+    if (microsoftTeams) {
+        microsoftTeams.initialize();
+        microsoftTeams.getContext((context) => {
+            console.log(context.userPrincipalName);
+            userName = context.userPrincipalName;
+        });
+    } 
+    else {
+        console.log("not in teams");
+    }
 
     // Create a function to generate a random number between 1 and 4
     const getRandomNumber = () => {
@@ -44,6 +59,10 @@ const SubmitTimePage = () => {
         return dateTime;
     }
 
+    const playSound = (rand) => {
+        clapSound.play();
+    }
+
     const handleSubmit = async(e) => {
         e.preventDefault();
         console.log(e);
@@ -63,17 +82,19 @@ const SubmitTimePage = () => {
         console.log("Ugh");
         }
         // Set the state variable to the random number
-        setAnimation(getRandomNumber());
-        clapSound.play();
+        const rand = getRandomNumber();
+        setAnimation(rand);
         setTimeout(() => {
+            playSound(rand);            
             setAnimation(null);
-        }, 12000);
+            navigate('/summary-page');
+        }, 6000);
     };
 
     return (
         <Container className="p-3">
             <center>
-            <h1 className="header">Welcome to AmplifyCares</h1>
+            <h1 className="header">Welcome {userName} to AmplifyCares</h1>
             <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
             <br></br>
             <br></br>
