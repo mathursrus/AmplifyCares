@@ -17,68 +17,10 @@ const SummaryPage = () => {
       const medianCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=50"));
       const highCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=90"));
 
-      /*
-      const selfCareData = [
-        { _id: "2023-02-15", total_health_time: 60 },
-        { _id: "2023-02-17", total_health_time: 90 },
-        { _id: "2023-02-20", total_health_time: 120 },
-        { _id: "2023-02-22", total_health_time: 80 },
-        { _id: "2023-02-25", total_health_time: 100 },
-        { _id: "2023-02-28", total_health_time: 150 },
-        { _id: "2023-03-03", total_health_time: 70 },
-        { _id: "2023-03-07", total_health_time: 110 },
-        { _id: "2023-03-10", total_health_time: 140 },
-        { _id: "2023-03-12", total_health_time: 90 },
-        { _id: "2023-03-15", total_health_time: 120 },
-      ];
-  
-      const medianCareData = [
-        { _id: "2023-02-15", total_health_time: 20 },
-        { _id: "2023-02-16", total_health_time: 60 },
-        { _id: "2023-02-17", total_health_time: 40 },
-        { _id: "2023-02-18", total_health_time: 90 },
-        { _id: "2023-02-20", total_health_time: 120 },
-        { _id: "2023-02-22", total_health_time: 80 },
-        { _id: "2023-02-23", total_health_time: 40 },
-        { _id: "2023-02-24", total_health_time: 70 },
-        { _id: "2023-02-25", total_health_time: 100 },
-        { _id: "2023-02-28", total_health_time: 150 },
-        { _id: "2023-03-03", total_health_time: 70 },
-        { _id: "2023-03-04", total_health_time: 70 },
-        { _id: "2023-03-05", total_health_time: 70 },
-        { _id: "2023-03-06", total_health_time: 70 },
-        { _id: "2023-03-07", total_health_time: 110 },
-        { _id: "2023-03-10", total_health_time: 140 },
-        { _id: "2023-03-12", total_health_time: 90 },
-        { _id: "2023-03-15", total_health_time: 120 },
-      ];
-      
-  
-      const highCareData = [
-        { _id: "2023-02-15", total_health_time: 80 },
-        { _id: "2023-02-16", total_health_time: 120 },
-        { _id: "2023-02-17", total_health_time: 90 },
-        { _id: "2023-02-18", total_health_time: 100 },
-        { _id: "2023-02-20", total_health_time: 130 },
-        { _id: "2023-02-22", total_health_time: 180 },
-        { _id: "2023-02-23", total_health_time: 140 },
-        { _id: "2023-02-24", total_health_time: 100 },
-        { _id: "2023-02-25", total_health_time: 140 },
-        { _id: "2023-02-28", total_health_time: 160 },
-        { _id: "2023-03-03", total_health_time: 90 },
-        { _id: "2023-03-04", total_health_time: 90 },
-        { _id: "2023-03-05", total_health_time: 100 },
-        { _id: "2023-03-06", total_health_time: 80 },
-        { _id: "2023-03-07", total_health_time: 140 },
-        { _id: "2023-03-10", total_health_time: 160 },
-        { _id: "2023-03-12", total_health_time: 190 },
-        { _id: "2023-03-15", total_health_time: 140 },
-      ];
-      */
-
       const endDay = new Date(2023, 2, 12);
       const startDay = new Date(endDay);
       startDay.setDate(endDay.getDate()-7);
+
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, endDay));
     }
     fetchData();
@@ -111,54 +53,6 @@ const SummaryPage = () => {
         high_care_minutes: highCareMinutes
       });
     }
-
-
-
-    /*
-    selfCareData.forEach((datum) => {
-      let date=new Date(datum._id);
-      let index=myData.indexOf(date);
-      if (index !== -1) {
-        myData[index].self_care_time=datum.total_health_time;
-      }
-      else {
-        myData.push({
-          _id: new Date(datum._id),
-          self_care_time: datum.total_health_time
-        });
-      }
-    });
-
-    medianCareData.forEach((datum) => {
-      let date=new Date(datum._id);
-      let index=myData.indexOf(date);
-      if (index !== -1) {
-        myData[index].median_care_time=datum.ptile;
-        console.log("Added median of ", datum.ptile, "to date ", date);
-      }
-      else {
-        myData.push({
-          _id: new Date(datum._id),
-          median_care_time: datum.ptile
-        });
-      }
-    });
-
-    highCareData.forEach((datum) => {
-      let date=new Date(datum._id);
-      let index=myData.indexOf(date);
-      if (index !== -1) {
-        myData[index].high_care_time=datum.ptile;
-        console.log("Added high of ", datum.ptile, "to date ", date);
-      }
-      else {
-        myData.push({
-          _id: new Date(datum._id),
-          high_care_time: datum.ptile
-        });
-      }
-    });
-    */
 
     return myData;
   };

@@ -22,17 +22,17 @@ const SubmitTimePage = () => {
     const [PhysicalHealth, setPhysicalHealth] = useState('');
     const [SpiritualHealth, setSpiritualHealth] = useState('');
     const [SocialHealth, setSocialHealth] = useState('');
+    const [UserName, setUserName] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     const clapSound = new Audio('/yourock.mp3');
     const navigate = useNavigate();
-    var userName = "Bob";
 
     if (microsoftTeams) {
         microsoftTeams.initialize();
         microsoftTeams.getContext((context) => {
             console.log(context.userPrincipalName);
-            userName = context.userPrincipalName;
+            setUserName(context.userPrincipalName);
         });
     } 
     else {
@@ -68,7 +68,7 @@ const SubmitTimePage = () => {
         console.log(e);
         // Submit form data
         const itemData = {
-        name:'4th person',
+        name: UserName,
         time: getSubmissionTime(),
         mental_health_time: MentalHealth===''?"0":MentalHealth,
         physical_health_time: PhysicalHealth===''?"0":PhysicalHealth,
@@ -79,7 +79,7 @@ const SubmitTimePage = () => {
         const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(itemData));
 
         if (!response.ok) {
-        console.log("Ugh");
+            console.log("Ugh");
         }
         // Set the state variable to the random number
         const rand = getRandomNumber();
@@ -94,7 +94,7 @@ const SubmitTimePage = () => {
     return (
         <Container className="p-3">
             <center>
-            <h1 className="header">Welcome {userName} to AmplifyCares</h1>
+            <h1 className="header">Welcome {UserName} to AmplifyCares</h1>
             <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
             <br></br>
             <br></br>
