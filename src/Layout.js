@@ -3,8 +3,19 @@ import { Outlet, Link } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Navbar from "react-bootstrap/Navbar";
+import * as microsoftTeams from '@microsoft/teams-js';
 
 function Layout() {
+
+  if (microsoftTeams) {
+    microsoftTeams.initialize();
+    microsoftTeams.getContext((context) => {
+        console.log(context.userPrincipalName);
+        localStorage.setItem('userName', context.userPrincipalName);
+        localStorage.setItem('userDisplayName', context.displayName);
+    });
+  } 
+
   return (
     <>
       <Navbar bg="light" expand="lg">

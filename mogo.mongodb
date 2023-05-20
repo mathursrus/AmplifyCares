@@ -2,7 +2,7 @@
 
 // aggregate each of the times for Sid
 use('amplifycares-db');
-db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, 
+db.self_care_stats.aggregate([{$match:{name:{$regex:"sid.*"}}}, 
 {$group: {_id:"$name", 
 total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
 total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},

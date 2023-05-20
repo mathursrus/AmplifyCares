@@ -5,7 +5,6 @@ import Confetti from "react-confetti";
 import { getApiHost } from './utils/urlUtil';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
-import * as microsoftTeams from '@microsoft/teams-js';
 
 const React = require('react');
 const { useState } = React;
@@ -28,16 +27,7 @@ const SubmitTimePage = () => {
     const clapSound = new Audio('/yourock.mp3');
     const navigate = useNavigate();
 
-    if (microsoftTeams) {
-        microsoftTeams.initialize();
-        microsoftTeams.getContext((context) => {
-            console.log(context.userPrincipalName);
-            setUserName(context.userPrincipalName);
-        });
-    } 
-    else {
-        console.log("not in teams");
-    }
+    setUserName(localStorage.getItem('userDisplayName'));
 
     // Create a function to generate a random number between 1 and 4
     const getRandomNumber = () => {
@@ -68,7 +58,7 @@ const SubmitTimePage = () => {
         console.log(e);
         // Submit form data
         const itemData = {
-        name: UserName,
+        name: localStorage.getItem('userName'),
         time: getSubmissionTime(),
         mental_health_time: MentalHealth===''?"0":MentalHealth,
         physical_health_time: PhysicalHealth===''?"0":PhysicalHealth,

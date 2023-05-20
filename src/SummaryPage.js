@@ -5,7 +5,7 @@ import { getApiUrl } from './utils/urlUtil';
 
 const SummaryPage = () => {
 
-  const user = "Bob";
+  const user = localStorage.getItem('userDisplayName');
   const [chartData, setChartData] = useState([]);
 
   //const endDay = new Date(Date.parse("2023-02-27"));
@@ -88,14 +88,11 @@ const SummaryPage = () => {
         (
           <LineChart width={600} height={300} data={chartData}>
             <XAxis 
-              //domain={[startDay.toISOString(), endDay.toISOString()]} 
-              //scale="time" 
-              stroke="black" 
+             stroke="black" 
               tickFormatter={formatDate} 
               dataKey="date"
             />
             <YAxis  
-              //domain={[0, Math.max(...chartData.map((dataPoint) => dataPoint.high_care_minutes))+10]} 
               stroke="black" 
             />
             <Line type="monotone" dataKey="self_care_minutes" stroke="black" name="You" />
