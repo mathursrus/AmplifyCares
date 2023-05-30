@@ -1,30 +1,37 @@
 import React from 'react';
+import './SummaryPage.css';
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { getApiUrl } from './utils/urlUtil';
+import { DateRange } from "./DateRange/DateRange";
 
 const SummaryPage = () => {
 
-  const user = localStorage.getItem('userDisplayName');
   const [chartData, setChartData] = useState([]);
+  const userName = localStorage.getItem('userName');
+  const currentDate = new Date(); // Get the current date
+  const currentMonth = currentDate.getMonth(); // Get the current month
+  const currentYear = currentDate.getFullYear(); // Get the current year
 
-  //const endDay = new Date(Date.parse("2023-02-27"));
-  
+  // Set the endDay to the last day of the current month
+  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+  const [endDay, setEndDay] = useState(lastDayOfMonth);
+
+  // Set the startDay to the first day of the current month
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+  const [startDay, setStartDay] = useState(firstDayOfMonth);
 
   useEffect(() => {
     async function fetchData() {
-      const selfCareData = await getAggregateStats(getApiUrl("/getselfcarestats/?item="+user));
+      const selfCareData = await getAggregateStats(getApiUrl("/getselfcarestats/?item="+userName));
       const medianCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=50"));
       const highCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=90"));
 
-      const endDay = new Date(2023, 2, 12);
-      const startDay = new Date(endDay);
-      startDay.setDate(endDay.getDate()-7);
-
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, endDay));
     }
+    console.log("Got called with start day ", startDay, ", end day ", endDay);
     fetchData();
-  }, []);
+  }, [endDay]);
   
   async function getAggregateStats(url) {
     const response = await fetch(url);
@@ -32,11 +39,11 @@ const SummaryPage = () => {
     return JSON.parse(data);
   };
 
-  function processChartData(selfCareData, medianCareData, highCareData, startDay, endDay) {
+  function processChartData(selfCareData, medianCareData, highCareData, start, end) {
     const myData = [];
-    console.log("Processing for dates ", startDay, " to ", endDay);
+    console.log("Processing for dates ", start, " to ", end);
 
-    for (let date = startDay; date <= endDay; date.setDate(date.getDate() + 1)) {
+    for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
       const dateString = date.toISOString().slice(0, 10);
       console.log("Processing for date ", dateString);
       const selfCarePoint = selfCareData.find(point => point._id === dateString);
@@ -54,6 +61,7 @@ const SummaryPage = () => {
       });
     }
 
+    console.log("Done processing for dates ", start, " to ", end);
     return myData;
   };
 
@@ -62,11 +70,17 @@ const SummaryPage = () => {
   };
 
   return (
-    <div>
+    <div className="summary-container">
+      <DateRange
+        startDay={startDay}
+        endDay={endDay}
+        setStartDay={setStartDay}
+        setEndDay={setEndDay}
+        message={`Your Self Care Data for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
+        />
       <center>
         <div style={{marginTop: '1rem'}}/>
-        <h1 className="header">{user}'s Personal Self Care Data</h1>
-        <h2 className="subheader">See your self care journey and how it's comparing to others.</h2>
+        <h2 className="subheader">See your self care journey and how it compares to others like you.</h2>
         <br></br>
         <br></br>
         {/*

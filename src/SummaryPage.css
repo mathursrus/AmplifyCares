@@ -1,0 +1,9 @@
+.summary-container {
+    width: 60%;
+    margin: auto;
+    margin-top: 50px;
+    border: 1px solid black;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  

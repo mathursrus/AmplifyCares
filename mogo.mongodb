@@ -11,7 +11,7 @@ total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
 }}])
 
 
-// fina all self care entries with non-integer time values
+// find all self care entries with non-integer time values
 use('amplifycares-db');
 db.self_care_stats.find({ mental_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
 db.self_care_stats.find({ physical_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
@@ -30,7 +30,13 @@ db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, {$group: {_id:"$nam
 use('amplifycares-db');
 db.team_info.find();
 
-// 
+// all entries
+use('amplifycares-db');
+db.self_care_stats.find();
+
+// find item by id
+use('amplifycares-db');
+db.self_care_stats.find({_id:"647402f868a332296451ccbe"});
 
 /* Find median of mental health time across everyone */
 use('amplifycares-db');
@@ -102,7 +108,7 @@ db.self_care_stats.aggregate([
 
 /* Find the total self care time for a particular person across everyday */
 use('amplifycares-db');
-let x="Alice";
+let x="sid@catita365.onmicrosoft.com";
 db.self_care_stats.aggregate([
   {
     $match: {
@@ -190,12 +196,12 @@ db.team_info.aggregate([
   {
     $match: {
       "team_members.DateTime": {
-        $gte: new Date(1677874032860),
-        $lte: new Date(1678478832860)
+        $gte: new Date(1684733992280),
+        $lte: new Date(1685338792280)
       }
     }
   },
-  {
+  /*{
     $group: {
       _id: {
         team_name: "$team_name",
@@ -242,22 +248,30 @@ db.team_info.aggregate([
   },
    {
     $sort: { "median": -1 }
-  },
+  },*/
 ]);
 
 
 
 /* All details on a particular date */
 use('amplifycares-db');
-db.self_care_stats.find({DateTime:{$eq: new Date('2023-03-26')}}).sort({"_id":1});
+db.self_care_stats.find({DateTime:{$eq: new Date('2023-03-20')}}).sort({"_id":1});
 
 /* All details for a person */
 use('amplifycares-db');
-db.self_care_stats.find({name:"Gordon"});
+db.self_care_stats.find({name:"Bob"}).sort({DateTime:-1});
 
 /* All details for a person on a particular date */
 use('amplifycares-db');
 db.self_care_stats.find({name:"Gordon", DateTime:{$eq: new Date('2023-02-10')}});
+
+// find and delete all documents that have DateTime in the string format
+use('amplifycares-db');
+db.self_care_stats.updateMany(
+  { DateTime: { $not: { $type: "date" } } },
+  { $set: {DateTime: new Date()} }
+  );
+
 
 // aggregate each of the times for Sid
 /*db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, 
@@ -276,7 +290,20 @@ db.self_care_stats.aggregate([{$match:{name:"Sid"}}, {$group: {_id:"$name", tota
 
 // query non integer values
 use('amplifycares-db');
-db.self_care_stats.find({ mental_health_time: { $not: { $type: "number" } } })
+db.self_care_stats.count({ mental_health_time: { $not: { $type: "number" } } });
+
+// replace non integer values with integers
+use('amplifycares-db');
+db.self_care_stats.aggregate([
+  {
+    $addFields: {
+      mental_health_time: { $toInt: "$mental_health_time" },
+      physical_health_time: { $toInt: "$physical_health_time" },
+      spiritual_health_time: { $toInt: "$spiritual_health_time" },
+      societal_health_time: { $toInt: "$societal_health_time" }
+    }
+  }
+]);
 
 
 /* DDL */

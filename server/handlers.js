@@ -41,6 +41,7 @@ console.log(team_container);
 async function writeEntry(item) {
     try {
         console.log('Handler got item: ', item)
+        item.DateTime = new Date(item.DateTime);
         const ct = await getContainer();
         const result = await ct.insertOne(item);
         console.log('Item inserted now:', result.insertedId);

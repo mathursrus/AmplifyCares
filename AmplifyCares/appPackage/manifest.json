@@ -1,0 +1,57 @@
+{
+	"$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+	"version": "1.0.0",
+	"manifestVersion": "1.16",
+	"id": "${{TEAMS_APP_ID}}",
+	"packageName": "com.microsoft.teams.extension",
+	"name": {
+		"short": "Amplify Cares",
+		"full": "Amplify Cares - mental health and wellness"
+	},
+	"developer": {
+		"name": "Microsoft Corporation",
+		"websiteUrl": "https://www.microsoft.com",
+		"privacyUrl": "https://www.microsoft.com",
+		"termsOfUseUrl": "https://www.microsoft.com"
+	},
+	"description": {
+		"short": "Taking care of our mental health",
+		"full": "Track, share and celebrate with Amplify when you take care of your mental health"
+	},
+	"icons": {
+		"outline": "outline.png",
+		"color": "color.png"
+	},
+	"accentColor": "#FFFFFF",
+	"configurableTabs": [
+		{
+			"configurationUrl": "https://6eee-20-25-178-90.ngrok-free.app/config",
+			"canUpdateConfiguration": true,
+			"scopes": [
+				"team",
+				"groupchat"
+			]
+		}
+	],
+	"staticTabs": [
+		{
+			"entityId": "index0",
+			"name": "Home",
+			"contentUrl": "https://6eee-20-25-178-90.ngrok-free.app",
+			"websiteUrl": "https://6eee-20-25-178-90.ngrok-free.app",
+			"scopes": [
+				"personal"
+			]
+		}
+	],
+	"validDomains": [
+		"localhost:3000",
+		"localhost:53000",
+		"${{TAB_DOMAIN}}"
+	],
+	"authorization": {
+		"permissions": {
+			"resourceSpecific": []
+		}
+	}
+}

@@ -21,13 +21,15 @@ const SubmitTimePage = () => {
     const [PhysicalHealth, setPhysicalHealth] = useState('');
     const [SpiritualHealth, setSpiritualHealth] = useState('');
     const [SocialHealth, setSocialHealth] = useState('');
-    const [UserName, setUserName] = useState('');
+    //const [UserName, setUserName] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     const clapSound = new Audio('/yourock.mp3');
     const navigate = useNavigate();
 
-    setUserName(localStorage.getItem('userDisplayName'));
+    //setUserName("Bob");
+    //setUserName(localStorage.getItem('userDisplayName'));
+    //console.log("User is ", localStorage.getItem('userDisplayName'));
 
     // Create a function to generate a random number between 1 and 4
     const getRandomNumber = () => {
@@ -46,7 +48,7 @@ const SubmitTimePage = () => {
         // Display Current Date Time
         var dateTime = date+' '+time;
         console.log(dateTime);
-        return dateTime;
+        return today;
     }
 
     const playSound = (rand) => {
@@ -59,11 +61,11 @@ const SubmitTimePage = () => {
         // Submit form data
         const itemData = {
         name: localStorage.getItem('userName'),
-        time: getSubmissionTime(),
-        mental_health_time: MentalHealth===''?"0":MentalHealth,
-        physical_health_time: PhysicalHealth===''?"0":PhysicalHealth,
-        spiritual_health_time: SpiritualHealth===''?"0":SpiritualHealth,
-        societal_health_time: SocialHealth===''?"0":SocialHealth,
+        DateTime: getSubmissionTime(),
+        mental_health_time: MentalHealth===''?0:parseInt(MentalHealth),
+        physical_health_time: PhysicalHealth===''?0:parseInt(PhysicalHealth),
+        spiritual_health_time: SpiritualHealth===''?0:parseInt(SpiritualHealth),
+        societal_health_time: SocialHealth===''?0:parseInt(SocialHealth),
         }
         console.log(itemData)
         const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(itemData));
@@ -84,7 +86,7 @@ const SubmitTimePage = () => {
     return (
         <Container className="p-3">
             <center>
-            <h1 className="header">Welcome {UserName} to AmplifyCares</h1>
+            <h1 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h1>
             <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
             <br></br>
             <br></br>

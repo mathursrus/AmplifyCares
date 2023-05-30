@@ -5,33 +5,41 @@ import { ago, ahead } from './computeDays';
 import { faCaretLeft } from "@fortawesome/free-solid-svg-icons";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 
-export const DateRange = ({startDay, endDay, setStartDay, setEndDay}) => {
+export const DateRange = ({startDay, endDay, setStartDay, setEndDay, message}) => {
     return (
         <>
+            <br></br>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <div>
-                    <Button onClick={() => {
-                        setStartDay(ago(startDay, 7));
-                        setEndDay(ago(endDay, 7));
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faCaretLeft} />
+                    <Button style={{ background: 'gray' }} onClick={() => {
+                        const newStartDay = new Date(startDay.getFullYear(), startDay.getMonth() - 1, 1);
+                        const newEndDay = new Date(endDay.getFullYear(), endDay.getMonth() - 1 + 1, 0);
+                        setStartDay(newStartDay);
+                        setEndDay(newEndDay);
+                    }}>
+                        <FontAwesomeIcon icon={faCaretLeft} style={{ color: 'black' }} />
                     </Button>
                 </div>
+                
+                < div>
+                    <h2>{message}</h2>
+                </div>
+
                 <div>
-                    <Button onClick={() => {
-                        setEndDay(ahead(endDay, 7));
-                        setStartDay(ahead(startDay, 7));
-                    }}
-                    >
-                        <FontAwesomeIcon icon={faCaretRight} />
+                    <Button style={{ background: 'gray' }} onClick={() => {
+                        const newStartDay = new Date(startDay.getFullYear(), startDay.getMonth() + 1, 1);
+                        const newEndDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1 + 1, 0);
+                        setStartDay(newStartDay);
+                        setEndDay(newEndDay);
+                    }}>
+                        <FontAwesomeIcon icon={faCaretRight} style={{ color: 'black' }} />
                     </Button>
                 </div>
             </div>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <div>Start Day: {new Date(startDay).toLocaleString()}</div>
-                <div>End Day: {new Date(endDay).toLocaleString()}</div>
-            </div>
+            {/*<div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <div><i>{new Date(startDay.getFullYear(), startDay.getMonth() - 1, 1).toLocaleDateString("en-US", {month: "long"})}</i></div>
+                <div><i>{new Date(startDay.getFullYear(), startDay.getMonth() + 1, 1).toLocaleDateString("en-US", {month: "long"})}</i></div>
+                </div>*/}
         </>
     );
 };
