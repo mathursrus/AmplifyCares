@@ -201,7 +201,7 @@ db.team_info.aggregate([
       }
     }
   },
-  /*{
+  {
     $group: {
       _id: {
         team_name: "$team_name",
@@ -248,14 +248,18 @@ db.team_info.aggregate([
   },
    {
     $sort: { "median": -1 }
-  },*/
+  },
 ]);
 
 
 
 /* All details on a particular date */
 use('amplifycares-db');
-db.self_care_stats.find({DateTime:{$eq: new Date('2023-03-20')}}).sort({"_id":1});
+db.self_care_stats.find({DateTime:{$ge: new Date('2022-04-28')}}).sort({"_id":1});
+
+/* All details on a particular date */
+use('amplifycares-db');
+db.self_care_stats.find().sort({DateTime:-1});
 
 /* All details for a person */
 use('amplifycares-db');
@@ -290,20 +294,18 @@ db.self_care_stats.aggregate([{$match:{name:"Sid"}}, {$group: {_id:"$name", tota
 
 // query non integer values
 use('amplifycares-db');
-db.self_care_stats.count({ mental_health_time: { $not: { $type: "number" } } });
+db.self_care_stats.find({ societal_health_time: { $not: { $type: "number" } } });
 
 // replace non integer values with integers
 use('amplifycares-db');
-db.self_care_stats.aggregate([
-  {
-    $addFields: {
-      mental_health_time: { $toInt: "$mental_health_time" },
-      physical_health_time: { $toInt: "$physical_health_time" },
-      spiritual_health_time: { $toInt: "$spiritual_health_time" },
-      societal_health_time: { $toInt: "$societal_health_time" }
-    }
-  }
-]);
+db.self_care_stats.find({ societal_health_time: { $exists: true, $type: "string" } }).forEach(function(doc) {
+  var updatedValue = parseInt(doc.societal_health_time);
+  db.self_care_stats.updateOne({ _id: doc._id }, { $set: { societal_health_time: updatedValue } });
+});
+
+
+
+
 
 
 /* DDL */
