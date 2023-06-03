@@ -255,7 +255,7 @@ db.team_info.aggregate([
 
 /* All details on a particular date */
 use('amplifycares-db');
-db.self_care_stats.find({DateTime:{$ge: new Date('2022-04-28')}}).sort({"_id":1});
+db.self_care_stats.find({DateTime:{$ge: new Date('2022-04-01')}}).sort({"_id":1});
 
 /* All details on a particular date */
 use('amplifycares-db');
@@ -268,6 +268,12 @@ db.self_care_stats.find({name:"Bob"}).sort({DateTime:-1});
 /* All details for a person on a particular date */
 use('amplifycares-db');
 db.self_care_stats.find({name:"Gordon", DateTime:{$eq: new Date('2023-02-10')}});
+
+// show all documents that have string format for DateTime
+use('amplifycares-db');
+db.self_care_stats.find(
+  { DateTime: { $not: { $type: "date" } } }
+);
 
 // find and delete all documents that have DateTime in the string format
 use('amplifycares-db');
@@ -294,7 +300,7 @@ db.self_care_stats.aggregate([{$match:{name:"Sid"}}, {$group: {_id:"$name", tota
 
 // query non integer values
 use('amplifycares-db');
-db.self_care_stats.find({ societal_health_time: { $not: { $type: "number" } } });
+db.self_care_stats.find({ physical_health_time: { $not: { $type: "number" } } });
 
 // replace non integer values with integers
 use('amplifycares-db');
