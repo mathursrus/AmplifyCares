@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMedal } from "@fortawesome/free-solid-svg-icons";
 import { getApiHost } from './utils/urlUtil';
-import { ago } from './DateRange/computeDays';
 import { DateRange } from "./DateRange/DateRange";
 
 function Leaderboard() {
@@ -37,7 +36,7 @@ function Leaderboard() {
         console.log("Leaders are ", myleaders);
     }
     fetchData();
-  }, [endDay]);
+  }, [endDay, startDay]);
 
   return (
     <div className="leaderboard-container">

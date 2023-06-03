@@ -31,7 +31,7 @@ const SummaryPage = () => {
     }
     console.log("Got called with start day ", startDay, ", end day ", endDay);
     fetchData();
-  }, [endDay]);
+  }, [endDay, startDay]);
   
   async function getAggregateStats(url) {
     const response = await fetch(url);
