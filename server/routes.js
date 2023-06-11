@@ -67,4 +67,27 @@ const getTeamStats = {
     }
 }
 
-module.exports = { writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats};
+const writeRecommendation = {
+    method: 'get',
+    path: '/writerecommendation', 
+    handler: async (req, res) => {
+        console.log("Writing Recommendation: ", req.query);
+        const item = await req.query.item;        
+        const response = await handlers.writeRecommendation(JSON.parse(item));
+        res.status(200).json(response);
+    }
+}
+
+const getRecommendations = {
+    method: 'get',
+    path: '/getRecommendations', 
+    handler: async (req, res) => {
+        const item = parseInt(await req.query.item);  
+        console.log("Got reco item: ", item);      
+        const response = await handlers.getRecommendations(item);
+
+        res.status(200).json(response);
+    }
+}
+
+module.exports = { writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations};

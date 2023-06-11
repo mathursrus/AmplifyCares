@@ -254,11 +254,11 @@ db.team_info.aggregate([
 
 
 /* All details on a particular date */
-use('amplifycares-db');
-db.self_care_stats.find({DateTime:{$ge: new Date('2022-04-01')}}).sort({"_id":1});
+use('amplifycares-db-catita');
+db.self_care_stats.find({DateTime:{$gte: new Date('2022-04-01')}}).sort({"_id":1});
 
 /* All details on a particular date */
-use('amplifycares-db');
+use('amplifycares-db-catita');
 db.self_care_stats.find().sort({DateTime:-1});
 
 /* All details for a person */
@@ -310,11 +310,120 @@ db.self_care_stats.find({ societal_health_time: { $exists: true, $type: "string"
 });
 
 
+// get all recommendations
+use('amplifycares-db');
+db.recommendations.find();
 
+// get all recommendations of specific type
+use('amplifycares-db-catita');
+db.recommendations.find({type:1});
 
-
+// show all databases
+show databases;
 
 /* DDL */
+// create a new db with scaffolding
+use(`amplifycares-db-catita`);
+
+  // create a collection for teams
+  db.createCollection("team_info", {
+    validator: { $jsonSchema: {
+        bsonType: "object",
+        required: [ "team_name", "team_members" ],
+        properties: {
+          team_name: {
+              bsonType: "string",
+              description: "must be a string and is required"
+          },
+          team_members: {
+              bsonType: "array",
+              description: "must be an array of strings and is required",
+              items: {
+                bsonType: "string"
+              }
+          }
+        }
+    } }
+  });
+
+  // populate teams
+  db.team_info.insertOne({
+    team_name: "Sarah Rulz",
+    team_members: [
+      { member_id: "sarah@catita365.onmicrosoft.com" },
+    ]
+  });
+  db.team_info.insertOne({
+    team_name: "Muni Rockz",
+    team_members: [
+      { member_id: "muni@catita365.onmicrosoft.com" },
+    ]
+  });
+  db.team_info.insertOne({
+    team_name: "Sid Codz",
+    team_members: [
+      { member_id: "sid@catita365.onmicrosoft.com" },
+    ]
+  });
+  db.team_info.insertOne({
+    team_name: "Other Team",
+    team_members: [
+      { member_id: "Alice" },
+    ]
+  });
+
+  // create a collection for recomendations
+  db.createCollection("recommendations", {
+    validator: { $jsonSchema: {
+        bsonType: "object",
+        required: [ "title", "type", "contributor", "url" ],
+        properties: {
+          title: {
+              bsonType: "string",
+              description: "must be a string and is required"
+          },
+          type: {
+              bsonType: "number",
+              description: "must be a number and is required",            
+          },
+          contributor: {
+            bsonType: "string",
+            description: "must be a string and is required"
+          },
+          url: {
+            bsonType: "string",
+            description: "must be a string and is required"
+          },
+        }
+    } }
+  });
+
+  // populate recommendations
+  db.recommendations.insertOne({
+    title: "Achieve Peak Home Workouts",
+    contributor: "Sid",
+    type: 2,
+    url: "https://www.youtube.com/watch?v=TUFOl8hm8KU"
+  });
+  db.recommendations.insertOne({
+    title: "Brahma Kumari Meditation",
+    contributor: "Sid",
+    type: 1,
+    url: "https://www.youtube.com/watch?v=fgChzlOt3XI"
+  });
+  db.recommendations.insertOne({
+    title: "SGI Buddhishm",
+    contributor: "Sid",
+    type: 3,
+    url: "https://www.sgi-usa.org/"
+  });
+  db.recommendations.insertOne({
+    title: "Benevity Giving",
+    contributor: "Sid",
+    type: 4,
+    url: "https://microsoft.benevity.org/"
+  });
+
 
 // version number
 use('amplifycares-db');
@@ -351,28 +460,6 @@ db.self_care_stats.updateMany(
   },
   { upsert: true }
 );
-
-// create a collection for teams
-use('amplifycares-db');
-db.createCollection("team_info", {
-   validator: { $jsonSchema: {
-      bsonType: "object",
-      required: [ "team_name", "team_members" ],
-      properties: {
-         team_name: {
-            bsonType: "string",
-            description: "must be a string and is required"
-         },
-         team_members: {
-            bsonType: "array",
-            description: "must be an array of strings and is required",
-            items: {
-               bsonType: "string"
-            }
-         }
-      }
-   } }
-});
 
 // ensure no 2 teams with same name
 use('amplifycares-db');
@@ -490,32 +577,23 @@ db.team_info.insertOne({
   ]
 });
 
+/* DML for Recommendations */
 use('amplifycares-db');
-db.team_info.deleteOne({team_name: "Team3"});
-
-use('amplifycares-db');
-db.team_info.find();
-
-// Select the database to use.
-use('amplifycares-db');
-
-// db.self_care_stats;
-
-//db.self_care_stats.countDocuments();
-
-// db.self_care_stats.count({name:{$ne:"Sid"}});
-
-//db.self_care_stats.aggregate([{$project:{name:1, mental_health_time:{$toInt:"$mental_health_time"}}}])
-//db.self_care_stats.find({name:"Sid"}, {name:1, mental_health_time:{$toInt:"$mental_health_time"}});
-
-// aggregate each of the times for Sid
-/*db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, 
-{$group: {_id:"$name", 
-total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
-total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},
-total_spiritual_health: {$sum:{$add:[{$toInt: "$spiritual_health_time"}]}},
-total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
-}}])*/
-
-// count the number of mental health time entries for name sid
-db.self_care_stats.aggregate([{$match:{name:"Sid"}}, {$group: {_id:"$name", total_mental_health: {$sum:1}}}])
+db.recommendations.insertOne({
+  title: "Running Book",
+  contributor: "Sid",
+  type: 2,
+  url: "http://www.cnn.com"
+});
+db.recommendations.insertOne({
+  title: "Meditation Video",
+  contributor: "Bob",
+  type: 1,
+  url: "http://www.youtube.com"
+});
+db.recommendations.insertOne({
+  title: "Hinduism",
+  contributor: "Alice",
+  type: 3,
+  url: "http://www.gita.com"
+});

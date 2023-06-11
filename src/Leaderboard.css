@@ -16,6 +16,55 @@
     margin-top: -10px;
   }
   
+  .medal-container.animate-silver {
+    opacity: 0;
+    animation: silverAnimation 1s ease-in-out 1000ms forwards;
+  }
+  
+  .medal-container.animate-gold {
+    opacity: 0;
+    animation: goldAnimation 2s ease-in-out 1000ms forwards;
+  }
+  
+  .medal-container.animate-bronze {
+    opacity: 0;
+    animation: bronzeAnimation 500ms ease-in-out 1000ms forwards;
+  }
+  
+  @keyframes silverAnimation {
+    0% {
+      opacity: 0;
+      transform: translateY(500px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes goldAnimation {
+    0% {
+      opacity: 0;
+      transform: translateY(500px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes bronzeAnimation {
+    0% {
+      opacity: 0;
+      transform: translateY(500px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  
   .medal-icon-gold-medal {
     font-size: 50px;
     color: gold;
@@ -38,10 +87,15 @@
     display: flex;
     justify-content: space-around;
     align-items: flex-end;
-    height: 200px;
+    height: 0px;
     padding: 10px;
+    transition: height 1s ease-in-out;
   }
-  
+
+  .bar-chart-container.animate {
+    height: 200px; /* Adjust the height value to the desired animation endpoint */
+  }
+
   .bar-chart {
     height: 100%;
     width: 20px;
@@ -76,9 +130,22 @@
     align-items: center;
     background-color: #F5F5F5;
     margin-top: 20px;
+    opacity:0;
+    animation: fadeIn 3s ease-in-out 1000ms forwards;
   }
   
-  .other-participant {
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(500px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+ /* .other-participant {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -86,6 +153,20 @@
     margin: 5px;
     padding: 10px;
     border-bottom: 1px solid black;
+    animation: slideIn 1s ease-in-out;
+  }*/
+  
+  .other-participant {    
+    animation: slideIn 1s ease-in-out;
+  }
+
+  @keyframes slideIn {
+    0% {
+      transform: translateY(20px);
+    }
+    100% {
+      transform: translateY(0);
+    }
   }
   
   .other-participant span {

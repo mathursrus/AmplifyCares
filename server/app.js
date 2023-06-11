@@ -15,6 +15,8 @@ var getPercentiles = routesModules.getPercentiles;
 var getTeamStats = routesModules.getTeamStats;
 var getIndividualStats = routesModules.getIndividualStats;
 var getTeamList = routesModules.getTeamList;
+var writeRecommendation = routesModules.writeRecommendation;
+var readRecommendations = routesModules.getRecommendations;
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,5 +33,7 @@ app[getPercentiles.method](getPercentiles.path, getPercentiles.handler);
 app[getIndividualStats.method](getIndividualStats.path, getIndividualStats.handler);
 app[getTeamList.method](getTeamList.path, getTeamList.handler);
 app[getTeamStats.method](getTeamStats.path, getTeamStats.handler);
+app[writeRecommendation.method](writeRecommendation.path, writeRecommendation.handler);
+app[readRecommendations.method](readRecommendations.path, readRecommendations.handler);
 
 module.exports = app;

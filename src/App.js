@@ -17,7 +17,7 @@ export default function AppPage() {
             <Route path="leaderboard" element={<Leaderboard/>}/>
             <Route path="team-list" element={<TeamList/>}/>
           </Route>
-        </Routes>
+        </Routes>    
       </BrowserRouter>
   );
 };

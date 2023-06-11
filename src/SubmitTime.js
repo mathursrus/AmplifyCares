@@ -2,12 +2,16 @@
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Confetti from "react-confetti";
+import RecommendationsPage from './RecommendationsPage';
+import { useSpring, animated } from 'react-spring';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLightbulb, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { getApiHost } from './utils/urlUtil';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 const React = require('react');
-const { useState } = React;
+const { useState, useEffect } = React;
 
 const placeholderStrings = {
     MentalHealth: 'Minutes you dedicated to mental health today. (eg meditation, learning, brain games, ..)',
@@ -24,13 +28,17 @@ const SubmitTimePage = () => {
     //const [UserName, setUserName] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
-    const clapSound = new Audio('/yourock.mp3');
+    const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
     const navigate = useNavigate();
+    const [flyoutState, setFlyoutState] = useState(0);
 
-    //setUserName("Bob");
-    //setUserName(localStorage.getItem('userDisplayName'));
-    //console.log("User is ", localStorage.getItem('userDisplayName'));
+    const springProps = useSpring({
+        opacity: 1, // Target opacity value
+        from: { opacity: 0 }, // Starting opacity value
+        config: { duration: 500 }, // Animation duration in milliseconds
+      });
 
+    
     // Create a function to generate a random number between 1 and 4
     const getRandomNumber = () => {
         return Math.floor(Math.random() * 4) + 1;
@@ -52,11 +60,12 @@ const SubmitTimePage = () => {
     }
 
     const playSound = (rand) => {
-        clapSound.play();
+        console.log("Playing with rand ", rand, " Clip ", clapSounds[rand]);
+        clapSounds[rand-1].play();
     }
 
     const handleSubmit = async(e) => {
-        e.preventDefault();
+        //e.preventDefault();
         console.log(e);
         // Submit form data
         const itemData = {
@@ -76,49 +85,110 @@ const SubmitTimePage = () => {
         // Set the state variable to the random number
         const rand = getRandomNumber();
         setAnimation(rand);
+        playSound(rand);            
+            
         setTimeout(() => {
-            playSound(rand);            
             setAnimation(null);
             navigate('/summary-page');
         }, 6000);
     };
 
+    const mentalHealthRecommendations = (e) => {
+        e.preventDefault();
+        setFlyoutState(1);
+        console.log("Clicked mental reco");        
+    }
+
+    const physicalHealthRecommendations = (e) => {
+        e.preventDefault();
+        setFlyoutState(2);
+        console.log("Clicked physical reco");        
+    }
+
+    const spiritualHealthRecommendations = (e) => {
+        e.preventDefault();
+        setFlyoutState(3);
+        console.log("Clicked spriritual reco");        
+    }
+
+    const socialHealthRecommendations = (e) => {
+        e.preventDefault();
+        setFlyoutState(4);
+        console.log("Clicked social reco");
+    }
+
+    const handleCloseFlyout = () => {
+        setFlyoutState(0);
+        console.log("Clicked close");        
+    }
+
+    useEffect(() => {
+        console.log("Flyout state is ", flyoutState); 
+      }, [flyoutState]); // Run the effect only when flyoutState changes
+
     return (
         <Container className="p-3">
             <center>
-            <h1 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h1>
+            <h1 className="header">Welcome {localStorage.getItem('userName')} to AmplifyCares</h1>
             <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
             <br></br>
             <br></br>
             <form>
                 <div className='row'>
-                <label className='formLabel'><b>Mental Health</b></label>
-                <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} placeholder={placeholderStrings.MentalHealth}/>
+                    <label className='formLabel'>
+                        <b>Mental Health</b>                    
+                        <a href="#" onClick={mentalHealthRecommendations}>
+                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                        </a>                        
+                    </label>
+                    <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} placeholder={placeholderStrings.MentalHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label className='formLabel'><b>Physical Health</b></label>
-                <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} placeholder={placeholderStrings.PhysicalHealth}/>
+                    <label className='formLabel'>
+                        <b>Physical Health</b>
+                        <a href="#" onClick={physicalHealthRecommendations}>
+                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                        </a>
+                    </label>
+                    <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} placeholder={placeholderStrings.PhysicalHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label className='formLabel'><b>Spiritual Health</b></label>
-                <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} placeholder={placeholderStrings.SpiritualHealth}/>
+                    <label className='formLabel'>
+                        <b>Spiritual Health</b>
+                        <a href="#" onClick={spiritualHealthRecommendations}>
+                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                        </a>
+                    </label>
+                    <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} placeholder={placeholderStrings.SpiritualHealth}/>
                 </div>
                 <br></br>
                 <div className='row'>
-                <label className='formLabel'><b>Societal Health</b></label>
-                <input type="number" class="text-field" value={SocialHealth} onChange={(e) => setSocialHealth(e.target.value)}  placeholder={placeholderStrings.SocialHealth}/>
+                    <label className='formLabel'>
+                        <b>Social Health</b>
+                        <a href="#" onClick={socialHealthRecommendations}>
+                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                        </a>
+                    </label>
+                    <input type="number" class="text-field" value={SocialHealth} onChange={(e) => setSocialHealth(e.target.value)}  placeholder={placeholderStrings.SocialHealth}/>
                 </div>
+                {flyoutState > 0 && (
+                            <div className="flyout show">
+                                <div className="flyout-header">
+                                    <FontAwesomeIcon className="flyout-close" icon={faTimes} onClick={handleCloseFlyout} />
+                                </div>
+                                <RecommendationsPage type={flyoutState}/>
+                            </div>
+                )}
                 <br></br>
                 <br></br>
                 <div className='row'>
                     <Button onClick={handleSubmit}><b>Submit Your Self-Care Time</b></Button>
-                    {/* Use conditional rendering to show the corresponding animation component */}
                     {animation === 1 && <Confetti/>}
                     {animation === 2 && <Confetti/>}
                     {animation === 3 && <Confetti/>}
-                    {animation === 4 && <Confetti/>}
+                    {animation === 4 && <Confetti/>}                    
                 </div>
             </form>
             </center>

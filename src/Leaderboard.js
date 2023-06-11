@@ -9,33 +9,35 @@ import { DateRange } from "./DateRange/DateRange";
 function Leaderboard() {
   
     const [leaders, setLeaders] = useState([]);
-    //const [endDay, setEndDay] = useState(Date.now());
-    //const [startDay, setStartDay] = useState(ago(endDay, 7));
-
+    
     const currentDate = new Date(); // Get the current date
     const currentMonth = currentDate.getMonth(); // Get the current month
     const currentYear = currentDate.getFullYear(); // Get the current year
 
     // Set the endDay to the last day of the current month
     const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-    //const end = lastDayOfMonth.getTime();
     const [endDay, setEndDay] = useState(lastDayOfMonth);
 
     // Set the startDay to the first day of the current month
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-    //const start = firstDayOfMonth.getTime();
     const [startDay, setStartDay] = useState(firstDayOfMonth);
-
+    const [barHeight, setBarHeight] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
+        setBarHeight(0);
         const response = await fetch( getApiHost() + `/getteamstats/?startDay=${startDay.getTime()}&endDay=${endDay.getTime()}`);
         const data = await response.json();
         const myleaders = JSON.parse(data);
         setLeaders(myleaders);
         console.log("Leaders are ", myleaders);
+        // Trigger the animation when the component mounts
+        setTimeout(() => {
+            setBarHeight(200);
+        }, 50);
     }
-    fetchData();
+    fetchData();    
+    new Audio('/drumroll.mp3').play();
   }, [endDay, startDay]);
 
   return (
@@ -54,7 +56,7 @@ function Leaderboard() {
         <div>
             <div className="medal-podium"> 
             {leaders.length >= 2 && ( // Check if there are at least 2 leaders
-            <div className="medal-container">
+            <div className={`medal-container animate-silver`}>
                 <FontAwesomeIcon className="medal-icon-silver-medal" icon={faMedal} />
                 <br />
                 <center>
@@ -65,34 +67,34 @@ function Leaderboard() {
                 <div
                 className="bar-chart-container"
                 style={{
-                    height: `${(leaders[1].total_health_time / leaders[0].total_health_time) * 100}%`,
+                    height: `${(leaders[1].median / leaders[0].median) * barHeight}px`,                    
                 }}
                 >
-                <div className="bar-chart-silver"></div>
+                    <div className="bar-chart-silver"></div>
                 </div>
             </div>
             )}
 
-            <div className="medal-container">
-            <FontAwesomeIcon className="medal-icon-gold-medal" icon={faMedal} />
-            <br />
-            <center>
-                <b>{leaders[0]._id}</b>
-            </center>
-            <br />
-            <center>{leaders[0].median}</center>
-            <div
-                className="bar-chart-container"
-                style={{
-                height: `${(leaders[0].total_health_time / leaders[0].total_health_time) * 100}%`,
-                }}
-            >
-                <div className="bar-chart-gold"></div>
-            </div>
+            <div className={`medal-container animate-gold`}>
+                <FontAwesomeIcon className="medal-icon-gold-medal" icon={faMedal} />
+                <br />
+                <center>
+                    <b>{leaders[0]._id}</b>
+                </center>
+                <br />
+                <center>{leaders[0].median}</center>
+                <div
+                    className="bar-chart-container"
+                    style={{
+                    height: `${(leaders[0].median / leaders[0].median) * barHeight}px`,
+                    }}
+                >
+                    <div className="bar-chart-gold"></div>
+                </div>
             </div>
 
             {leaders.length >= 3 && ( // Check if there are at least 3 leaders
-            <div className="medal-container">
+            <div className={`medal-container animate-bronze`}>
                 <FontAwesomeIcon className="medal-icon-bronze-medal" icon={faMedal} />
                 <br />
                 <center>
@@ -103,10 +105,10 @@ function Leaderboard() {
                 <div
                 className="bar-chart-container"
                 style={{
-                    height: `${(leaders[2].total_health_time / leaders[0].total_health_time) * 100}%`,
+                    height: `${(leaders[2].median / leaders[0].median) * barHeight}px`,
                 }}
                 >
-                <div className="bar-chart-bronze"></div>
+                    <div className="bar-chart-bronze"></div>
                 </div>
             </div>
             )}
@@ -119,7 +121,7 @@ function Leaderboard() {
                     <h2 className="title-box">In Calm Pursuit, the runner ups ...</h2>
                 </center>
                 {leaders.slice(3).map((player, index) => (
-                    <div key={index} className="player">
+                    <div key={index} className="other-participant">
                     <span className="name">
                         <b>{player._id}  </b>
                     </span>
@@ -133,7 +135,7 @@ function Leaderboard() {
             )}            
         </div>
         ) : (
-        <p>No Results</p>
+        <p><center>No Results</center></p>
         )}
     </div>
   );

@@ -1,10 +1,12 @@
 const MongoClient = require('mongodb');
-const databaseId = "amplifycares-db";
+const databaseId = "amplifycares-db-catita";
 const containerId = "self_care_stats";
 const teamId = "team_info";
+const recoId = "recommendations";
 
 let dbClient = null;
 let team_container = null;
+let recos_container = null;
 let container = null;
 
 async function getMongoDbClient() {
@@ -33,6 +35,15 @@ async function getTeamContainer() {
     console.log(team_container);
   }
   return team_container;
+}
+
+async function getRecommendationsContainer() {
+  if (!recos_container) {
+    var cl = await getMongoDbClient();
+    recos_container = await cl.collection(recoId);
+    console.log(recos_container);
+  }
+  return recos_container;
 }
 
 console.log(team_container);
@@ -268,6 +279,30 @@ async function readHighBar(itemId) {
   return final;
 }
 
+async function writeRecommendation(item) {
+  try {
+      console.log('Handler got item: ', item)
+      const ct = await getRecommendationsContainer();
+      const result = await ct.insertOne(item);
+      console.log('Item inserted now:', result.insertedId);
+      //return result.insertedId;
+    } catch (err) {
+      console.error('Error:', err);
+    }
+}
+
+
+async function getRecommendations(itemId) {
+  console.log(`Got called with id: ${itemId}`);
+  const ct = await getRecommendationsContainer();
+  console.log(`Got container: ${ct}`);
+  const result=await ct.find({type:itemId}).toArray();
+  console.log(`Result is: ${result}`);
+  const final = JSON.stringify(result);
+  console.log(`Finale is ${final}`);
+  return final;
+}
+
   async function updateItem(itemId, item) {
     item.id = itemId;
     const ct = await getContainer();
@@ -281,4 +316,4 @@ async function readHighBar(itemId) {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats};
+module.exports = {writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations};

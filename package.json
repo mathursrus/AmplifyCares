@@ -25,8 +25,12 @@
     "react-bootstrap": "^2.7.2",
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
+    "react-fireworks": "^1.0.4",
     "react-icons": "^4.8.0",
     "react-scripts": "^5.0.1",
+    "react-sparkle": "^2.0.0",
+    "react-spring": "^9.7.1",
+    "react-youtube": "^10.1.0",
     "recharts": "^2.4.3",
     "web-vitals": "^2.1.4"
   },
@@ -56,6 +60,7 @@
   },
   "devDependencies": {
     "eslint-reporter": "^1.0.5",
+    "react-app-rewired": "^2.2.1",
     "react-router-dom": "^6.11.2"
   },
   "devServer": {

@@ -1,6 +1,6 @@
 {
 	"$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"manifestVersion": "1.16",
 	"id": "${{TEAMS_APP_ID}}",
 	"packageName": "com.microsoft.teams.extension",
@@ -25,7 +25,7 @@
 	"accentColor": "#FFFFFF",
 	"configurableTabs": [
 		{
-			"configurationUrl": "https://6eee-20-25-178-90.ngrok-free.app/config",
+			"configurationUrl": "${{CONFIG__HOST__ENDPOINT}}",
 			"canUpdateConfiguration": true,
 			"scopes": [
 				"team",
@@ -37,8 +37,8 @@
 		{
 			"entityId": "index0",
 			"name": "Home",
-			"contentUrl": "https://6eee-20-25-178-90.ngrok-free.app",
-			"websiteUrl": "https://6eee-20-25-178-90.ngrok-free.app",
+			"contentUrl": "${{CONFIG__HOST__ENDPOINT}}.app",
+			"websiteUrl": "${{CONFIG__HOST__ENDPOINT}}.app",
 			"scopes": [
 				"personal"
 			]
@@ -47,11 +47,11 @@
 	"validDomains": [
 		"localhost:3000",
 		"localhost:53000",
+		"${{CONFIG__HOST__ENDPOINT}}.app",
 		"${{TAB_DOMAIN}}"
 	],
-	"authorization": {
-		"permissions": {
-			"resourceSpecific": []
-		}
+	"webApplicationInfo": {
+		"id": "${{AAD_APP_CLIENT_ID}}",
+		"resource": "https://graph.microsoft.com"
 	}
 }
