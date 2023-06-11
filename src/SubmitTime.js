@@ -3,7 +3,6 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Confetti from "react-confetti";
 import RecommendationsPage from './RecommendationsPage';
-import { useSpring, animated } from 'react-spring';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLightbulb, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { getApiHost } from './utils/urlUtil';
@@ -32,13 +31,6 @@ const SubmitTimePage = () => {
     const navigate = useNavigate();
     const [flyoutState, setFlyoutState] = useState(0);
 
-    const springProps = useSpring({
-        opacity: 1, // Target opacity value
-        from: { opacity: 0 }, // Starting opacity value
-        config: { duration: 500 }, // Animation duration in milliseconds
-      });
-
-    
     // Create a function to generate a random number between 1 and 4
     const getRandomNumber = () => {
         return Math.floor(Math.random() * 4) + 1;
@@ -137,7 +129,7 @@ const SubmitTimePage = () => {
                 <div className='row'>
                     <label className='formLabel'>
                         <b>Mental Health</b>                    
-                        <a href="#" onClick={mentalHealthRecommendations}>
+                        <a href="a" onClick={mentalHealthRecommendations}>
                             <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
                         </a>                        
                     </label>
@@ -147,7 +139,7 @@ const SubmitTimePage = () => {
                 <div className='row'>
                     <label className='formLabel'>
                         <b>Physical Health</b>
-                        <a href="#" onClick={physicalHealthRecommendations}>
+                        <a href="a" onClick={physicalHealthRecommendations}>
                             <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
                         </a>
                     </label>
@@ -157,7 +149,7 @@ const SubmitTimePage = () => {
                 <div className='row'>
                     <label className='formLabel'>
                         <b>Spiritual Health</b>
-                        <a href="#" onClick={spiritualHealthRecommendations}>
+                        <a href="a" onClick={spiritualHealthRecommendations}>
                             <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
                         </a>
                     </label>
@@ -167,7 +159,7 @@ const SubmitTimePage = () => {
                 <div className='row'>
                     <label className='formLabel'>
                         <b>Social Health</b>
-                        <a href="#" onClick={socialHealthRecommendations}>
+                        <a href="http://a.b" onClick={socialHealthRecommendations}>
                             <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
                         </a>
                     </label>

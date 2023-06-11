@@ -46,7 +46,7 @@ const RecommendationsPage = (props) => {
         console.log("Recos is ", recos);
     }
     fetchData();
-  }, [props]);
+  }, [props, recoType]);
   
   const handleChange = (e) => {
     setNewRecommendation({ ...newRecommendation, [e.target.name]: e.target.value });
