@@ -41,7 +41,7 @@ function Layout() {
     console.log("Code is not running in Microsoft Teams environment.");
   }
   
-  if (localStorage.getItem('userName') === '')
+  if (localStorage.getItem('userName') === null)
   {
     localStorage.setItem('userName', 'Alice');
   }
