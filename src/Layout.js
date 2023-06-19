@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Navbar from "react-bootstrap/Navbar";
-import * as microsoftTeams from '@microsoft/teams-js';
+//import * as microsoftTeams from '@microsoft/teams-js';
 import './App.css';
 
 function Layout() {
