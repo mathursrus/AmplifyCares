@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Confetti from "react-confetti";
 import RecommendationsPage from './RecommendationsPage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLightbulb, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { getApiHost } from './utils/urlUtil';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
@@ -130,7 +130,7 @@ const SubmitTimePage = () => {
                     <label className='formLabel'>
                         <b>Mental Health</b>                    
                         <a href="a" onClick={mentalHealthRecommendations}>
-                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                            <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>                        
                     </label>
                     <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} placeholder={placeholderStrings.MentalHealth}/>
@@ -140,7 +140,7 @@ const SubmitTimePage = () => {
                     <label className='formLabel'>
                         <b>Physical Health</b>
                         <a href="a" onClick={physicalHealthRecommendations}>
-                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                            <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
                     <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} placeholder={placeholderStrings.PhysicalHealth}/>
@@ -150,7 +150,7 @@ const SubmitTimePage = () => {
                     <label className='formLabel'>
                         <b>Spiritual Health</b>
                         <a href="a" onClick={spiritualHealthRecommendations}>
-                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                            <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
                     <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} placeholder={placeholderStrings.SpiritualHealth}/>
@@ -160,7 +160,7 @@ const SubmitTimePage = () => {
                     <label className='formLabel'>
                         <b>Social Health</b>
                         <a href="http://a.b" onClick={socialHealthRecommendations}>
-                            <FontAwesomeIcon icon={faLightbulb} style={{ color: 'gray', marginLeft: '5px' }} />
+                            <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
                     <input type="number" class="text-field" value={SocialHealth} onChange={(e) => setSocialHealth(e.target.value)}  placeholder={placeholderStrings.SocialHealth}/>

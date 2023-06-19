@@ -24,3 +24,7 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 src/utils/urlUtil.js
+auth/authtoken.http
+auth/driveslist.http
+auth/queries.http
+auth/server.js

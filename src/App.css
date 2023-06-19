@@ -148,6 +148,11 @@ input::placeholder { font-size: 16px; }
   }
 }
 
+.nav-link.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 
 
 

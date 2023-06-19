@@ -5,9 +5,12 @@ import TeamList from "./TeamList";
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
+import FeedbackWidget from "./FeedbackWidget";
+import './FeedbackWidget.css';
 
 export default function AppPage() {
   return (
+    <div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout/>}>
@@ -19,5 +22,7 @@ export default function AppPage() {
           </Route>
         </Routes>    
       </BrowserRouter>
+      <FeedbackWidget />
+    </div>
   );
 };

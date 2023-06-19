@@ -1,3 +1,5 @@
+const { BlobServiceClient } = require('@azure/storage-blob');
+
 const MongoClient = require('mongodb');
 const databaseId = "amplifycares-db-catita";
 const containerId = "self_care_stats";
@@ -303,6 +305,28 @@ async function getRecommendations(itemId) {
   return final;
 }
 
+async function writeFeedback(feedback) {
+  const connectionString = 'DefaultEndpointsProtocol=https;AccountName=videofeedback;AccountKey=6t8Yt+nzMkliEjDkczVXsRQPbgQwlMh0LfAOyPZn/AexG2AJELAkCWc0JFmFn4ZpZxxOVILiiWDk+ASt+J0hYQ==;EndpointSuffix=core.windows.net';
+  const containerName = 'mp4';
+
+  // Create a BlobServiceClient object using the connection string
+  const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+
+  // Get a reference to a container
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+
+  // Create a unique blob name
+  const blobName = `${Date.now()}-feedback.mp4`;
+
+  const buffer = Buffer.from(feedback, 'base64');
+  await containerClient.uploadBlockBlob(blobName, buffer, buffer.length);
+
+  console.log("URL is ", containerClient.getBlockBlobClient(blobName).url);
+  return containerClient.getBlockBlobClient(blobName).url.toString();
+}
+
+
+
   async function updateItem(itemId, item) {
     item.id = itemId;
     const ct = await getContainer();
@@ -316,4 +340,4 @@ async function getRecommendations(itemId) {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations};
+module.exports = {writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback};

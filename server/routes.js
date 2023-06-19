@@ -90,4 +90,15 @@ const getRecommendations = {
     }
 }
 
-module.exports = { writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations};
+const writeFeedback = {
+    method: 'post',
+    path: '/writeFeedback', 
+    handler: async (req, res) => {
+        const item = req.body.item;  
+        const response = await handlers.writeFeedback(item);
+
+        res.status(200).json(response);
+    }
+}
+
+module.exports = { writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback};
