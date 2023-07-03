@@ -40,6 +40,7 @@ const FeedbackWidget = () => {
       mediaStreamRef.current = stream;
       videoRef.current = stream;      
       videoRef.current.srcObject = stream; // Set the new stream
+
       startMediaRecorder(stream);
     } catch (error) {
       console.error('Error accessing media devices:', error);
@@ -62,11 +63,13 @@ const FeedbackWidget = () => {
     const options = { mimeType: 'video/webm' };
     const mediaRecorder = new MediaRecorder(stream, options);
     mediaRecorder.ondataavailable = handleDataAvailable;
-    mediaRecorder.start();
     mediaRecorderRef.current = mediaRecorder;
+    mediaRecorder.start();
+    console.log("Started media recorder");    
   };
 
   const handleDataAvailable = async (event) => {
+    console.log("Got event data");
     if (event.data.size > 0) {
       const recordedBlob = new Blob([event.data], { type: 'video/webm' });
       setRecordedVideoURL(URL.createObjectURL(recordedBlob));
@@ -119,6 +122,7 @@ const FeedbackWidget = () => {
   
   const handleSubmit = async () => {
     try {
+      await stopMediaStream();
       var gitContent = feedback;
       if (blobRef.current) {
         const videoLink = await uploadToAzure();

@@ -71,7 +71,7 @@ function AppPage() {
       };
 
       console.log("Authenticating is ", localStorage.getItem('authenticating'));
-      if (localStorage.getItem('authenticating') === "0") {
+      if (localStorage.getItem('authenticating') === null || localStorage.getItem('authenticating') === "0") {
         try {
           localStorage.setItem('authenticating', "1");
           const response = await msalInstance.loginPopup(loginRequest);
@@ -98,7 +98,7 @@ function AppPage() {
     console.log("Called logout");
     
     msalInstance.logout({
-      postLogoutRedirectUri: `http://localhost:3000?logout=true`
+      postLogoutRedirectUri: window.location.origin + `?logout=true`
     })
       .catch((error) => {
         console.log("Logout failed ", error);
