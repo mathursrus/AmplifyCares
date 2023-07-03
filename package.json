@@ -5,8 +5,8 @@
   "proxy": "http://localhost:8080",
   "dependencies": {
     "@azure/cosmos": "^3.17.2",
-    "@azure/msal-browser": "^2.37.0",
-    "@azure/msal-react": "^1.5.7",
+    "@azure/msal-browser": "^2.37.1",
+    "@azure/msal-react": "^1.5.8",
     "@azure/storage-blob": "^12.14.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -32,6 +32,7 @@
     "react-dom": "^18.2.0",
     "react-fireworks": "^1.0.4",
     "react-icons": "^4.8.0",
+    "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "^5.0.1",
     "react-sparkle": "^2.0.0",
     "react-spring": "^9.7.1",
@@ -65,8 +66,7 @@
   },
   "devDependencies": {
     "eslint-reporter": "^1.0.5",
-    "react-app-rewired": "^2.2.1",
-    "react-router-dom": "^6.11.2"
+    "react-app-rewired": "^2.2.1"
   },
   "devServer": {
     "disableHostCheck": true

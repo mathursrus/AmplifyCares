@@ -135,7 +135,7 @@ function Leaderboard() {
             )}            
         </div>
         ) : (
-        <p><center>No Results</center></p>
+        <center>No Results</center>
         )}
     </div>
   );

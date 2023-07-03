@@ -53,6 +53,7 @@
     padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
+    border: none;
   }
   
   .feedback-button:hover {
@@ -60,6 +61,30 @@
   }
   
   .feedback-button:active {
+    background-color: #322fd3;
+  }
+
+  .sign-out-button {
+    /* Update the styles to match the feedback widget */
+    background-color: rgb(38, 128, 212);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    left: 80px;
+    z-index: 9999;
+    border: none;
+  }
+  
+  .sign-out-button:hover {
+    /* Update the styles as needed */
+    background-color: #354fe5;
+  }
+  
+  .sign-out-button:active {
+    /* Update the styles as needed */
     background-color: #322fd3;
   }
   

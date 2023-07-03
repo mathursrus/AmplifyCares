@@ -121,7 +121,7 @@ const SubmitTimePage = () => {
     return (
         <Container className="p-3">
             <center>
-            <h1 className="header">Welcome {localStorage.getItem('userName')} to AmplifyCares</h1>
+            <h1 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h1>
             <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
             <br></br>
             <br></br>
