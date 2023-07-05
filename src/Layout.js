@@ -84,7 +84,9 @@ function Layout() {
               </Nav.Link>
             </Nav>
             <Nav className="justify-content-end">
-              <Nav.Link as={Link} to="https://microsoft-my.sharepoint-df.com/:w:/p/sidm/ES-DIlQMHbJEgLz9cLSRcSsBdieBfDoaM-r5-cAjWcBwMw?e=hPhdPs">The Hypothesis behind AmplifyCares</Nav.Link>
+              <Nav.Link href="https://microsoft-my.sharepoint-df.com/:w:/p/sidm/ES-DIlQMHbJEgLz9cLSRcSsBdieBfDoaM-r5-cAjWcBwMw?e=hPhdPs" target="_blank" style={{ textDecoration: 'none', fontWeight: 'normal' }}>
+                The Hypothesis behind AmplifyCares
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

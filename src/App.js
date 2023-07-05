@@ -8,13 +8,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
 import './FeedbackWidget.css';
-import { PublicClientApplication } from '@azure/msal-browser';
+import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
 
 const config = {
   auth: {
     clientId: "93b00364-cb1c-49c6-8564-3709d70ad224",
     authority: "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
-    redirectUri: window.location.origin,
+    //redirectUri: window.location.origin,
     consentScopes: [],
     navigateToLoginRequestUrl: false,
     ssoSilent: true
@@ -22,6 +22,42 @@ const config = {
   cache: {
     cacheLocation: 'sessionStorage',
     storeAuthStateInCookie: false
+  },
+  system: {
+    loggerOptions: {
+        loggerCallback: (level: LogLevel, message: string, containsPii: boolean): void => {
+            if (containsPii) {
+                return;
+            }
+            switch (level) {
+                case LogLevel.Error:
+                    console.error(message);
+                    return;
+                case LogLevel.Info:
+                    console.info(message);
+                    return;
+                case LogLevel.Verbose:
+                    console.debug(message);
+                    return;
+                case LogLevel.Warning:
+                    console.warn(message);
+                    return;
+                default: 
+                    return;
+            }
+        },
+        piiLoggingEnabled: false
+      },
+      windowHashTimeout: 60000,
+      iframeHashTimeout: 6000,
+      loadFrameTimeout: 0,
+      asyncPopups: false
+  },
+  telemetry: {
+      application: {
+          appName: "Amplify Cares",
+          appVersion: "1.0.0"
+      }
   }
 };
 
@@ -35,7 +71,6 @@ function App() {
 
 function AppPage() {
   const msalInstance = useMemo(() => new PublicClientApplication(config), []);
-
   const [user, setUser] = useState(null);
   const [logoutComplete, setLogoutComplete] = useState(false);
 
@@ -57,7 +92,9 @@ function AppPage() {
             account: accounts[0],
             scopes: ['user.read']
           });
-          setUser(response.account.username);
+          await setUser(response.account.username);
+          localStorage.setItem('userName', response.account.username);
+          localStorage.setItem('userDisplayName', response.account.name);
           console.log('User already authenticated:', response.account.username);
         } else {
           login();
@@ -94,17 +131,18 @@ function AppPage() {
   }, [msalInstance]);
 
   const handleLogout = async (event) => {
-    event.preventDefault();
+    //event.preventDefault();
     console.log("Called logout");
     
-    msalInstance.logout({
-      postLogoutRedirectUri: window.location.origin + `?logout=true`
+    msalInstance.logoutPopup({
+      //postLogoutRedirectUri: window.location.origin + `?logout=true`
     })
       .catch((error) => {
         console.log("Logout failed ", error);
       })
       .finally(() => {
         console.log("Logout operation completed.");
+        window.location.href = window.location.origin + `?logout=true`;
       });
   };
 
