@@ -2,86 +2,160 @@ import React, { useState, useRef } from 'react';
 import { getApiHost } from './utils/urlUtil';
 
 const FeedbackWidget = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [feedback, setFeedback] = useState('');
-  const [recordedVideoURL, setRecordedVideoURL] = useState(null);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-  const [issueURL, setIssueURL] = useState(null);
-  const blobRef = useRef(null);
-  const videoRef = useRef(null);
-  const mediaStreamRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const githubToken = "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";
+    const [isOpen, setIsOpen] = useState(false);
+    const [feedback, setFeedback] = useState('');
+    const [recordedVideoURL, setRecordedVideoURL] = useState(null);
+    const [recordedAudioURL, setRecordedAudioURL] = useState(null);
+    //const [recordedCombinedURL, setRecordedCombinedURL] = useState(null);
+    const videoRef = useRef(null);
+    const audioRef = useRef(null);
+    const videorecorderRef = useRef(null);
+    const audiorecorderRef = useRef(null);
+    const videoBlobRef = useRef(null);
+    const audioBlobRef = useRef(null);
+    const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+    const [issueURL, setIssueURL] = useState(null);
+    const githubToken = "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";
 
-  const handleOpen = () => {
-    setIsOpen(true);
-    setFeedback('');
-    setRecordedVideoURL(null);
-    setFeedbackSubmitted(false);
-    setIssueURL(null);
-    blobRef.current = null;
-    videoRef.current = null;
-    mediaStreamRef.current = null;
-    mediaRecorderRef.current = null;
-  };
+    const handleOpen = () => {
+        setIsOpen(true);
+        setFeedback('');
+        setRecordedAudioURL(null);
+        setRecordedVideoURL(null);
+        //setRecordedCombinedURL(null);
+        setFeedbackSubmitted(false);
+        setIssueURL(null);
+        videoRef.current = null;
+        audioRef.current = null;
+        videorecorderRef.current = null;
+        audiorecorderRef.current = null;
+        videoBlobRef.current = null;
+        audioBlobRef.current = null;
+    };
 
   const handleClose = () => {
     setIsOpen(false);
-    stopMediaStream();
+    stopRecorder();
   };
 
-  const startMediaStream = async () => {
+  const startRecording = async () => {
+    const code = await startDisplayMedia();
+    console.log("Code is ", code);
+    if (code === 200) {
+        await startUserMedia();
+    }
+  }
+
+  const startUserMedia = async () => {
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true, // Capture audio from microphone
-      });
-      console.log('Stream tracks:', stream);
-      mediaStreamRef.current = stream;
-      videoRef.current = stream;      
-      videoRef.current.srcObject = stream; // Set the new stream
+      const audioStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  
+      audioRef.current = audioStream;
+      audioRef.current.srcObject = audioStream;
+  
+      const audioOptions = { mimeType: 'video/webm; codecs=vp9' };
+      const audioRecorder = new MediaRecorder(audioStream, audioOptions);
+  
+      audiorecorderRef.current = audioRecorder;
+  
+      const audioChunks = [];
+  
+      audioRecorder.ondataavailable = (event) => {
+        console.log("Got audio data ", event);
+        audioChunks.push(event.data);
+      };
+  
+      audioRecorder.onstop = async () => {
+        console.log("Audio stop called with chunks ", audioChunks);
+        if (audioChunks && audioChunks.length > 0) {
+            const audioBlob = new Blob(audioChunks, { type: 'video/webm' });
+            console.log("Audio blob ", audioBlob);
+            setRecordedAudioURL(URL.createObjectURL(audioBlob));
+            audioBlobRef.current = audioBlob;               
+        }
 
-      startMediaRecorder(stream);
+        /*
+        setTimeout(async () => {
+            // Create the combined blob
+            const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
+            const audioBlob = new Blob(audioChunks, { type: 'video/webm' });        
+            const videoArrayBuffer = await videoBlob.arrayBuffer();
+            const audioArrayBuffer = await audioBlob.arrayBuffer();
+
+            const combinedVideoBlob = new Blob([videoArrayBuffer], { type: 'video/webm' });
+            const combinedAudioBlob = new Blob([audioArrayBuffer], { type: 'video/webm' });
+
+            const combinedBlobs = [combinedVideoBlob, combinedAudioBlob];
+            const combinedBlob = new Blob(combinedBlobs, { type: 'video/webm' });
+            console.log("Vombined blob ", combinedBlob);
+            setRecordedCombinedURL(URL.createObjectURL(combinedBlob));            
+          }, 2000);
+          */
+      }
+
+      audioRecorder.start();
+  
+      console.log('Started recording audio stream ', audioStream);
     } catch (error) {
-      console.error('Error accessing media devices:', error);
+      console.error('Error accessing user media devices:', error);
     }
   };
 
-  const stopMediaStream = () => {
-    if (mediaStreamRef.current) {
-      const tracks = mediaStreamRef.current.getTracks();
-      tracks.forEach((track) => track.stop());
-      mediaStreamRef.current = null;
-    }
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-      mediaRecorderRef.current = null;
+  const startDisplayMedia = async () => {
+    try {
+      const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      console.log("Display stream ", displayStream)
+      videoRef.current = displayStream;
+      videoRef.current.srcObject = displayStream;
+  
+      const videoOptions = { mimeType: 'video/webm; codecs=vp9' };
+      const videoRecorder = new MediaRecorder(displayStream, videoOptions);
+  
+      videorecorderRef.current = videoRecorder;
+  
+      const videoChunks = [];
+      
+      videoRecorder.ondataavailable = (event) => {
+        console.log("Got video data ", event);
+        videoChunks.push(event.data);
+      };
+  
+      videoRecorder.onstop = async () => {
+        console.log("Video stop called with chunks ", videoChunks);
+        if (audiorecorderRef.current) {
+            await audiorecorderRef.current.stop();
+        }
+        if (videoChunks && videoChunks.length > 0) {
+            const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
+            console.log("Video blob ", videoBlob);
+            setRecordedVideoURL(URL.createObjectURL(videoBlob)); 
+            videoBlobRef.current = videoBlob;               
+        }
+      };
+  
+      videoRecorder.start();      
+      console.log('Started recording video stream ', displayStream);
+      return 200;
+    } catch (error) {
+      console.error('Error accessing display media devices:', error);
+      return 404;
     }
   };
 
-  const startMediaRecorder = (stream) => {
-    const options = { mimeType: 'video/webm' };
-    const mediaRecorder = new MediaRecorder(stream, options);
-    mediaRecorder.ondataavailable = handleDataAvailable;
-    mediaRecorderRef.current = mediaRecorder;
-    mediaRecorder.start();
-    console.log("Started media recorder");    
-  };
-
-  const handleDataAvailable = async (event) => {
-    console.log("Got event data");
-    if (event.data.size > 0) {
-      const recordedBlob = new Blob([event.data], { type: 'video/webm' });
-      setRecordedVideoURL(URL.createObjectURL(recordedBlob));
-      console.log("Recorded blob ", recordedBlob);
-      blobRef.current = recordedBlob;
-      stopMediaStream();      
+  const stopRecorder = () => {
+    if (videorecorderRef.current) {
+        videorecorderRef.current.stop();
+    }
+    if (audiorecorderRef.current) {
+        audiorecorderRef.current.stop();
     }
   };
 
-  const uploadToAzure = () => {
+
+  const uploadToAzure = (blob) => {
+    console.log("Upload called with blob ", blob)
     return new Promise((resolve, reject) => {
-      if (!blobRef.current) {
+      if (!blob) {
         reject("No blob found");
         return;
       }
@@ -116,18 +190,26 @@ const FeedbackWidget = () => {
           });
       };
   
-      reader.readAsDataURL(blobRef.current);
+      reader.readAsDataURL(blob);
     });
   };  
   
   const handleSubmit = async () => {
     try {
-      await stopMediaStream();
+      await stopRecorder();
       var gitContent = feedback;
-      if (blobRef.current) {
-        const videoLink = await uploadToAzure();
+
+      console.log("Submit called with ", videoBlobRef.current, ", and ", audioBlobRef.current);
+      if (videoBlobRef.current) {
+        const videoLink = await uploadToAzure(videoBlobRef.current);
         console.log("Got video link ", videoLink);
-        gitContent = gitContent + (videoLink ? '\n Video Link: ' + videoLink : '');
+        gitContent = gitContent + (videoLink ? '\n Screen Recording Link: ' + videoLink : '');
+      };
+
+      if (audioBlobRef.current) {
+        const audioLink = await uploadToAzure(audioBlobRef.current);
+        console.log("Got audio link ", audioLink);
+        gitContent = gitContent + (audioLink ? '\n Feedback Recording Link: ' + audioLink : '');
       };
 
       const issueData = {
@@ -185,19 +267,58 @@ const FeedbackWidget = () => {
               onChange={(e) => setFeedback(e.target.value)}
             />
             {recordedVideoURL && (
+            <div>
+                <div className="video-title">
+                    <b>Screen Recording</b>
+                </div>
+                <div className="video-container">                
+                    <div className="video-wrapper">
+                    <video
+                        ref={videoRef}
+                        key={recordedVideoURL}
+                        controls
+                        className="video-control"
+                    >
+                        <source src={recordedVideoURL} type="video/webm" />
+                    </video>
+                    </div>
+                </div>
+            </div>
+            )}
+
+            {recordedAudioURL && (
+            <div> 
+                <div className="video-title">
+                    <b>Your Feedback</b>
+                </div>
+                <div className="video-container">
+                    <div className="video-wrapper">
+                    <video
+                        ref={audioRef}
+                        key={recordedAudioURL}
+                        controls
+                        className="video-control"
+                    >
+                        <source src={recordedAudioURL} type="audio/webm" />
+                    </video>
+                    </div>
+                </div>
+            </div>
+            )}
+            {/*recordedCombinedURL && (
               <div className="video-container">
                 <video
-                  ref={videoRef}
-                  key={recordedVideoURL}
+                  ref={audioRef}
+                  key={recordedCombinedURL}
                   controls
                   className="video-control"
                 >
-                  <source src={recordedVideoURL} type="video/webm" />
+                  <source src={recordedCombinedURL} type="video/webm" />
                 </video>
               </div>
-            )}
+            )*/}
             <div className="button-group">
-              <button onClick={startMediaStream}>Record Video</button>
+              <button onClick={startRecording}>Record Video</button>
               <button onClick={handleSubmit}>Submit</button>
               <button onClick={handleClose}>Cancel</button>
             </div>
