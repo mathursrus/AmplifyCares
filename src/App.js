@@ -102,7 +102,7 @@ function AppPage() {
       }      
     }
     checkAuthentication();
-  }, [msalInstance]); 
+  }); 
 
     const login = async () => {
       const loginRequest = {
