@@ -1,0 +1,15 @@
+.subheader {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333232;
+  }
+  
+
+.nav-link {
+    font-weight: bold;
+  }
+
+.nav-link.active {
+    font-weight: bold;
+    text-decoration: underline;
+  }

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { getApiHost } from './utils/urlUtil';
+import './FeedbackWidget.css';
 
 const FeedbackWidget = () => {
     const [isOpen, setIsOpen] = useState(false);

@@ -1,0 +1,44 @@
+.user-badges {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .badge-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .badge-heading {
+    display: flex;
+    justify-content: center;
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+  
+  .badge-icons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .badge-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+  }
+  
+  .icon {
+    font-size: 40px;
+  }
+  
+  .label {
+    font-size: 20px;
+    margin-top: 5px;
+    text-align: center;
+  }
+  

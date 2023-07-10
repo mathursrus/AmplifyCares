@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -14,14 +14,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #0955ee;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(4, 51, 51);
 }
 
 .App-link {
@@ -42,116 +42,8 @@
   margin-left: 20px;
 }
 
-.subheader {
-  font-size: 16px;
-  font-weight: 400;
-  color: #757575;
-}
-
-.formLabel {
-  display: flex;
-  justify-content: flex-start;
-  width: fit-content;
-}
-
-input::placeholder { font-size: 16px; }
-
-.container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-/*
-.flyout {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 40%;
-  height: 80%;
-  background: white;
-  border: 1px solid black; 
-  transition: transform 10s ease;
-  transform: translateX(20%);
-  z-index: 2;
-}*/
-
-.flyout {
-  /* Existing styles */
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 40%;
-  height: 100%;
-  background: white;
-  border: 1px solid black;
-
-  /* Add animation properties */
-  animation-duration: 2s;
-  animation-timing-function: ease;
-  animation-fill-mode: forwards;
-  opacity: 0;
-  transform: translateX(100%);
-}
-
-@keyframes flyoutAnimation {
-  0% {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.flyout.show {
-  /* Add animation properties */
-  animation-name: flyoutAnimation;
-}
 
 
-.flyout-header {
-  display: flex;
-  justify-content: flex-start;
-  padding: 10px;
-}
-
-.flyout-close {
-  cursor: pointer;
-}
-
-.fireworks {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
-  background-image: url('../public/fireworks.jpg');
-  background-size: cover;
-  animation: fireworksAnimation 1s infinite;
-}
-
-@keyframes fireworksAnimation {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
-  }
-}
-
-.nav-link.active {
-  font-weight: bold;
-  text-decoration: underline;
-}
 
 
 

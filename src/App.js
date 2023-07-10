@@ -3,12 +3,12 @@ import SubmitTimePage from "./SubmitTime";
 import SummaryPage from "./SummaryPage";
 import TeamList from "./TeamList";
 import LogoutSuccessPage from './Logout';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
-import './FeedbackWidget.css';
 import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
+import './App.css';
 
 const config = {
   auth: {
@@ -71,8 +71,10 @@ function App() {
 
 function AppPage() {
   const msalInstance = useMemo(() => new PublicClientApplication(config), []);
-  const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
   const [logoutComplete, setLogoutComplete] = useState(false);
+  const user = useRef(null);
+  const [userExists, setUserExists] = useState(false);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -92,15 +94,15 @@ function AppPage() {
             account: accounts[0],
             scopes: ['user.read']
           });
-          await setUser(response.account.username);
-          localStorage.setItem('userName', response.account.username);
-          localStorage.setItem('userDisplayName', response.account.name);
+          setUser(response);
           console.log('User already authenticated:', response.account.username);
         } else {
           login();
         }
-      }
-    };
+      }      
+    }
+    checkAuthentication();
+  }, [msalInstance]); 
 
     const login = async () => {
       const loginRequest = {
@@ -112,9 +114,7 @@ function AppPage() {
         try {
           localStorage.setItem('authenticating', "1");
           const response = await msalInstance.loginPopup(loginRequest);
-          await setUser(response.account.username);
-          localStorage.setItem('userName', response.account.username);
-          localStorage.setItem('userDisplayName', response.account.name);
+          setUser(response);          
           console.log('User successfully logged in:', response.account.username);
         } catch (error) {
           console.log('Login failed:', error);          
@@ -127,8 +127,42 @@ function AppPage() {
       }
     };
 
-    checkAuthentication();
-  }, [msalInstance]);
+    const setUser = (response) => {
+      console.log("Set user called with ", response);
+      if (response) {
+        // get badges
+        user.current = response.account.username;
+        localStorage.setItem('userName', response.account.username);
+        localStorage.setItem('userDisplayName', response.account.name);
+        const badges = [
+          { badgelisttype: 'current', badgelist: [
+            { badgetype: 'streak', badgetext: 'Get a 30 day streak of self care'} ,
+            { badgetype: 'rookie', badgetext: 'Youre New to the app, Be the Rookie of the month' },
+            { badgetype: 'winner', badgetext: 'Be among the top 10% of self care for the month' },
+            { badgetype: 'team', badgetext: 'Help your team top the leaderboard' },
+          ]},
+          {badgelisttype: 'historical', badgelist: [
+            /*{ badgetype: 'winner', badgetext: 'June iCare champ' },
+            { badgetype: 'rookie', badgetext: 'May iCare Rookie of month' },
+            { badgetype: 'streak', badgetext: '30-day streak' },
+            { badgetype: 'team', badgetext: 'June weCare champ' },*/
+          ]},
+        ];
+        
+        localStorage.setItem('badges', JSON.stringify(badges));
+        setUserExists(true);
+        console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));
+      }
+      else {
+        user.current = null;
+        localStorage.setItem('userName', null);
+        localStorage.setItem('userDisplayName', null);
+        localStorage.setItem('badges', null);
+        setUserExists(false);
+        console.log("User set to null");
+      }
+    };
+ 
 
   const handleLogout = async (event) => {
     //event.preventDefault();
@@ -148,13 +182,13 @@ function AppPage() {
 
   return (
     <div>
-      {user ? (
-        <div>
+      {userExists ? (
+        <div className="App">          
           <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<SubmitTimePage />} />
+            <Route path="/" element={<Layout />}>              
+              <Route index element={<SummaryPage />} />
+              <Route path="summary-page" element={<SummaryPage />} />              
               <Route path="submit-time-page" element={<SubmitTimePage />} />
-              <Route path="summary-page" element={<SummaryPage />} />
               <Route path="leaderboard" element={<Leaderboard />} />
               <Route path="team-list" element={<TeamList />} />
             </Route>
@@ -165,11 +199,11 @@ function AppPage() {
           </button>
         </div>
       ) : logoutComplete ? (
-        <div>
+        <div className="App">
           <LogoutSuccessPage />          
         </div>
       ) : (
-        <div>Authenticating...</div>
+        <div className="App">Authenticating...</div>
       )}
     </div>
   );

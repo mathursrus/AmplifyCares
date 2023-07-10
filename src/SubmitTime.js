@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { getApiHost } from './utils/urlUtil';
 import { useNavigate } from 'react-router-dom';
-import './App.css';
+import './SubmitTime.css';
 
 const React = require('react');
 const { useState, useEffect } = React;
@@ -119,12 +119,7 @@ const SubmitTimePage = () => {
       }, [flyoutState]); // Run the effect only when flyoutState changes
 
     return (
-        <Container className="p-3">
-            <center>
-            <h1 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h1>
-            <h2 className="subheader">A platform designed to encourage and measure self care. Enter below the amount of minutes you dedicated to self care today.</h2>
-            <br></br>
-            <br></br>
+        <Container className="p-3">            
             <form>
                 <div className='row'>
                     <label className='formLabel'>
@@ -183,7 +178,6 @@ const SubmitTimePage = () => {
                     {animation === 4 && <Confetti/>}                    
                 </div>
             </form>
-            </center>
         </Container>
     );
 };

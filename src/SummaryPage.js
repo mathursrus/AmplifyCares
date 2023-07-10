@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
+import UserBadges from './UserBadges';
 
 const SummaryPage = () => {
 
@@ -70,56 +71,61 @@ const SummaryPage = () => {
   };
 
   return (
-    <div className="summary-container">
-      <DateRange
-        startDay={startDay}
-        endDay={endDay}
-        setStartDay={setStartDay}
-        setEndDay={setEndDay}
-        message={`Your Self Care Data for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
-        />
-      <center>
-        <div style={{marginTop: '1rem'}}/>
-        <h2 className="subheader">See your self care journey and how it compares to others like you.</h2>
-        <br></br>
-        <br></br>
-        {/*
-          chartData.length > 0 ? (
-          <div>
-            {chartData.map((data) => (
-              <div key={data.date}>
-                <p>{data.date}</p>
-                <p>{data.self_care_minutes}</p>
-                <p>{data.median_care_minutes}</p>
-                <p>{data.high_care_minutes}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p>Loading...</p>
-        )*/}
-        {chartData.length > 0 ? 
-        (
-          <LineChart width={600} height={300} data={chartData}>
-            <XAxis 
-             stroke="black" 
-              tickFormatter={formatDate} 
-              dataKey="date"
-            />
-            <YAxis  
+    <div> 
+      <div>
+        <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
+      </div>
+      <div className="summary-container">
+        <DateRange
+          startDay={startDay}
+          endDay={endDay}
+          setStartDay={setStartDay}
+          setEndDay={setEndDay}
+          message={`Your Self Care Data for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
+          />
+        <center>
+          <div style={{marginTop: '1rem'}}/>
+          <h2 className="subheader">See your self care journey and how it compares to others like you.</h2>
+          <br></br>
+          <br></br>
+          {/*
+            chartData.length > 0 ? (
+            <div>
+              {chartData.map((data) => (
+                <div key={data.date}>
+                  <p>{data.date}</p>
+                  <p>{data.self_care_minutes}</p>
+                  <p>{data.median_care_minutes}</p>
+                  <p>{data.high_care_minutes}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Loading...</p>
+          )*/}
+          {chartData.length > 0 ? 
+          (
+            <LineChart width={600} height={300} data={chartData}>
+              <XAxis 
               stroke="black" 
-            />
-            <Line type="monotone" dataKey="self_care_minutes" stroke="black" name="You" />
-            <Line type="monotone" dataKey="median_care_minutes" stroke="green" strokeDasharray="5 5" name="Most Others" />
-            <Line type="monotone" dataKey="high_care_minutes" stroke="blue" strokeDasharray="3 3" name="The Best" />
-            <Tooltip contentStyle={{ backgroundColor: "transparent" }} />
-            <Legend />
-          </LineChart>
-        ) : (
-          <p>Loading...</p>
-        )}
-      </center>
-      <br />
+                tickFormatter={formatDate} 
+                dataKey="date"
+              />
+              <YAxis  
+                stroke="black" 
+              />
+              <Line type="monotone" dataKey="self_care_minutes" stroke="black" name="You" />
+              <Line type="monotone" dataKey="median_care_minutes" stroke="green" strokeDasharray="5 5" name="Most Others" />
+              <Line type="monotone" dataKey="high_care_minutes" stroke="blue" strokeDasharray="3 3" name="The Best" />
+              <Tooltip contentStyle={{ backgroundColor: "transparent" }} />
+              <Legend />
+            </LineChart>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </center>
+        <br />
+      </div>
     </div>
   );
 };
