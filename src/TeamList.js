@@ -20,14 +20,13 @@ function TeamList() {
 
   return (
     <div>
-      <div style={{marginTop: '1rem'}}/>
-      <center><h1>Team List</h1></center>
+      <div style={{marginTop: '5rem'}}/>
       { teams.length > 0 ?
       (
         <div>
         {teams.map((team, index) => (
             <div>
-                <center><h2>{team.team_name}</h2></center>
+                <center><h3>{team.team_name}</h3></center>
                 {team.team_members.map((member, index2) => (                    
                     <center>{member.member_id}</center>              
                 ))}
