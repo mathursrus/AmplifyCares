@@ -3,6 +3,7 @@ import SubmitTimePage from "./SubmitTime";
 import SummaryPage from "./SummaryPage";
 import TeamList from "./TeamList";
 import LogoutSuccessPage from './Logout';
+import FirstRunExperience from './FirstRunExperience';
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
@@ -76,7 +77,13 @@ function AppPage() {
   const [logoutComplete, setLogoutComplete] = useState(false);
   const user = useRef(null);
   const [userExists, setUserExists] = useState(false);
+  const [showFirstRunExperience, setShowFirstRunExperience] = useState(true);
 
+  // Function to handle closing the first-run experience modal
+  const handleCloseFirstRunExperience = () => {
+    setShowFirstRunExperience(false);
+  };
+  
   useEffect(() => {
     fetch(getApiHost() + "/getteamlist/");       
     const checkAuthentication = async () => {
@@ -199,6 +206,7 @@ function AppPage() {
           <button className="sign-out-button" onClick={handleLogout}>
             Sign Out
           </button>
+          {showFirstRunExperience && <FirstRunExperience onClose={handleCloseFirstRunExperience} />}
         </div>
       ) : logoutComplete ? (
         <div className="App">

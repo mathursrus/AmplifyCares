@@ -1,0 +1,54 @@
+/* FirstRunExperience.css */
+
+.fre-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent background */
+    z-index: 9999; /* Set a high z-index to bring the modal on top of other elements */
+  }
+  
+  .fre-content {
+    background-color: rgb(139, 219, 193);
+    padding: 20px;
+    width: 400px;
+    height: 40vh;
+    position: relative; 
+    overflow-y: auto;
+    border: 2px solid #007bff; /* Border color and width */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+  }
+  
+  .dot-container {
+    display: flex;
+    justify-content: center;
+    position: absolute; /* Set position to absolute */
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+  }
+  
+  /* Dot */
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #b794c8;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  
+  /* Active Dot */
+  .dot-active {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: #9f10e7; /* Change to the desired color for the active dot */
+  }
