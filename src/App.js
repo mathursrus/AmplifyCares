@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
 import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
+import { getApiHost } from './utils/urlUtil';
 import './App.css';
 
 const config = {
@@ -77,6 +78,7 @@ function AppPage() {
   const [userExists, setUserExists] = useState(false);
 
   useEffect(() => {
+    fetch(getApiHost() + "/getteamlist/");       
     const checkAuthentication = async () => {
       const isLogoutRedirect = window.location.search.includes("logout=true");
       if (isLogoutRedirect) {
@@ -203,7 +205,7 @@ function AppPage() {
           <LogoutSuccessPage />          
         </div>
       ) : (
-        <div className="App">Authenticating...</div>
+        <div className="App">Authenticating... Please ensure your browser allows pop-ups</div>
       )}
     </div>
   );
