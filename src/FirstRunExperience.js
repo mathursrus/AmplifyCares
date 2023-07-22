@@ -4,16 +4,6 @@ import './FirstRunExperience.css';
 function FirstRunExperience({ onClose }) {
   const [currentScreen, setCurrentScreen] = useState(1);
 
-  // Function to handle navigating to the next screen
-  const handleNextScreen = () => {
-    setCurrentScreen((prevScreen) => prevScreen + 1);
-  };
-
-  // Function to handle navigating to the previous screen
-  const handlePreviousScreen = () => {
-    setCurrentScreen((prevScreen) => prevScreen - 1);
-  };
-
   // Function to handle closing the modal
   const handleCloseModal = () => {
     onClose();
