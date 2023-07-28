@@ -1,5 +1,5 @@
 .user-badges {
-    margin-top: 50px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,20 +9,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
   }
   
   .badge-heading {
     display: flex;
     justify-content: center;
-    font-size: 15px;
-    margin-bottom: 5px;
+    font-size: 12px;
+    margin-bottom: 2px;
   }
   
   .badge-icons {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    margin-bottom: 20px;
   }
   
   .badge-icon {

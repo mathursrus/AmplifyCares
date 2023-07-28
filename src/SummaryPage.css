@@ -1,9 +1,63 @@
 .summary-container {
-    width: 60%;
-    margin: auto;
-    margin-top: 50px;
-    border: 1px solid black;
-    border-radius: 5px;
-    overflow: hidden;
+  width: 100%; /* Use 100% to take the full width of the parent container */
+  max-width: 75%; /* Add max-width to limit the container's width */
+  height: 100%; /* Use 100% to take the full width of the parent container */
+  max-height: 75%; /* Add max-width to limit the container's width */
+  margin: auto;
+  margin-top: 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  overflow-x: auto;
+  position: relative;
+}
+
+.recharts-legend-wrapper {
+  position: unset !important;
+  display: flex;
+  justify-content: center;
+}
+
+.legend-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+  margin-top: 20px;
+}
+
+.legend-items {
+  display: flex;
+  justify-content: center;
+}
+
+.legend-item {
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.legend-item span {
+  font-size: 18px;
+}
+
+/* Add a media query to target screens with a maximum width of 768px (adjust as needed) */
+@media screen and (max-width: 768px) {
+  .summary-container {
+    max-width: 95%; /* Adjust the container's max-width for smaller screens */
+    max-height: 95%;
   }
+
+  /* Reduce the font size for the legend items on smaller screens */
+  .legend-item span {
+    font-size: 14px;
+  }
+
+  /* Set the chart height to a percentage value for smaller screens */
+  .summary-container .recharts-wrapper {
+    width: 100%;
+    height: 70%;
+  }
+}
+
   

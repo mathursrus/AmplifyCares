@@ -1,15 +1,16 @@
 const { BlobServiceClient } = require('@azure/storage-blob');
-
 const MongoClient = require('mongodb');
 const databaseId = "amplifycares-db-catita";
 const containerId = "self_care_stats";
 const teamId = "team_info";
 const recoId = "recommendations";
+const userId = "userInfo";
 
 let dbClient = null;
 let team_container = null;
 let recos_container = null;
 let container = null;
+let user_container = null;
 
 async function getMongoDbClient() {
   if (!dbClient) {
@@ -25,7 +26,6 @@ async function getContainer() {
   if (!container) {
     var cl = await getMongoDbClient();
     container = await cl.collection(containerId);
-    console.log(container);
   }
   return container;
 }
@@ -34,7 +34,6 @@ async function getTeamContainer() {
   if (!team_container) {
     var cl = await getMongoDbClient();
     team_container = await cl.collection(teamId);
-    console.log(team_container);
   }
   return team_container;
 }
@@ -43,13 +42,46 @@ async function getRecommendationsContainer() {
   if (!recos_container) {
     var cl = await getMongoDbClient();
     recos_container = await cl.collection(recoId);
-    console.log(recos_container);
   }
   return recos_container;
 }
 
-console.log(team_container);
+async function getUserContainer() {
+  if (!user_container) {
+    var cl = await getMongoDbClient();
+    user_container = await cl.collection(userId);
+    console.log(user_container);
+  }
+  return user_container;
+}
 
+async function getUserInfo(user) {
+  try {
+      console.log('Get UserInfo handler got user: ', user)
+      const ct = await getUserContainer();
+      const result=await ct.find({username:user}).toArray();
+      console.log(`Result is: ${result}`);
+      const final = JSON.stringify(result);
+      console.log(`Finale is ${final}`);
+      return final;
+    } catch (err) {
+      console.error('Error:', err);
+    }
+}
+
+async function setUserLoginInfo(user, loginTime) {
+  try {
+      console.log('Get UserInfo handler got user: ', user)
+      const ct = await getUserContainer();
+      const result=await ct.findOneAndUpdate(
+        { username: user },
+        { $set: { lastLoginTime: loginTime } },
+        { upsert: true });
+      console.log(`Login info set, result is: ${result}`);            
+    } catch (err) {
+      console.error('Error:', err);
+    }
+}
 
 async function writeEntry(item) {
     try {
@@ -185,6 +217,8 @@ async function readTeamList() {
 async function readTeamStats(startDay, endDay) {
   console.log(`Get Team Stats request`);
   const tct = await getTeamContainer();
+  const numberOfDays = Math.floor((endDay - startDay) / (1000 * 60 * 60 * 24))+1;
+
   const result=await tct.aggregate([
     {
       $match: {
@@ -252,6 +286,14 @@ async function readTeamStats(startDay, endDay) {
             { $avg: [{ $slice: ["$times", { $subtract: [ { $divide: ["$count", 2] }, 1 ]}, 2] }] },
             { $arrayElemAt: [ "$times", { $divide: [ { $subtract: [ "$count", 1 ] }, 2 ] } ] }
           ]
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        median: {
+          $trunc: { $divide: ["$median", numberOfDays] }
         }
       }
     },
@@ -340,4 +382,4 @@ async function writeFeedback(feedback) {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback};
+module.exports = {getUserInfo, setUserLoginInfo, writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback};

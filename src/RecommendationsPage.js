@@ -28,7 +28,7 @@ const RecommendationsPage = (props) => {
   const [newRecommendation, setNewRecommendation] = useState({ title: '', url: '' });
 
   const recoType = props.type;
-  const [recos, setRecos] = useState([]);
+  const [recos, setRecos] = useState(null);
 
   const headlines = [
     [1, "Taking care of your mental health is essential for overall well-being and happiness. It empowers you to manage stress, build resilience, maintain healthy relationships, and unlock your full potential in both personal and professional aspects of life."],
@@ -73,14 +73,27 @@ const RecommendationsPage = (props) => {
       <h5><i>{headlines.find(item => item[0] === recoType)[1]}</i></h5>
       <br></br>
       <h6><center>Here are a few recommendations from your colleagues</center></h6>
-      {recos.map((recommendation, index) => (
-        <div className="recommendation-tile" key={index}>
-          <a className="URL" href={recommendation.url} target="_blank" rel="noopener noreferrer">
-            <h3 className="title">{recommendation.title}</h3>
-          </a>
-          <h4 className="contributor">Recommended by: {recommendation.contributor}</h4>
+      {recos?
+      (
+        <div className="emptydiv">
+        {recos.length>0? (
+          <div className="emptydiv">
+          {recos.map((recommendation, index) => (
+            <div className="recommendation-tile" key={index}>
+              <a className="URL" href={recommendation.url} target="_blank" rel="noopener noreferrer">
+                <h3 className="title">{recommendation.title}</h3>
+              </a>
+              <h4 className="contributor">Recommended by: {recommendation.contributor}</h4>
+            </div>
+          ))}
+          </div>
+        ) : (<div><br></br>Whoops ... looks like we do not have any peer recommendations yet. Be the first one to add a recommendation below.</div>)
+        }
         </div>
-      ))}
+      ) : (
+        <p><center>Loading...</center></p>
+      ) 
+      }
 
       <div className="add-recommendation">
         {!showInputFields && (

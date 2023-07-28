@@ -8,7 +8,7 @@ import { DateRange } from "./DateRange/DateRange";
 
 function Leaderboard() {
   
-    const [leaders, setLeaders] = useState([]);
+    const [leaders, setLeaders] = useState(null);
     
     const currentDate = new Date(); // Get the current date
     const currentMonth = currentDate.getMonth(); // Get the current month
@@ -37,7 +37,7 @@ function Leaderboard() {
         }, 50);
     }
     fetchData();    
-    new Audio('/drumroll.mp3').play();
+    //new Audio('/drumroll.mp3').play();
   }, [endDay, startDay]);
 
   return (
@@ -49,10 +49,10 @@ function Leaderboard() {
         setEndDay={setEndDay}
         message= {`Leaderboard for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
         />
-
+        <center>You succeed as a team when you bring others along. This is the daily time spent on self care by the <u>median team member</u>. </center>
         <br/>
             
-        {leaders.length > 0 ? (
+        {leaders ? (
         <div>
             <div className="medal-podium"> 
             {leaders.length >= 2 && ( // Check if there are at least 2 leaders
@@ -135,7 +135,7 @@ function Leaderboard() {
             )}            
         </div>
         ) : (
-        <center>No Results</center>
+        <center>Loading ...</center>
         )}
     </div>
   );

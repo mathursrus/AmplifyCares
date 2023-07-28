@@ -1,5 +1,9 @@
 // MongoDB Playground
 
+// get all collections
+use('amplifycares-db-catita');
+db.getCollectionNames();
+
 // aggregate each of the times for Sid
 use('amplifycares-db');
 db.self_care_stats.aggregate([{$match:{name:{$regex:"sid.*"}}}, 
@@ -30,9 +34,17 @@ db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, {$group: {_id:"$nam
 use('amplifycares-db-catita');
 db.team_info.find();
 
-// all entries
-use('amplifycares-db');
-db.self_care_stats.find();
+// find all entries on a particular date
+use('amplifycares-db-catita');
+db.self_care_stats.find({DateTime: { $gt: new Date('2023-07-11') }});
+
+// find matching entries
+use('amplifycares-db-catita');
+db.self_care_stats.find({ name: "sidm@microsoft.com", DateTime: { $lt: new Date('2023-07-11') } });
+
+// delete matching entries
+use('amplifycares-db-catita');
+db.self_care_stats.deleteMany({ name: "scotthas@microsoft.com" });
 
 // find item by id
 use('amplifycares-db');
@@ -257,13 +269,17 @@ db.team_info.aggregate([
 use('amplifycares-db-catita');
 db.self_care_stats.find({DateTime:{$gte: new Date('2022-04-01')}}).sort({"_id":1});
 
-/* All details on a particular date */
+/* All details sorted by date*/
 use('amplifycares-db-catita');
 db.self_care_stats.find().sort({DateTime:-1});
 
 /* All details for a person */
-use('amplifycares-db');
+use('amplifycares-db-catita');
 db.self_care_stats.find({name:"Bob"}).sort({DateTime:-1});
+
+/* All user info */
+use('amplifycares-db-catita');
+db.userInfo.find();
 
 /* All details for a person on a particular date */
 use('amplifycares-db');
@@ -311,7 +327,7 @@ db.self_care_stats.find({ societal_health_time: { $exists: true, $type: "string"
 
 
 // get all recommendations
-use('amplifycares-db');
+use('amplifycares-db-catita');
 db.recommendations.find();
 
 // get all recommendations of specific type
@@ -347,10 +363,11 @@ use(`amplifycares-db-catita`);
   });
 
   // populate teams
+  use(`amplifycares-db-catita`);
   db.team_info.insertOne({
-    team_name: "Sarah Rulz",
+    team_name: "Team Jed",
     team_members: [
-      { member_id: "sarah@catita365.onmicrosoft.com" },
+      { member_id: "brownjed@microsoft.com" },
     ]
   });
   db.team_info.insertOne({
@@ -424,6 +441,27 @@ use(`amplifycares-db-catita`);
     url: "https://microsoft.benevity.org/"
   });
 
+  // create a collection for user info
+  use(`amplifycares-db-catita`);
+  db.createCollection("userInfo", {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    lastLoginTime: {
+      type: Date,
+      default: Date.now,
+    },
+    badgesEarned: {
+      type: [String],
+      default: [],
+    },
+    badgesOnTrack: {
+      type: [String],
+      default: [],
+    }
+  });
 
 // version number
 use('amplifycares-db');

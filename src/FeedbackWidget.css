@@ -9,6 +9,26 @@
     display: none;
   }
   
+  .feedback-widget .thank-you-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .feedback-widget .thank-you-message {
+    flex: 1;
+  }
+  
+  .feedback-widget .thank-you-wrapper .close-button {
+    position: fixed;
+    top: auto;
+    left: auto;
+    right: 3px;
+    font-size: 25px;
+    border: none;
+    background-color: transparent;
+  }  
+
   .feedback-form {
     background-color: #0db3fa;
     padding: 20px;
@@ -20,7 +40,7 @@
   .feedback-form textarea {
     width: 100%;
     height: 100px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     border-radius: 8px;
     resize: none;
   }
@@ -63,7 +83,7 @@
   .feedback-button:active {
     background-color: #322fd3;
   }
-
+  
   .sign-out-button {
     /* Update the styles to match the feedback widget */
     background-color: rgb(38, 128, 212);
@@ -73,7 +93,7 @@
     cursor: pointer;
     position: fixed;
     bottom: 20px;
-    left: 80px;
+    left: 20px;
     z-index: 9999;
     border: none;
   }
@@ -90,6 +110,12 @@
 
   .video-title {
     margin-bottom: 10px; /* Adjust the value as needed */
+  }
+  
+  .error-message {
+    color: red;
+    font-style: italic;
+    margin-bottom: 10px;
   }
   
   

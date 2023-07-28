@@ -16,6 +16,7 @@ const FeedbackWidget = () => {
     const audioBlobRef = useRef(null);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
     const [issueURL, setIssueURL] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
     const githubToken = "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";
 
     const handleOpen = () => {
@@ -23,7 +24,7 @@ const FeedbackWidget = () => {
         setFeedback('');
         setRecordedAudioURL(null);
         setRecordedVideoURL(null);
-        //setRecordedCombinedURL(null);
+        setErrorMessage('');
         setFeedbackSubmitted(false);
         setIssueURL(null);
         videoRef.current = null;
@@ -42,9 +43,9 @@ const FeedbackWidget = () => {
   const startRecording = async () => {
     const code = await startDisplayMedia();
     console.log("Code is ", code);
-    if (code === 200) {
-        await startUserMedia();
-    }
+    //if (code === 200) {
+      //  await startUserMedia();
+    //}
   }
 
   const startUserMedia = async () => {
@@ -75,23 +76,11 @@ const FeedbackWidget = () => {
             audioBlobRef.current = audioBlob;               
         }
 
-        /*
-        setTimeout(async () => {
-            // Create the combined blob
-            const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
-            const audioBlob = new Blob(audioChunks, { type: 'video/webm' });        
-            const videoArrayBuffer = await videoBlob.arrayBuffer();
-            const audioArrayBuffer = await audioBlob.arrayBuffer();
-
-            const combinedVideoBlob = new Blob([videoArrayBuffer], { type: 'video/webm' });
-            const combinedAudioBlob = new Blob([audioArrayBuffer], { type: 'video/webm' });
-
-            const combinedBlobs = [combinedVideoBlob, combinedAudioBlob];
-            const combinedBlob = new Blob(combinedBlobs, { type: 'video/webm' });
-            console.log("Vombined blob ", combinedBlob);
-            setRecordedCombinedURL(URL.createObjectURL(combinedBlob));            
-          }, 2000);
-          */
+        // Stop audio tracks
+        if (audioRef.current) {
+          const audioTracks = audioRef.current.srcObject?.getTracks();
+          audioTracks?.forEach((track) => track.stop());
+        }
       }
 
       audioRecorder.start();
@@ -109,6 +98,8 @@ const FeedbackWidget = () => {
       videoRef.current = displayStream;
       videoRef.current.srcObject = displayStream;
   
+      await startUserMedia();
+
       const videoOptions = { mimeType: 'video/webm; codecs=vp9' };
       const videoRecorder = new MediaRecorder(displayStream, videoOptions);
   
@@ -124,6 +115,7 @@ const FeedbackWidget = () => {
       videoRecorder.onstop = async () => {
         console.log("Video stop called with chunks ", videoChunks);
         if (audiorecorderRef.current) {
+            console.log("Video stop calling audio stop");         
             await audiorecorderRef.current.stop();
         }
         if (videoChunks && videoChunks.length > 0) {
@@ -132,6 +124,13 @@ const FeedbackWidget = () => {
             setRecordedVideoURL(URL.createObjectURL(videoBlob)); 
             videoBlobRef.current = videoBlob;               
         }
+        // Stop video tracks
+        if (videoRef.current) {
+          const videoTracks = videoRef.current.srcObject?.getTracks();
+          videoTracks?.forEach((track) => track.stop());
+        }
+
+        setErrorMessage('');
       };
   
       videoRecorder.start();      
@@ -145,12 +144,13 @@ const FeedbackWidget = () => {
 
   const stopRecorder = () => {
     if (videorecorderRef.current) {
-        videorecorderRef.current.stop();
+      videorecorderRef.current.stop();
     }
     if (audiorecorderRef.current) {
-        audiorecorderRef.current.stop();
-    }
+      audiorecorderRef.current.stop();
+    }    
   };
+  
 
 
   const uploadToAzure = (blob) => {
@@ -218,6 +218,11 @@ const FeedbackWidget = () => {
         body: gitContent 
       };
   
+      if (!gitContent || gitContent.trim() === '') {
+        setErrorMessage('Please provide some feedback before submitting.');
+        return;
+      }
+
       const response = await fetch('https://api.github.com/repos/mathursrus/AmplifyCares/issues', {
         method: 'POST',
         headers: {
@@ -232,9 +237,9 @@ const FeedbackWidget = () => {
         console.log('GitHub issue created:', issue.html_url);
         setIssueURL(issue.html_url);
         setFeedbackSubmitted(true);
-      } else {
-        console.error('Failed to create GitHub issue:', response.text());
+        setErrorMessage('');
       }
+
     } catch (error) {
       console.error('Error:', error);
     }
@@ -245,16 +250,18 @@ const FeedbackWidget = () => {
       {isOpen ? (
         feedbackSubmitted ? (
           <div className="feedback-widget">
-            <div className="thank-you-message">
-              Thank you for your feedback. We have logged it&nbsp;
-              {issueURL && (
-                <>
-                  <a href={issueURL} target="_blank" rel="noopener noreferrer">
-                    here
-                  </a>
-                  .
-                </>
-              )}
+            <div className="thank-you-wrapper">
+              <div className="thank-you-message">
+                Thank you for your feedback. We have logged it&nbsp;
+                {issueURL && (
+                  <>
+                    <a href={issueURL} target="_blank" rel="noopener noreferrer">
+                      here
+                    </a>
+                    .
+                  </>
+                )}
+              </div>
               <button className="close-button" onClick={handleClose}>
                 X
               </button>
@@ -267,6 +274,12 @@ const FeedbackWidget = () => {
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
             />
+            {/* Show the error message if present */}
+            {errorMessage && (
+              <div className="error-message">
+                {errorMessage}
+              </div>
+            )}
             {recordedVideoURL && (
             <div>
                 <div className="video-title">
@@ -300,24 +313,12 @@ const FeedbackWidget = () => {
                         controls
                         className="video-control"
                     >
-                        <source src={recordedAudioURL} type="audio/webm" />
+                        <source src={recordedAudioURL} type="video/webm" />
                     </video>
                     </div>
                 </div>
             </div>
-            )}
-            {/*recordedCombinedURL && (
-              <div className="video-container">
-                <video
-                  ref={audioRef}
-                  key={recordedCombinedURL}
-                  controls
-                  className="video-control"
-                >
-                  <source src={recordedCombinedURL} type="video/webm" />
-                </video>
-              </div>
-            )*/}
+            )}            
             <div className="button-group">
               <button onClick={startRecording}>Record Video</button>
               <button onClick={handleSubmit}>Submit</button>

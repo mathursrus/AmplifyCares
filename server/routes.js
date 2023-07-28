@@ -1,5 +1,28 @@
 const handlers = require('./handlers');
 
+const getUserInfo = {
+    method: 'get',
+    path: '/getUserInfo',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const item = await req.query.user;        
+        const response = await handlers.getUserInfo(JSON.parse(item));
+        res.status(200).json(response);
+    }
+}
+
+const setUserLoginInfo = {
+    method: 'get',
+    path: '/setUserLogin',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const user = await req.query.user;        
+        const logintime = await req.query.logintime;        
+        const response = await handlers.setUserLoginInfo(user, logintime);
+        res.status(200).json(response);
+    }
+}
+
 const writeSelfCareEntry = {
     method: 'get',
     path: '/writeselfcare',
@@ -101,4 +124,4 @@ const writeFeedback = {
     }
 }
 
-module.exports = { writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback};
+module.exports = { getUserInfo, setUserLoginInfo, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback};

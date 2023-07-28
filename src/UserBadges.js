@@ -30,7 +30,7 @@ const BadgeIcon = ({ badge }) => {
         {currentBadges && currentBadges.badgelist.length > 0 && (
           <div className="badge-row">
             <div className="badge-heading">
-              You're en route to earning these badges
+            {localStorage.getItem('userDisplayName')}, take care of yourself and earn these badges
             </div>
             <div className="badge-icons">
               {currentBadges.badgelist.map((badge, index) => (

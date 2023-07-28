@@ -5,7 +5,7 @@ import { getApiHost } from './utils/urlUtil';
 
 function TeamList() {
   
-  const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -21,7 +21,7 @@ function TeamList() {
   return (
     <div>
       <div style={{marginTop: '5rem'}}/>
-      { teams.length > 0 ?
+      { teams ?
       (
         <div>
         {teams.map((team, index) => (
@@ -34,7 +34,7 @@ function TeamList() {
         ))} 
         </div>       
        ) : (
-            <p>Loading...</p>
+            <p><center>Loading...</center></p>
        ) 
       }
     </div>

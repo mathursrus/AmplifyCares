@@ -77,15 +77,15 @@ function AppPage() {
   const [logoutComplete, setLogoutComplete] = useState(false);
   const user = useRef(null);
   const [userExists, setUserExists] = useState(false);
-  const [showFirstRunExperience, setShowFirstRunExperience] = useState(true);
+  const [showFirstRunExperience, setShowFirstRunExperience] = useState(0);
 
   // Function to handle closing the first-run experience modal
   const handleCloseFirstRunExperience = () => {
-    setShowFirstRunExperience(false);
+    console.log("Turning off FRE");
+    setShowFirstRunExperience(0);
   };
-  
+
   useEffect(() => {
-    fetch(getApiHost() + "/getteamlist/");       
     const checkAuthentication = async () => {
       const isLogoutRedirect = window.location.search.includes("logout=true");
       if (isLogoutRedirect) {
@@ -143,24 +143,9 @@ function AppPage() {
         user.current = response.account.username;
         localStorage.setItem('userName', response.account.username);
         localStorage.setItem('userDisplayName', response.account.name);
-        const badges = [
-          { badgelisttype: 'current', badgelist: [
-            { badgetype: 'streak', badgetext: 'Get a 30 day streak of self care'} ,
-            { badgetype: 'rookie', badgetext: 'Youre New to the app, Be the Rookie of the month' },
-            { badgetype: 'winner', badgetext: 'Be among the top 10% of self care for the month' },
-            { badgetype: 'team', badgetext: 'Help your team top the leaderboard' },
-          ]},
-          {badgelisttype: 'historical', badgelist: [
-            /*{ badgetype: 'winner', badgetext: 'June iCare champ' },
-            { badgetype: 'rookie', badgetext: 'May iCare Rookie of month' },
-            { badgetype: 'streak', badgetext: '30-day streak' },
-            { badgetype: 'team', badgetext: 'June weCare champ' },*/
-          ]},
-        ];
         
-        localStorage.setItem('badges', JSON.stringify(badges));
         setUserExists(true);
-        console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));
+        getAndSetUserInfo(response.account.username);        
       }
       else {
         user.current = null;
@@ -172,6 +157,49 @@ function AppPage() {
       }
     };
  
+  const getAndSetUserInfo = async (username) => {
+    const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));
+    const data = await response.json();
+    const userInfo = JSON.parse(data);
+    console.log("Got user info ", userInfo);
+    const badges = userInfo.length>0 ? userInfo[0].badgesOnTrack : null;
+    const lastLogin = userInfo.length>0 ? userInfo[0].lastLoginTime : null;
+    setUserBadges(badges);
+    console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));       
+    updateUserLastLogin(username, lastLogin);
+  }
+
+  const setUserBadges = (badges) => {
+      const temp_badges = [
+      { badgelisttype: 'current', badgelist: [
+        { badgetype: 'streak', badgetext: 'Get a 30 day streak of self care'} ,
+        { badgetype: 'rookie', badgetext: 'Youre New to the app, Be the Rookie of the month' },
+        { badgetype: 'winner', badgetext: 'Be among the top 10% of self care for the month' },
+        { badgetype: 'team', badgetext: 'Help your team top the leaderboard' },
+      ]},
+      {badgelisttype: 'historical', badgelist: [
+        /*{ badgetype: 'winner', badgetext: 'June iCare champ' },
+        { badgetype: 'rookie', badgetext: 'May iCare Rookie of month' },
+        { badgetype: 'streak', badgetext: '30-day streak' },
+        { badgetype: 'team', badgetext: 'June weCare champ' },*/
+      ]},
+    ];
+    localStorage.setItem('badges', JSON.stringify(temp_badges));        
+  }
+
+  // Update the last login time of a user or add a new user
+  const updateUserLastLogin = async (username, lastLogin) => {
+    const currentTime = new Date().toISOString();
+    console.log("Got last login of ", lastLogin);
+    if (lastLogin)  {
+      console.log("No FRE here");
+      setShowFirstRunExperience(0);
+    }
+    else {
+      setShowFirstRunExperience(1);
+    }
+    fetch(getApiHost() + `/setUserLogin?user=${username}&logintime=${currentTime}`);
+  };
 
   const handleLogout = async (event) => {
     //event.preventDefault();
@@ -195,7 +223,7 @@ function AppPage() {
         <div className="App">          
           <Routes>
             <Route path="/" element={<Layout />}>              
-              <Route index element={<SummaryPage />} />
+              <Route index element={<SubmitTimePage />} />
               <Route path="summary-page" element={<SummaryPage />} />              
               <Route path="submit-time-page" element={<SubmitTimePage />} />
               <Route path="leaderboard" element={<Leaderboard />} />
@@ -206,7 +234,7 @@ function AppPage() {
           <button className="sign-out-button" onClick={handleLogout}>
             Sign Out
           </button>
-          {showFirstRunExperience && <FirstRunExperience onClose={handleCloseFirstRunExperience} />}
+          {showFirstRunExperience > 0 && <FirstRunExperience screen={showFirstRunExperience} onClose={handleCloseFirstRunExperience} />}
         </div>
       ) : logoutComplete ? (
         <div className="App">

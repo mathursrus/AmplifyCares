@@ -8,6 +8,7 @@ import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { getApiHost } from './utils/urlUtil';
 import { useNavigate } from 'react-router-dom';
 import './SubmitTime.css';
+import UserBadges from './UserBadges';
 
 const React = require('react');
 const { useState, useEffect } = React;
@@ -16,7 +17,7 @@ const placeholderStrings = {
     MentalHealth: 'Minutes you dedicated to mental health today. (eg meditation, learning, brain games, ..)',
     PhysicalHealth: 'Minutes you dedicated to physical health today. (eg exercise, sports, doctor visit, ..)',
     SpiritualHealth: 'Minutes you dedicated to spirtual health today. (eg prayers, religious activities, ...)',
-    SocialHealth: 'Minutes you dedicated to social health today. (eg volunteering, praising, family time, ...)'
+    SocialHealth: 'Minutes you dedicated to social health today. (eg volunteering, team lunch, mentoring, ...)'
 }
 
 const SubmitTimePage = () => {
@@ -27,7 +28,7 @@ const SubmitTimePage = () => {
     //const [UserName, setUserName] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
-    const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
+    //const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
     const navigate = useNavigate();
     const [flyoutState, setFlyoutState] = useState(0);
 
@@ -51,10 +52,10 @@ const SubmitTimePage = () => {
         return today;
     }
 
-    const playSound = (rand) => {
+    /*const playSound = (rand) => {
         console.log("Playing with rand ", rand, " Clip ", clapSounds[rand]);
         clapSounds[rand-1].play();
-    }
+    }*/
 
     const handleSubmit = async(e) => {
         //e.preventDefault();
@@ -77,7 +78,7 @@ const SubmitTimePage = () => {
         // Set the state variable to the random number
         const rand = getRandomNumber();
         setAnimation(rand);
-        playSound(rand);            
+        //playSound(rand);            
             
         setTimeout(() => {
             setAnimation(null);
@@ -119,7 +120,10 @@ const SubmitTimePage = () => {
       }, [flyoutState]); // Run the effect only when flyoutState changes
 
     return (
-        <Container className="p-3">            
+        <Container className="p-3">    
+            <div>
+                <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
+            </div>        
             <form>
                 <div className='row'>
                     <label className='formLabel'>

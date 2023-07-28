@@ -1,14 +1,15 @@
 import React from 'react';
 import './SummaryPage.css';
 import { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
 import { getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
-import UserBadges from './UserBadges';
 
 const SummaryPage = () => {
 
   const [chartData, setChartData] = useState([]);
+  const [showMostOthers, setShowMostOthers] = useState(false);
+  const [showTheBest, setShowTheBest] = useState(false);
   const userName = localStorage.getItem('userName');
   const currentDate = new Date(); // Get the current date
   const currentMonth = currentDate.getMonth(); // Get the current month
@@ -24,6 +25,7 @@ const SummaryPage = () => {
 
   useEffect(() => {
     async function fetchData() {
+      // get self-care data from cache
       const selfCareData = await getAggregateStats(getApiUrl("/getselfcarestats/?item="+userName));
       const medianCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=50"));
       const highCareData = await getAggregateStats(getApiUrl("/getpercentiles?item=90"));
@@ -71,10 +73,7 @@ const SummaryPage = () => {
   };
 
   return (
-    <div> 
-      <div>
-        <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
-      </div>
+    <div className="legend-container"> 
       <div className="summary-container">
         <DateRange
           startDay={startDay}
@@ -85,9 +84,9 @@ const SummaryPage = () => {
           />
         <center>
           <div style={{marginTop: '1rem'}}/>
-          <h2 className="subheader">See your self care journey and how it compares to others like you.</h2>
+          <h2 className="subheader">See your self care journey (and enhance it by learning from others like you).</h2>
           <br></br>
-          <br></br>
+          
           {/*
             chartData.length > 0 ? (
             <div>
@@ -105,21 +104,93 @@ const SummaryPage = () => {
           )*/}
           {chartData.length > 0 ? 
           (
-            <LineChart width={600} height={300} data={chartData}>
+            <div>
+            <LineChart width={750} height={300} data={chartData}>
               <XAxis 
               stroke="black" 
                 tickFormatter={formatDate} 
                 dataKey="date"
               />
               <YAxis  
-                stroke="black" 
+                stroke="black">
+                <Label
+                  value="Total Minutes Spent on Self-Care"
+                  position="insideLeft"
+                  angle={-90}
+                  offset={10}
+                  style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
+                /> 
+              </YAxis>
+              <Line
+                type="monotone"
+                dataKey="self_care_minutes"
+                stroke="purple"
+                strokeWidth="4"
+                name="You"
               />
-              <Line type="monotone" dataKey="self_care_minutes" stroke="black" name="You" />
-              <Line type="monotone" dataKey="median_care_minutes" stroke="green" strokeDasharray="5 5" name="Most Others" />
-              <Line type="monotone" dataKey="high_care_minutes" stroke="blue" strokeDasharray="3 3" name="The Best" />
-              <Tooltip contentStyle={{ backgroundColor: "transparent" }} />
-              <Legend />
+              {showMostOthers && (
+                <Line
+                  type="monotone"
+                  dataKey="median_care_minutes"
+                  stroke="orange"
+                  strokeWidth="2"
+                  name="Most Others"
+                />
+              )}
+              {showTheBest && (
+                <Line
+                  type="monotone"
+                  dataKey="high_care_minutes"
+                  stroke="green"
+                  strokeWidth="2"
+                  name="The Best"
+                />
+              )}
+            <Tooltip contentStyle={{ backgroundColor: "transparent" }} />              
             </LineChart>
+            <Legend
+              content={(props) => {
+                return (
+                  <div className="legend-items">
+                    <div
+                      className="legend-item"                        
+                    >
+                      <span
+                        style={{ color: 'purple', paddingRight: '5px', cursor: 'pointer' }}
+                        title="Hours you spent on self care in the day"
+                      >
+                        ● You
+                      </span>                      
+                    </div>
+                    <div
+                      className="legend-item"
+                      onClick={() => setShowMostOthers(!showMostOthers)}
+                    >
+                      <span
+                        style={{ color: 'orange', paddingRight: '5px', cursor: 'pointer' }}
+                        title="Median hours spent by your peers on self care in the day"
+                      >
+                        {showMostOthers ? '● ' : '○ '}
+                        Most Others
+                      </span>                      
+                    </div>
+                    <div
+                      className="legend-item"
+                      onClick={() => setShowTheBest(!showTheBest)}
+                    >
+                      <span
+                        style={{ color: 'green', paddingRight: '5px', cursor: 'pointer' }}
+                        title="Hours spent by the top 10% of your peers on self care in the day"
+                      >
+                        {showTheBest ? '● ' : '○ '}
+                        The Best
+                      </span>                      
+                    </div>
+                  </div>
+                  );
+                }}
+              />
+            </div>              
           ) : (
             <p>Loading...</p>
           )}

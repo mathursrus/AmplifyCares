@@ -1,14 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Outlet, Link, useLocation } from "react-router-dom";
+import React, { useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Navbar from "react-bootstrap/Navbar";
 //import * as microsoftTeams from '@microsoft/teams-js';
 import './Layout.css';
+import FirstRunExperience from './FirstRunExperience';
 
 function Layout() {
   const location = useLocation();
-
+  const [showAboutDialog, setShowAboutDialog] = useState(false);
   /*
   try {
     microsoftTeams.initialize();
@@ -46,28 +48,40 @@ function Layout() {
     localStorage.setItem('userName', 'Alice');
   }*/
 
+  const handleAboutAmplifyCares = () => {
+    setShowAboutDialog(true);
+  };
+  
   return (
     <>
       <Navbar className="nav" expand="lg">
         <Container>
-          <Navbar.Brand as={Link} to="/summary-page">Amplify Cares</Navbar.Brand>
+          <div style={{ marginRight: '50px' }}>
+            <Navbar.Brand as={Link} to="/submit-time-page">
+              <img
+                src={'/AmplifyCaresLogo.png'}
+                alt="Amplify Cares"
+                height="50"
+              />            
+            </Navbar.Brand>
+          </div>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link
-                as={Link}
-                to="/summary-page"
-                className={location.pathname === '/' || location.pathname === '/summary-page' ? 'active' : ''}
-              >
-                Self Care Data
-              </Nav.Link>
+            <Nav className="me-auto">              
               <Nav.Link
                 as={Link}
                 to="/submit-time-page"
-                className={location.pathname === '/submit-time-page' ? 'active' : ''}
+                className={location.pathname === '/' || location.pathname === '/submit-time-page' ? 'active' : ''}
               >
                 Submit Time
               </Nav.Link>              
+              <Nav.Link
+                as={Link}
+                to="/summary-page"
+                className={location.pathname === '/summary-page' ? 'active' : ''}
+              >
+                Self Care Data
+              </Nav.Link>
               <Nav.Link
                 as={Link}
                 to="/leaderboard"
@@ -84,15 +98,15 @@ function Layout() {
               </Nav.Link>
             </Nav>
             <Nav className="justify-content-end">
-              <Nav.Link href="https://microsoft-my.sharepoint-df.com/:w:/p/sidm/ES-DIlQMHbJEgLz9cLSRcSsBdieBfDoaM-r5-cAjWcBwMw?e=hPhdPs" target="_blank">
-                The Hypothesis behind AmplifyCares
+              <Nav.Link onClick={handleAboutAmplifyCares}>
+                About AmplifyCares
               </Nav.Link>
             </Nav>
+            {showAboutDialog && <FirstRunExperience screen="1" onClose={() => setShowAboutDialog(false)} />}
           </Navbar.Collapse>
         </Container>
       </Navbar>
       <center>
-        <br></br>
         <h2 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h2>
         <h2 className="subheader">A platform designed to encourage and measure self care. AmplifyCares, Do You? </h2>
       </center>
