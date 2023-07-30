@@ -39,6 +39,14 @@ function FirstRunExperience({ screen, onClose }) {
         title:"Accessibility",
         description:"@Maggie - Thank you for calling out that the color scheme is not accessible. We will work on fixing this soon.",
     },
+    {
+      title:"Personalized Insights to help your self care",
+      description:"Learn from what others do well. Amplify Cares will give you suggestions on what you can do to take even better care of yourself.",
+    },
+    {
+      title:"Challenges to keep you going",
+      description:"Think you're doing a great job of self care? Beat the challenges and prove it to yourself.",
+    },
   ];
 
   // Define the content for each screen
@@ -55,7 +63,7 @@ function FirstRunExperience({ screen, onClose }) {
 
           <br></br><br></br>
           <center><video id="video-element" controls>
-            <source src="/welcome.mp4" type="video/mp4" />
+            <source src="/why.webm" type="video/mp4" />
             Your browser does not support the video tag.
           </video></center>
         </div>
