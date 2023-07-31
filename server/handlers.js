@@ -367,14 +367,24 @@ async function writeFeedback(feedback) {
   return containerClient.getBlockBlobClient(blobName).url.toString();
 }
 
+async function sendmail() {
+  const sgMail = require('@sendgrid/mail');
+  sgMail.setApiKey('your_sendgrid_api_key');
 
+  const ct = await getUserContainer();
+  const reipients = await ct.find().toArray();
+  recipients[0].username;
 
-  async function updateItem(itemId, item) {
-    item.id = itemId;
-    const ct = await getContainer();
-    const { resource: updatedItem } = await ct.item(itemId, itemId).replace(item);
-    console.log(`Updated item with id: ${updatedItem.id}`);
-  }
+  const msg = {
+    to: 'recipient@example.com',
+    from: 'sender@example.com',
+    subject: 'New Features Announcement',
+    text: 'Check out our latest features...',
+    html: '<p>Check out our <strong>latest features</strong>...</p>',
+  };
+
+  sgMail.send(msg);
+}
   
   async function deleteItem(itemId) {
     const ct = await getContainer();

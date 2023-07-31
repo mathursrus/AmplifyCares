@@ -26,7 +26,7 @@ function FirstRunExperience({ screen, onClose }) {
     },
     {
         title:"Cold Start Performance",
-        description:"@ScottHas - Thank you for your feedback on the terrible perf. We've reduced cold start perf from 40 seconds to 1 second. Hope you find it better now.",
+        description:"@ScottHas - Thank you for your feedback on the terrible perf. We've reduced cold start perf from 40 seconds to 1 second. Your feedback helped improve the experience for all.",
     }
   ];
 
@@ -63,7 +63,7 @@ function FirstRunExperience({ screen, onClose }) {
 
           <br></br><br></br>
           <center><video id="video-element" controls>
-            <source src="/why.webm" type="video/mp4" />
+            <source src="/Why.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video></center>
         </div>
@@ -78,7 +78,7 @@ function FirstRunExperience({ screen, onClose }) {
           Have you ever felt guilty taking time for self care? 
           Have you ever wanted to share your self-care techniques with others? 
           Amplify Cares promotes, normalizes, gamifies the essential habit of self care. 
-          Amplify Cares, Do you?
+          Watch the video to learn more ...
                      
           <br></br><br></br>
           <center><video id="video-element" controls>
