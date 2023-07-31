@@ -21,6 +21,11 @@ function TeamList() {
   return (
     <div>
       <div style={{marginTop: '5rem'}}/>
+      <div style={{marginTop: '1rem'}}/>
+      <center>
+        <h3 className="subheader">If you'd like to create or be added to a team, send us feedback and we'll gladly do so.</h3>
+      </center>
+      <br></br>
       { teams ?
       (
         <div>
