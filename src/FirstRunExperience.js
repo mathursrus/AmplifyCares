@@ -17,6 +17,10 @@ function FirstRunExperience({ screen, onClose }) {
 
   const features = [
     {
+        title:"Entering historical data",
+        description:"@Manohar @ScottHas - Thank you for expressing the need to enter historical data. You can now pick the date for your self care hours.",
+    },
+    {
         title:"No more screaming",
         description:"@Jesus - Thank you for telling us that you felt screamed at by the SubmitTime page. We've mellowed down thanks to you.",
     },
@@ -31,10 +35,6 @@ function FirstRunExperience({ screen, onClose }) {
   ];
 
   const comingsoon = [
-    {
-        title:"Entering historical data",
-        description:"@Manohar - Thank you for expressing the need to enter historical data. We've added this feature to the roadmap.",
-    },
     {
         title:"Accessibility",
         description:"@Maggie - Thank you for calling out that the color scheme is not accessible. We will work on fixing this soon.",
