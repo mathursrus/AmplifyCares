@@ -47,7 +47,11 @@ const SummaryPage = () => {
     console.log("Processing for dates ", start, " to ", end);
 
     for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
-      const dateString = date.toISOString().slice(0, 10);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateString = ""+year+"-"+month+"-"+day;
+      //const dateString = formatDateToCustomString(date);
       console.log("Processing for date ", dateString);
       const selfCarePoint = selfCareData.find(point => point._id === dateString);
       const selfCareMinutes = selfCarePoint ? selfCarePoint.total_health_time : 0;
@@ -69,7 +73,7 @@ const SummaryPage = () => {
   };
 
   const formatDate = (date) => {
-    return date.slice(5,11);
+    return date.slice(6, 10);
   };
 
   return (

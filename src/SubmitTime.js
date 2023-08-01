@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { getApiHost } from './utils/urlUtil';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import './SubmitTime.css';
 import UserBadges from './UserBadges';
 
@@ -31,6 +33,8 @@ const SubmitTimePage = () => {
     //const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
     const navigate = useNavigate();
     const [flyoutState, setFlyoutState] = useState(0);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
 
     // Create a function to generate a random number between 1 and 4
     const getRandomNumber = () => {
@@ -40,16 +44,18 @@ const SubmitTimePage = () => {
     
     const getSubmissionTime = () => {
         // Get Current Date
-        var today = new Date();
+        /*var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 
-        // Get Current Time
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
-        // Display Current Date Time
         var dateTime = date+' '+time;
         console.log(dateTime);
-        return today;
+        return today;*/
+
+        const date = selectedDate.toLocaleDateString(); // Convert to ISO string format
+        console.log(date);
+        return date;
     }
 
     /*const playSound = (rand) => {
@@ -125,6 +131,16 @@ const SubmitTimePage = () => {
                 <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
             </div>        
             <form>
+                <center>
+                    Select the date you're submitting time for:
+                    <DatePicker
+                    selected={selectedDate}
+                    onChange={(date) => {console.log("Selected date ", date); setSelectedDate(date)}}
+                    dateFormat="MM/dd/yyyy"
+                    className="date-picker"
+                    />
+                </center>
+
                 <div className='row'>
                     <label className='formLabel'>
                         <b>Mental Health</b>                    
