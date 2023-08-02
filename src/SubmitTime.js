@@ -53,7 +53,7 @@ const SubmitTimePage = () => {
         console.log(dateTime);
         return today;*/
 
-        const date = selectedDate.toLocaleDateString(); // Convert to ISO string format
+        const date = selectedDate.toLocaleDateString();
         console.log(date);
         return date;
     }

@@ -26,7 +26,14 @@ function Leaderboard() {
   useEffect(() => {
     async function fetchData() {
         setBarHeight(0);
-        const response = await fetch( getApiHost() + `/getteamstats/?startDay=${startDay.getTime()}&endDay=${endDay.getTime()}`);
+        console.log("Start day is ", startDay, ", End day is ", endDay);
+        const utcStart = new Date(Date.UTC(startDay.getFullYear(), startDay.getMonth(), startDay.getDate()));
+        // limit the data fetch to the lesser of today or end day
+        const today = new Date();        
+        const utcEnd = (today > endDay)? 
+                new Date(Date.UTC(endDay.getFullYear(), endDay.getMonth(), endDay.getDate())):
+                new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+        const response = await fetch( getApiHost() + `/getteamstats/?startDay=${utcStart.toISOString()}&endDay=${utcEnd.toISOString()}`);
         const data = await response.json();
         const myleaders = JSON.parse(data);
         setLeaders(myleaders);
@@ -36,6 +43,7 @@ function Leaderboard() {
             setBarHeight(200);
         }, 50);
     }
+    setLeaders(null);
     fetchData();    
     //new Audio('/drumroll.mp3').play();
   }, [endDay, startDay]);
@@ -75,6 +83,7 @@ function Leaderboard() {
             </div>
             )}
 
+            {leaders.length >= 1 && ( // Check if there are at least 2 leaders
             <div className={`medal-container animate-gold`}>
                 <FontAwesomeIcon className="medal-icon-gold-medal" icon={faMedal} />
                 <br />
@@ -92,6 +101,7 @@ function Leaderboard() {
                     <div className="bar-chart-gold"></div>
                 </div>
             </div>
+            )}
 
             {leaders.length >= 3 && ( // Check if there are at least 3 leaders
             <div className={`medal-container animate-bronze`}>

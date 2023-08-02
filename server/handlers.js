@@ -215,9 +215,10 @@ async function readTeamList() {
 
 
 async function readTeamStats(startDay, endDay) {
-  console.log(`Get Team Stats request`);
+  console.log(`Get Team Stats request start `, startDay, ":", endDay);
   const tct = await getTeamContainer();
-  const numberOfDays = Math.floor((endDay - startDay) / (1000 * 60 * 60 * 24))+1;
+  const numberOfDays = Math.floor((new Date(endDay).getTime() - new Date(startDay).getTime()) / (1000 * 60 * 60 * 24))+1;
+  console.log("Number of days ", numberOfDays);
 
   const result=await tct.aggregate([
     {
@@ -293,7 +294,7 @@ async function readTeamStats(startDay, endDay) {
       $project: {
         _id: 1,
         median: {
-          $trunc: { $divide: ["$median", numberOfDays] }
+          $ceil: { $divide: ["$median", numberOfDays] }
         }
       }
     },
