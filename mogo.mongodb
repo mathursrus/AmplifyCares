@@ -187,7 +187,7 @@ db.self_care_stats.aggregate([
 ]);
 
 /* Find median of mental health time across teams */
-use('amplifycares-db');
+use('amplifycares-db-catita');
 db.team_info.aggregate([
   {
     $match: {
@@ -208,8 +208,8 @@ db.team_info.aggregate([
   {
     $match: {
       "team_members.DateTime": {
-        $gte: new Date(1684733992280),
-        $lte: new Date(1685338792280)
+        $gte: new Date("2023-08-01T00:00:00.000Z"),
+        $lte: new Date("2023-08-31T00:00:00.000Z")
       }
     }
   },
@@ -258,6 +258,14 @@ db.team_info.aggregate([
       }
     }
   },
+  {
+    $project: {
+      _id: 1,
+      median: {
+        $ceil: { $divide: ["$median", 1] }
+      }
+    }
+  },
    {
     $sort: { "median": -1 }
   },
@@ -267,7 +275,7 @@ db.team_info.aggregate([
 
 /* All details on a particular date */
 use('amplifycares-db-catita');
-db.self_care_stats.find({DateTime:{$gte: new Date('2022-04-01')}}).sort({"_id":1});
+db.self_care_stats.find({$and:[{DateTime:{$gte: new Date("2023-08-01T00:00:00.000Z")}}, {DateTime:{$lte: new Date("2023-08-31T00:00:00.000Z")}}]}).sort({"_id":1});
 
 /* All details sorted by date*/
 use('amplifycares-db-catita');
