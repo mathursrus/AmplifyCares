@@ -221,7 +221,7 @@ function AppPage() {
       const temp_badges = [
       { badgelisttype: 'current', badgelist: [
         { badgetype: 'streak', badgetext: 'Get a 30 day streak of self care'} ,
-        { badgetype: 'rookie', badgetext: 'Youre New to the app, Be the Rookie of the month' },
+        { badgetype: 'rookie', badgetext: 'You are new to the app, Be the Rookie of the month' },
         { badgetype: 'winner', badgetext: 'Be among the top 10% of self care for the month' },
         { badgetype: 'team', badgetext: 'Help your team top the leaderboard' },
       ]},

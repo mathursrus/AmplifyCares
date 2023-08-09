@@ -108,7 +108,7 @@ function Layout() {
       </Navbar>
       <center>
         <h2 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h2>
-        <h2 className="subheader">A platform designed to encourage and measure self care. AmplifyCares, Do You? </h2>
+        <h2 className="subheader">A platform designed to encourage and measure self care... AmplifyCares, do you? </h2>
       </center>
       <Outlet />      
     </>

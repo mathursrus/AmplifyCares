@@ -138,7 +138,7 @@ const SummaryPage = () => {
                   dataKey="median_care_minutes"
                   stroke="orange"
                   strokeWidth="2"
-                  name="Most Others"
+                  name="The Majority"
                 />
               )}
               {showTheBest && (
@@ -172,10 +172,10 @@ const SummaryPage = () => {
                     >
                       <span
                         style={{ color: 'orange', paddingRight: '5px', cursor: 'pointer' }}
-                        title="Median hours spent by your peers on self care in the day"
+                        title="Median hours spent by everyone on self care in the day"
                       >
                         {showMostOthers ? '● ' : '○ '}
-                        Most Others
+                        The Majority
                       </span>                      
                     </div>
                     <div
@@ -184,7 +184,7 @@ const SummaryPage = () => {
                     >
                       <span
                         style={{ color: 'green', paddingRight: '5px', cursor: 'pointer' }}
-                        title="Hours spent by the top 10% of your peers on self care in the day"
+                        title="Hours spent by the top 10% on self care in the day"
                       >
                         {showTheBest ? '● ' : '○ '}
                         The Best
