@@ -8,6 +8,7 @@ import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { getApiHost } from './utils/urlUtil';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
+import { evaluate } from 'mathjs';
 import 'react-datepicker/dist/react-datepicker.css';
 import './SubmitTime.css';
 import UserBadges from './UserBadges';
@@ -155,16 +156,12 @@ const SubmitTimePage = () => {
                         onChange={(e) => {
                             const input = e.target.value;
                             try {
-                            const result = eval(input);
-                            if (typeof result === 'number' && !isNaN(result)) {
-                                setMentalHealth(result.toString());
-                            } else {
-                                setMentalHealth('');
-                            }
+                              const result = evaluate(input);
+                              setMentalHealth(result.toString());
                             } catch (error) {
-                            setMentalHealth('');
+                              setMentalHealth('');
                             }
-                        }}
+                          }}
                         placeholder={placeholderStrings.MentalHealth}
                     />
                 </div>
@@ -183,16 +180,12 @@ const SubmitTimePage = () => {
                         onChange={(e) => {
                             const input = e.target.value;
                             try {
-                            const result = eval(input);
-                            if (typeof result === 'number' && !isNaN(result)) {
-                                setPhysicalHealth(result.toString());
-                            } else {
-                                setPhysicalHealth('');
-                            }
+                              const result = evaluate(input);
+                              setPhysicalHealth(result.toString());
                             } catch (error) {
                                 setPhysicalHealth('');
                             }
-                        }} 
+                          }} 
                         placeholder={placeholderStrings.PhysicalHealth}
                     />
                 </div>
@@ -211,16 +204,12 @@ const SubmitTimePage = () => {
                         onChange={(e) => {
                             const input = e.target.value;
                             try {
-                            const result = eval(input);
-                            if (typeof result === 'number' && !isNaN(result)) {
-                                setSpiritualHealth(result.toString());
-                            } else {
-                                setSpiritualHealth('');
-                            }
+                              const result = evaluate(input);
+                              setSpiritualHealth(result.toString());
                             } catch (error) {
                                 setSpiritualHealth('');
                             }
-                        }}  
+                          }} 
                         placeholder={placeholderStrings.SpiritualHealth}
                     />
                 </div>
@@ -239,16 +228,12 @@ const SubmitTimePage = () => {
                         onChange={(e) => {
                             const input = e.target.value;
                             try {
-                            const result = eval(input);
-                            if (typeof result === 'number' && !isNaN(result)) {
-                                setSocialHealth(result.toString());
-                            } else {
-                                setSocialHealth('');
-                            }
+                              const result = evaluate(input);
+                              setSocialHealth(result.toString());
                             } catch (error) {
                                 setSocialHealth('');
                             }
-                        }}   
+                          }}  
                         placeholder={placeholderStrings.SocialHealth}
                     />
                 </div>
