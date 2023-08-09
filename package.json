@@ -33,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-fireworks": "^1.0.4",
     "react-icons": "^4.8.0",
+    "react-number-format": "^5.2.2",
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "^5.0.1",
     "react-sparkle": "^2.0.0",

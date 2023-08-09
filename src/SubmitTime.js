@@ -148,7 +148,25 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>                        
                     </label>
-                    <input type="number" class="text-field" value={MentalHealth} onChange={(e) => setMentalHealth(e.target.value)} placeholder={placeholderStrings.MentalHealth}/>
+                    <input
+                        type="text"
+                        className="text-field"
+                        value={MentalHealth}
+                        onChange={(e) => {
+                            const input = e.target.value;
+                            try {
+                            const result = eval(input);
+                            if (typeof result === 'number' && !isNaN(result)) {
+                                setMentalHealth(result.toString());
+                            } else {
+                                setMentalHealth('');
+                            }
+                            } catch (error) {
+                            setMentalHealth('');
+                            }
+                        }}
+                        placeholder={placeholderStrings.MentalHealth}
+                    />
                 </div>
                 <br></br>
                 <div className='row'>
@@ -158,7 +176,25 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
-                    <input type="number" class="text-field" value={PhysicalHealth} onChange={(e) => setPhysicalHealth(e.target.value)} placeholder={placeholderStrings.PhysicalHealth}/>
+                    <input 
+                        type="text" 
+                        class="text-field" 
+                        value={PhysicalHealth} 
+                        onChange={(e) => {
+                            const input = e.target.value;
+                            try {
+                            const result = eval(input);
+                            if (typeof result === 'number' && !isNaN(result)) {
+                                setPhysicalHealth(result.toString());
+                            } else {
+                                setPhysicalHealth('');
+                            }
+                            } catch (error) {
+                                setPhysicalHealth('');
+                            }
+                        }} 
+                        placeholder={placeholderStrings.PhysicalHealth}
+                    />
                 </div>
                 <br></br>
                 <div className='row'>
@@ -168,7 +204,25 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
-                    <input type="number" class="text-field" value={SpiritualHealth} onChange={(e) => setSpiritualHealth(e.target.value)} placeholder={placeholderStrings.SpiritualHealth}/>
+                    <input 
+                        type="text" 
+                        class="text-field" 
+                        value={SpiritualHealth} 
+                        onChange={(e) => {
+                            const input = e.target.value;
+                            try {
+                            const result = eval(input);
+                            if (typeof result === 'number' && !isNaN(result)) {
+                                setSpiritualHealth(result.toString());
+                            } else {
+                                setSpiritualHealth('');
+                            }
+                            } catch (error) {
+                                setSpiritualHealth('');
+                            }
+                        }}  
+                        placeholder={placeholderStrings.SpiritualHealth}
+                    />
                 </div>
                 <br></br>
                 <div className='row'>
@@ -178,7 +232,25 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
-                    <input type="number" class="text-field" value={SocialHealth} onChange={(e) => setSocialHealth(e.target.value)}  placeholder={placeholderStrings.SocialHealth}/>
+                    <input 
+                        type="text" 
+                        class="text-field" 
+                        value={SocialHealth} 
+                        onChange={(e) => {
+                            const input = e.target.value;
+                            try {
+                            const result = eval(input);
+                            if (typeof result === 'number' && !isNaN(result)) {
+                                setSocialHealth(result.toString());
+                            } else {
+                                setSocialHealth('');
+                            }
+                            } catch (error) {
+                                setSocialHealth('');
+                            }
+                        }}   
+                        placeholder={placeholderStrings.SocialHealth}
+                    />
                 </div>
                 {flyoutState > 0 && (
                             <div className="flyout show">
