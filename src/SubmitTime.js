@@ -175,7 +175,7 @@ const SubmitTimePage = () => {
                     </label>
                     <input 
                         type="text" 
-                        class="text-field" 
+                        className="text-field" 
                         value={PhysicalHealth} 
                         onChange={(e) => {
                             const input = e.target.value;
@@ -199,7 +199,7 @@ const SubmitTimePage = () => {
                     </label>
                     <input 
                         type="text" 
-                        class="text-field" 
+                        className="text-field" 
                         value={SpiritualHealth} 
                         onChange={(e) => {
                             const input = e.target.value;
@@ -223,7 +223,7 @@ const SubmitTimePage = () => {
                     </label>
                     <input 
                         type="text" 
-                        class="text-field" 
+                        className="text-field" 
                         value={SocialHealth} 
                         onChange={(e) => {
                             const input = e.target.value;

@@ -29,17 +29,17 @@ function TeamList() {
       { teams ?
       (
         <div>
-        {teams.map((team, index) => (
-            <div>
-                <center><h3>{team.team_name}</h3></center>
-                {team.team_members.map((member, index2) => (                    
-                    <center>{member.member_id}</center>              
-                ))}
-            </div>
-        ))} 
-        </div>       
+          {teams.map((team, index) => (
+              <div key={index}>
+                  <center><h3>{team.team_name}</h3></center>
+                  {team.team_members.map((member, index2) => (                    
+                      <center key={index2}>{member.member_id}</center>              
+                  ))}
+              </div>
+          ))} 
+        </div>     
        ) : (
-            <p><center>Loading...</center></p>
+            <center>Loading...</center>
        ) 
       }
     </div>

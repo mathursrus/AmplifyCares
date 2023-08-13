@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
 import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
-import { getApiHost, getApiUrl } from './utils/urlUtil';
+import { getApiHost } from './utils/urlUtil';
 import * as microsoftTeams from "@microsoft/teams-js";
 import './App.css';
 
@@ -87,52 +87,43 @@ function AppPage() {
   };
 
   useEffect(() => {
+    console.log("Use effect called");
     const checkAuthentication = async () => {
       if (window.parent !== window) {
-        microsoftTeams.initialize();
-        console.log("Trying to initiatlize with location ", window);
-        console.log("Token ", microsoftTeams);
-        fetch(getApiUrl)
-        microsoftTeams.getContext((context) => {
-          const userName = context.userPrincipalName;
-          console.log('User Name:', userName);
-          setUser([userName, userName]);          
-        });
-        /*microsoftTeams.authentication.getAuthToken({
-          successCallback: (token) => {
-            const graphAPIEndpoint = 'https://graph.microsoft.com/v1.0/me';
-            fetch(graphAPIEndpoint, {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.displayName) {
-                // User is authenticated in Teams and Graph API call succeeded
-                console.log('User authenticated:', data);
-                localStorage.setItem('userName', data.userPrincipalName);
-                localStorage.setItem('userDisplayName', data.displayName);
-    
-                setUserExists(true);
-                getAndSetUserInfo(data.userPrincipalName);
-              } else {
-                // User is authenticated in Teams, but Graph API call did not return the display name
-                console.log('Graph API call did not return display name');
-              }
-            })
-            .catch((error) => {
-              // Error while making Graph API call
-              console.error('Error calling Graph API:', error);
-            });
+        console.log("Trying to initiatlize with location ", window, " and parent ", window.parent);
+        console.log("Teams object ", microsoftTeams);
+        await microsoftTeams.app.initialize();
+        
+        const context = await microsoftTeams.app.getContext();
+        const userName = await context.user.userPrincipalName;
+        console.log('User Name:', userName);
+        console.log('Context:', context);
+        console.log('App Resource:', microsoftTeams.authentication);
+        console.log('Iframe Origin:', window.location.origin); 
+
+          
+        await microsoftTeams.authentication.getAuthToken({
+          successCallback: function(token) { 
+            console.log("Success: ", token); 
+            // Split the token into header, payload, and signature
+            const [headerB64, payloadB64] = token.split('.');
+
+            // Decode the base64-encoded header and payload
+            const header = JSON.parse(atob(headerB64));
+            const payload = JSON.parse(atob(payloadB64));
+            
+            console.log('Decoded Header:', header);
+            console.log('Decoded Payload:', payload);
+            
+            if (payload.name) {
+              setUser([userName, payload.name]);             
+            } else {
+              console.log('Graph API call did not return display name');
+              setUser([userName, userName]);     
+            }
           },
-          failureCallback: (error) => {
-            // Error while acquiring token
-            console.error('Error acquiring token:', error);
-          },
-          scopes: ['User.Read'],
-        });*/
+          failureCallback: function(error) { console.log("Error getting token: " + error); }
+        }); 
       } else
       {
         const isLogoutRedirect = window.location.search.includes("logout=true");
@@ -159,51 +150,57 @@ function AppPage() {
         }
       }      
     }
-    checkAuthentication();
+    if (localStorage.getItem('authenticating') === null || localStorage.getItem('authenticating') === "0") {
+      try {
+        localStorage.setItem('authenticating', "1");          
+        checkAuthentication();
+      } catch (error) {
+        console.log('Authentication failed:', error);          
+      }
+      finally {
+        setTimeout(() => {
+          localStorage.setItem('authenticating', "0");
+        }, 2000);        
+      }
+    } else {
+      console.log("Auth already in progress");
+    }
   }); 
 
-    const login = async () => {
-      const loginRequest = {
-        scopes: ['user.read']
-      };
-
-      console.log("Authenticating is ", localStorage.getItem('authenticating'));
-      if (localStorage.getItem('authenticating') === null || localStorage.getItem('authenticating') === "0") {
-        try {
-          localStorage.setItem('authenticating', "1");
-          const response = await msalInstance.loginPopup(loginRequest);
-          setUser([response.account.username, response.account.name]);          
-          console.log('User successfully logged in:', response.account.username);
-        } catch (error) {
-          console.log('Login failed:', error);          
-        }
-        finally {
-          localStorage.setItem('authenticating', "0");
-        }
-      } else {
-        console.log("Auth already in progress");
-      }
+  const login = async () => {
+    const loginRequest = {
+      scopes: ['user.read']
     };
 
-    const setUser = (response) => {
-      console.log("Set user called with ", response);
-      if (response) {
-        user.current = response[0];
-        localStorage.setItem('userName', response[0]);
-        localStorage.setItem('userDisplayName', response[1]);
-        
-        setUserExists(true);
-        getAndSetUserInfo(response[0]);        
-      }
-      else {
-        user.current = null;
-        localStorage.setItem('userName', null);
-        localStorage.setItem('userDisplayName', null);
-        localStorage.setItem('badges', null);
-        setUserExists(false);
-        console.log("User set to null");
-      }
-    };
+    console.log("Authenticating is ", localStorage.getItem('authenticating'));
+    try {
+      const response = await msalInstance.loginPopup(loginRequest);
+      setUser([response.account.username, response.account.name]);          
+      console.log('User successfully logged in:', response.account.username);
+    } catch (error) {
+      console.log('Login failed:', error);          
+    }      
+  };
+
+  const setUser = (response) => {
+    console.log("Set user called with ", response);
+    if (response) {
+      user.current = response[0];
+      localStorage.setItem('userName', response[0]);
+      localStorage.setItem('userDisplayName', response[1]);
+      
+      setUserExists(true);
+      getAndSetUserInfo(response[0]);        
+    }
+    else {
+      user.current = null;
+      localStorage.setItem('userName', null);
+      localStorage.setItem('userDisplayName', null);
+      localStorage.setItem('badges', null);
+      setUserExists(false);
+      console.log("User set to null");
+    }
+  };
  
   const getAndSetUserInfo = async (username) => {
     const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));

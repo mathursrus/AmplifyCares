@@ -1,6 +1,6 @@
 {
 	"$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"manifestVersion": "1.16",
 	"id": "${{TEAMS_APP_ID}}",
 	"packageName": "com.microsoft.teams.extension",
@@ -31,17 +31,31 @@
 			"websiteUrl": "${{CONFIG__HOST__ENDPOINT}}",
 			"scopes": [
 				"personal", "team", "groupChat"				
+			],
+			"context": [ 
+				"personalTab", 
+				"channelTab",
+				"meetingChatTab",
+				"privateChatTab", 				 
+				"meetingDetailsTab", 
+				"meetingSidePanel", 
+				"meetingStage" 
 			]
 		}
 	],
+	"permissions": [
+        "identity"
+    ],
 	"validDomains": [
 		"localhost:3000",
 		"localhost:53000",
 		"${{CONFIG__HOST__ENDPOINT}}",
-		"${{TAB_DOMAIN}}"
+		"${{TAB_DOMAIN}}",
+		"https://graph.microsoft.com",
+		"https://teams.microsoft.com"
 	],
 	"webApplicationInfo": {
 		"id": "${{AAD_APP_CLIENT_ID}}",
-		"resource": "${{CONFIG__HOST__ENDPOINT}}"		
+		"resource": "api://${{CONFIG__HOST__DOMAIN}}/${{AAD_APP_CLIENT_ID}}"		
 	}
 }
