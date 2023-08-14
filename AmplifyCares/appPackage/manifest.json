@@ -23,6 +23,24 @@
 		"color": "color.png"
 	},
 	"accentColor": "#FFFFFF",
+	"configurableTabs": [
+		{
+		  "configurationUrl": "${{CONFIG__HOST__ENDPOINT}}",
+		  "canUpdateConfiguration": true,
+		  "scopes": [
+			"groupChat",
+			"team"
+		  ],
+		  "context": [
+			"channelTab",
+			"privateChatTab",
+			"meetingSidePanel",
+			"meetingStage",
+			"meetingDetailsTab",
+			"meetingChatTab"
+		  ]
+		}
+	  ],
 	"staticTabs": [
 		{
 			"entityId": "index0",
@@ -57,5 +75,20 @@
 	"webApplicationInfo": {
 		"id": "${{AAD_APP_CLIENT_ID}}",
 		"resource": "api://${{CONFIG__HOST__DOMAIN}}/${{AAD_APP_CLIENT_ID}}"		
-	}
+	},
+	"devicePermissions": [
+		"notifications",
+		"openExternal",
+		"media"
+	  ],
+	  "authorization": {
+		"permissions": {
+		  "resourceSpecific": [
+			{
+			  "name": "CameraStream.Read.User",
+			  "type": "Delegated"
+			}
+		  ]
+		}
+	  }
 }

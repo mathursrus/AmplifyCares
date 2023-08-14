@@ -93,7 +93,18 @@ function AppPage() {
         console.log("Trying to initiatlize with location ", window, " and parent ", window.parent);
         console.log("Teams object ", microsoftTeams);
         await microsoftTeams.app.initialize();
-        
+        try{
+          microsoftTeams.pages.config.setValidityState(true);
+          console.log("In config state and it worked");
+          microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
+            saveEvent.notifySuccess();
+            console.log("Config saved");
+          });
+        }
+        catch (error) {
+          console.log("Its ok to ignore this error, not in config state ", error);
+        }
+
         const context = await microsoftTeams.app.getContext();
         const userName = await context.user.userPrincipalName;
         console.log('User Name:', userName);
@@ -150,7 +161,9 @@ function AppPage() {
         }
       }      
     }
-    if (localStorage.getItem('authenticating') === null || localStorage.getItem('authenticating') === "0") {
+    const authenticating = localStorage.getItem('authenticating');
+    console.log("Authenticating is ", authenticating);
+    if (authenticating === null || authenticating === "0") {
       try {
         localStorage.setItem('authenticating', "1");          
         checkAuthentication();
