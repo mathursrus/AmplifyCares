@@ -22,6 +22,7 @@ const BadgeIcon = ({ badge }) => {
   };
 
   const UserBadges = ({ badges }) => {
+    console.log("UserBadges has current ", badges);
     if (badges) {
       const currentBadges = badges.find((badge) => badge.badgelisttype === 'current');
       const historicalBadges = badges.find((badge) => badge.badgelisttype === 'historical');

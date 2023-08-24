@@ -1,6 +1,6 @@
 {
 	"$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-	"version": "1.0.5",
+	"version": "1.0.7",
 	"manifestVersion": "1.16",
 	"id": "${{TEAMS_APP_ID}}",
 	"packageName": "com.microsoft.teams.extension",
@@ -23,28 +23,10 @@
 		"color": "color.png"
 	},
 	"accentColor": "#FFFFFF",
-	"configurableTabs": [
-		{
-		  "configurationUrl": "${{CONFIG__HOST__ENDPOINT}}",
-		  "canUpdateConfiguration": true,
-		  "scopes": [
-			"groupChat",
-			"team"
-		  ],
-		  "context": [
-			"channelTab",
-			"privateChatTab",
-			"meetingSidePanel",
-			"meetingStage",
-			"meetingDetailsTab",
-			"meetingChatTab"
-		  ]
-		}
-	  ],
 	"staticTabs": [
 		{
-			"entityId": "index0",
-			"name": "Home",
+			"entityId": "homeTab",
+			"name": "AmplifyCares",
 			"contentUrl": "${{CONFIG__HOST__ENDPOINT}}",
 			"websiteUrl": "${{CONFIG__HOST__ENDPOINT}}",
 			"scopes": [
@@ -81,14 +63,14 @@
 		"openExternal",
 		"media"
 	  ],
-	  "authorization": {
+	"authorization": {
 		"permissions": {
-		  "resourceSpecific": [
+			"resourceSpecific": [
 			{
-			  "name": "CameraStream.Read.User",
-			  "type": "Delegated"
+				"name": "CameraStream.Read.User",
+				"type": "Delegated"
 			}
-		  ]
+			]
 		}
-	  }
+	}
 }

@@ -17,9 +17,10 @@ const config = {
   auth: {
     clientId: "93b00364-cb1c-49c6-8564-3709d70ad224",
     authority: "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
-    //redirectUri: window.location.origin,
+    redirectUri: window.location.origin,
+    logoutRedirect: window.location.origin + "?logout=true",
     consentScopes: [],
-    navigateToLoginRequestUrl: false,
+    navigateToLoginRequestUrl: true,
     ssoSilent: true
   },
   cache: {
@@ -73,12 +74,19 @@ function App() {
 }
 
 function AppPage() {
-  const msalInstance = useMemo(() => new PublicClientApplication(config), []);
-  //const [user, setUser] = useState(null);
+
   const [logoutComplete, setLogoutComplete] = useState(false);
   const user = useRef(null);
   const [userExists, setUserExists] = useState(false);
   const [showFirstRunExperience, setShowFirstRunExperience] = useState(0);
+  const AUTH_STATE = "authentication_state";
+  const AUTH_STATE_VALUES = {
+    AUTHENTICATING: "authenticating",
+    AUTHENTICATED: "authenticated",
+    LOGGING_OUT: "logging_out",
+    LOGGED_OUT: "logged_out",
+  }
+  const msalInstance = useMemo(() => new PublicClientApplication(config), []);
 
   // Function to handle closing the first-run experience modal
   const handleCloseFirstRunExperience = () => {
@@ -87,19 +95,23 @@ function AppPage() {
   };
 
   useEffect(() => {
-    console.log("Use effect called");
     const checkAuthentication = async () => {
+      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.AUTHENTICATING);
+      
       if (window.parent !== window) {
         console.log("Trying to initiatlize with location ", window, " and parent ", window.parent);
         console.log("Teams object ", microsoftTeams);
         await microsoftTeams.app.initialize();
         try{
+          microsoftTeams.app.notifySuccess();
+          /*
           microsoftTeams.pages.config.setValidityState(true);
           console.log("In config state and it worked");
           microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
             saveEvent.notifySuccess();
             console.log("Config saved");
           });
+          */
         }
         catch (error) {
           console.log("Its ok to ignore this error, not in config state ", error);
@@ -137,79 +149,96 @@ function AppPage() {
         }); 
       } else
       {
+        console.log(window.location.search);
+
         const isLogoutRedirect = window.location.search.includes("logout=true");
         if (isLogoutRedirect) {
+          localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.LOGGING_OUT);
+      
           console.log("Redirected from logout");
           localStorage.removeItem('userName');
           localStorage.removeItem('userDisplayName');
-          localStorage.setItem('authenticating', "0");
           setUser(null);
+          msalInstance.setActiveAccount(null);
           setLogoutComplete(true);
         } else {
-          const accounts = await msalInstance.getAllAccounts();
-          console.log("Got accounts ", accounts);
-          if (accounts.length > 0) {
-            const response = await msalInstance.acquireTokenSilent({
-              account: accounts[0],
+          const account = await msalInstance.getActiveAccount();
+          console.log("Got account from stack ", account);
+          if (account) {
+            /*const response = await msalInstance.acquireTokenSilent({
+              account: account,
               scopes: ['user.read']
-            });
-            setUser([response.account.username, response.account.name]);
-            console.log('User already authenticated:', response.account.username);
+            });*/
+            setUser([account.username, account.name]);
+            console.log('User already authenticated:', account.username);
           } else {
             login();
           }
         }
       }      
     }
-    const authenticating = localStorage.getItem('authenticating');
-    console.log("Authenticating is ", authenticating);
-    if (authenticating === null || authenticating === "0") {
-      try {
-        localStorage.setItem('authenticating', "1");          
+
+    const current_auth_state = localStorage.getItem(AUTH_STATE);
+    var desired_state = AUTH_STATE_VALUES.AUTHENTICATING;
+    if (window.location.href.includes("logout")) {
+      desired_state = AUTH_STATE_VALUES.LOGGING_OUT;
+    }
+    
+    console.log("Current state is ", current_auth_state, ", deired state is ", desired_state, ", Window is ", window);
+    
+    if (current_auth_state === null || current_auth_state === "" || current_auth_state !== desired_state) {
+      try {    
         checkAuthentication();
       } catch (error) {
         console.log('Authentication failed:', error);          
       }
-      finally {
-        setTimeout(() => {
-          localStorage.setItem('authenticating', "0");
-        }, 2000);        
-      }
     } else {
-      console.log("Auth already in progress");
+      console.log("Ignoring auth since state is ", current_auth_state);
     }
   }); 
 
-  const login = async () => {
-    const loginRequest = {
-      scopes: ['user.read']
-    };
+  const login = async () => {    
+    console.log("In Login, Authenticating is ", localStorage.getItem(AUTH_STATE));
+    try {      
+      msalInstance.handleRedirectPromise().then(authResult => {
+        console.log("Handle redirect promise called with auth ", authResult);
+        if (authResult && authResult.account) {
+          const account = authResult.account;
+          console.log("Setting active account to ", account);
+          msalInstance.setActiveAccount(account);    
+          setUser([account.username, account.name]);
+        }
+        else {
+          setUser(null);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
 
-    console.log("Authenticating is ", localStorage.getItem('authenticating'));
-    try {
-      const response = await msalInstance.loginPopup(loginRequest);
-      setUser([response.account.username, response.account.name]);          
-      console.log('User successfully logged in:', response.account.username);
+      await msalInstance.loginRedirect();
+
     } catch (error) {
       console.log('Login failed:', error);          
     }      
   };
 
-  const setUser = (response) => {
+  const setUser = async (response) => {
     console.log("Set user called with ", response);
     if (response) {
       user.current = response[0];
       localStorage.setItem('userName', response[0]);
       localStorage.setItem('userDisplayName', response[1]);
-      
-      setUserExists(true);
-      getAndSetUserInfo(response[0]);        
+      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.AUTHENTICATED);
+      await getAndSetUserInfo(response[0]); 
+      setUserExists(true);             
     }
     else {
       user.current = null;
       localStorage.setItem('userName', null);
       localStorage.setItem('userDisplayName', null);
       localStorage.setItem('badges', null);
+      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.LOGGED_OUT);
+
       setUserExists(false);
       console.log("User set to null");
     }
@@ -222,12 +251,12 @@ function AppPage() {
     console.log("Got user info ", userInfo);
     const badges = userInfo.length>0 ? userInfo[0].badgesOnTrack : null;
     const lastLogin = userInfo.length>0 ? userInfo[0].lastLoginTime : null;
-    setUserBadges(badges);
+    await setUserBadges(badges);
     console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));       
     updateUserLastLogin(username, lastLogin);
   }
 
-  const setUserBadges = (badges) => {
+  const setUserBadges = async (badges) => {
       const temp_badges = [
       { badgelisttype: 'current', badgelist: [
         { badgetype: 'streak', badgetext: 'Get a 30 day streak of self care'} ,
@@ -242,7 +271,7 @@ function AppPage() {
         { badgetype: 'team', badgetext: 'June weCare champ' },*/
       ]},
     ];
-    localStorage.setItem('badges', JSON.stringify(temp_badges));        
+    await localStorage.setItem('badges', JSON.stringify(temp_badges));        
   }
 
   // Update the last login time of a user or add a new user
@@ -262,23 +291,25 @@ function AppPage() {
   const handleLogout = async (event) => {
     //event.preventDefault();
     console.log("Called logout");
-    
-    msalInstance.logoutPopup({
-      //postLogoutRedirectUri: window.location.origin + `?logout=true`
-    })
-      .catch((error) => {
-        console.log("Logout failed ", error);
-      })
-      .finally(() => {
-        console.log("Logout operation completed.");
-        window.location.href = window.location.origin + `?logout=true`;
-      });
+    msalInstance.handleRedirectPromise().then(authResult => {
+      console.log("Logout redirect promise with auth ", authResult);
+      msalInstance.setActiveAccount(null);
+      setUser(null);
+      //window.location.href = window.location.origin + `?logout=true`;
+    }).catch(err => {
+      console.log(err);
+    });    
+
+    msalInstance.logoutRedirect({
+      account: msalInstance.getActiveAccount(),
+      postLogoutRedirectUri: window.location.origin + `?logout=true`
+    });
   };
 
   return (
     <div>
       {userExists ? (
-        <div className="App">          
+        <div className="App">                    
           <Routes>
             <Route path="/" element={<Layout />}>              
               <Route index element={<SubmitTimePage />} />
@@ -299,10 +330,11 @@ function AppPage() {
           <LogoutSuccessPage />          
         </div>
       ) : (
-        <div className="App">Authenticating... Please ensure your browser allows pop-ups</div>
+        <div className="App">Authenticating</div>
       )}
     </div>
   );
 }
+
 
 export default App;
