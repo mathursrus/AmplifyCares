@@ -28,7 +28,7 @@ const SubmitTimePage = () => {
     const [PhysicalHealth, setPhysicalHealth] = useState('');
     const [SpiritualHealth, setSpiritualHealth] = useState('');
     const [SocialHealth, setSocialHealth] = useState('');
-    //const [UserName, setUserName] = useState('');
+    const [UserName, setUserName] = useState('');
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     //const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
