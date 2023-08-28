@@ -15,7 +15,8 @@ import './App.css';
 
 const config = {
   auth: {
-    clientId: "93b00364-cb1c-49c6-8564-3709d70ad224",
+    //clientId: "93b00364-cb1c-49c6-8564-3709d70ad224",
+    clientId: "1adf639b-57f8-4bb9-9c02-f5f51cd00c13",
     authority: "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
     redirectUri: window.location.origin,
     logoutRedirect: window.location.origin + "?logout=true",
@@ -78,6 +79,7 @@ function AppPage() {
   const [logoutComplete, setLogoutComplete] = useState(false);
   const user = useRef(null);
   const [userExists, setUserExists] = useState(false);
+  const [inTeams, setInTeams] = useState(false);
   const [showFirstRunExperience, setShowFirstRunExperience] = useState(0);
   const AUTH_STATE = "authentication_state";
   const AUTH_STATE_VALUES = {
@@ -102,6 +104,7 @@ function AppPage() {
         console.log("Trying to initiatlize with location ", window, " and parent ", window.parent);
         console.log("Teams object ", microsoftTeams);
         await microsoftTeams.app.initialize();
+        setInTeams(true);
         try{
           microsoftTeams.app.notifySuccess();
           /*
@@ -205,7 +208,7 @@ function AppPage() {
         if (authResult && authResult.account) {
           const account = authResult.account;
           console.log("Setting active account to ", account);
-          msalInstance.setActiveAccount(account);    
+          msalInstance.setActiveAccount(account);              
           setUser([account.username, account.name]);
         }
         else {
@@ -286,6 +289,7 @@ function AppPage() {
       setShowFirstRunExperience(1);
     }
     fetch(getApiHost() + `/setUserLogin?user=${username}&logintime=${currentTime}`);
+    //sendNotification(username);
   };
 
   const handleLogout = async (event) => {
@@ -320,9 +324,13 @@ function AppPage() {
             </Route>
           </Routes>
           <FeedbackWidget />
-          <button className="sign-out-button" onClick={handleLogout}>
-            Sign Out
-          </button>
+          {!(inTeams) && (
+            <div>
+              <button className="sign-out-button" onClick={handleLogout}>
+                Sign Out
+              </button>
+            </div>
+          )}
           {showFirstRunExperience > 0 && <FirstRunExperience screen={showFirstRunExperience} onClose={handleCloseFirstRunExperience} />}
         </div>
       ) : logoutComplete ? (

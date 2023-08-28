@@ -5,11 +5,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMedal } from "@fortawesome/free-solid-svg-icons";
 import { getApiHost } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
+import ChallengeForm from "./ChallengeForm";
 
 function Leaderboard() {
   
+    const [user, setUser] = useState(null);
     const [leaders, setLeaders] = useState(null);
-    
+    const [newChallenge, setNewChallenge] = useState(false);
+
     const currentDate = new Date(); // Get the current date
     const currentMonth = currentDate.getMonth(); // Get the current month
     const currentYear = currentDate.getFullYear(); // Get the current year
@@ -45,10 +48,21 @@ function Leaderboard() {
     }
     setLeaders(null);
     fetchData();    
+    setUser(localStorage.getItem('userName'));
     //new Audio('/drumroll.mp3').play();
   }, [endDay, startDay]);
 
+  const createNewChallenge = (e) => {
+    console.log("User ", user, " has challenged colleagues ", e);
+    setNewChallenge(false);
+  }
+
+  const cancelNewChallenge = (e) => {
+    setNewChallenge(false);
+  }
+
   return (
+    <div>
     <div className="leaderboard-container">
       <DateRange
         startDay={startDay}
@@ -142,11 +156,35 @@ function Leaderboard() {
                     </div>
                 ))}
                 </div>
-            )}            
+            )}          
         </div>
         ) : (
         <center>Loading ...</center>
         )}
+    </div>
+    <div className="challenge-creation-container">
+        {!newChallenge && (                    
+                <button onClick={() => setNewChallenge(true)}>Challenge other colleagues to a friendly self-care competition</button>
+        )}
+
+        {/* Form for team selection */}
+        {newChallenge && (
+            <ChallengeForm
+                formTitle="Challenge other colleagues to improve their self-care ..."
+                textBoxPlaceholder="Email address of colleague to challenge ... "
+                exclude = {[user]}
+                onSubmit={createNewChallenge}
+                onCancel={cancelNewChallenge}                              
+            />            
+        )}
+    </div>
+
+    {/*challengedUsers.length > 0 && (
+        <div className="challenge-results-container">
+            <div className="chart-container">
+            </div>
+        </div>
+    )*/}      
     </div>
   );
 };

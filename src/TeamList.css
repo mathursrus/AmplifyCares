@@ -1,0 +1,42 @@
+.team-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .team-card {
+    border: 1px solid black;
+    padding: 15px;
+    max-width: 300px; /* Adjust as needed */
+    flex: 1;
+    text-align: center;
+  }
+
+  .invite {
+    border: 2px solid black;
+    padding: 2px;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background-color: lightcyan;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  

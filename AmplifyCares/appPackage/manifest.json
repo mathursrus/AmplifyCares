@@ -1,6 +1,6 @@
 {
 	"$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"manifestVersion": "1.16",
 	"id": "${{TEAMS_APP_ID}}",
 	"packageName": "com.microsoft.teams.extension",
@@ -44,7 +44,7 @@
 		}
 	],
 	"permissions": [
-        "identity"
+        "identity"		
     ],
 	"validDomains": [
 		"localhost:3000",
@@ -62,15 +62,5 @@
 		"notifications",
 		"openExternal",
 		"media"
-	  ],
-	"authorization": {
-		"permissions": {
-			"resourceSpecific": [
-			{
-				"name": "CameraStream.Read.User",
-				"type": "Delegated"
-			}
-			]
-		}
-	}
+	  ]
 }

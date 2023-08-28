@@ -23,6 +23,17 @@ const setUserLoginInfo = {
     }
 }
 
+const getAllUsers = {
+    method: 'get',
+    path: '/getAllUsers',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const domain = await req.query.domain;       
+        const response = await handlers.getAllUsers(domain);
+        res.status(200).json(response);
+    }
+}
+
 const writeSelfCareEntry = {
     method: 'get',
     path: '/writeselfcare',
@@ -124,4 +135,4 @@ const writeFeedback = {
     }
 }
 
-module.exports = { getUserInfo, setUserLoginInfo, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback};
+module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback};

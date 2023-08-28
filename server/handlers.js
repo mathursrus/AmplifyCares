@@ -71,7 +71,7 @@ async function getUserInfo(user) {
 
 async function setUserLoginInfo(user, loginTime) {
   try {
-      console.log('Get UserInfo handler got user: ', user)
+      console.log('Set UserInfo handler got user: ', user)
       const ct = await getUserContainer();
       const result=await ct.findOneAndUpdate(
         { username: user },
@@ -82,6 +82,28 @@ async function setUserLoginInfo(user, loginTime) {
       console.error('Error:', err);
     }
 }
+
+async function getAllUsers(domain) {
+  try {
+    console.log('Get all users handler called');
+    const ct = await getUserContainer();
+
+    // Use projection to retrieve only the 'username' field
+    // and filter documents with 'username' matching the given domain
+    const result = await ct.find(
+      { username: { $regex: domain, $options: 'i' } },
+      { projection: { username: 1 } }
+    ).toArray();
+
+    console.log('Result:', result);
+    const final = JSON.stringify(result);
+    console.log('Final:', final);
+    return final;
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}
+
 
 async function writeEntry(item) {
     try {
@@ -393,4 +415,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, setUserLoginInfo, writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback};
+module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback};
