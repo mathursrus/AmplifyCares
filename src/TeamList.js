@@ -39,13 +39,13 @@ function TeamList() {
     setAddingMemberToTeam(null);
   };
 
-  const handleAddNewTeamClicked = (teamId) => {
-    console.log("User ", user, " called Add member ", teamId);
+  const handleAddNewTeamClicked = () => {
+    console.log("User ", user, " called Add new team ");
     setAddingNewTeam(true);
   };
 
   const inviteMembersToCreateNewTeam = (members) => {
-    console.log("User ", user, " invited members ", members, " to team ", addingMemberToTeam);
+    console.log("User ", user, " invited members ", members, " to create new team ");
     setAddingNewTeam(false);
   };
 
@@ -76,8 +76,8 @@ function TeamList() {
                   ))}
                   {team.team_members.some(member => new RegExp(user).test(member.member_id)) && (
                       ((addingMemberToTeam === team._id) && (
-                        <div className="modal">
-                          <div className="modal-content">                            
+                        <div className="invite-modal">
+                          <div className="invite-modal-content">                            
                             <ChallengeForm
                               formTitle="Invite others to join your team"
                               textBoxPlaceholder="Email address of colleague to invite ..."
@@ -97,8 +97,8 @@ function TeamList() {
         </div>
         <center>
           {((addingNewTeam) && (
-              <div className="modal">
-                <div className="modal-content">                            
+              <div className="invite-modal">
+                <div className="invite-modal-content">                            
                   <ChallengeForm
                     formTitle="Invite others to create a new team"
                     textBoxPlaceholder="Email address of colleague to invite ..."
