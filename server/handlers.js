@@ -5,12 +5,14 @@ const containerId = "self_care_stats";
 const teamId = "team_info";
 const recoId = "recommendations";
 const userId = "userInfo";
+const inviteId = "invite_info";
 
 let dbClient = null;
 let team_container = null;
 let recos_container = null;
 let container = null;
 let user_container = null;
+let invite_container = null;
 
 async function getMongoDbClient() {
   if (!dbClient) {
@@ -53,6 +55,15 @@ async function getUserContainer() {
     console.log(user_container);
   }
   return user_container;
+}
+
+async function getInviteContainer() {
+  if (!invite_container) {
+    var cl = await getMongoDbClient();
+    invite_container = await cl.collection(inviteId);
+    console.log(invite_container);
+  }
+  return invite_container;
 }
 
 async function getUserInfo(user) {
@@ -390,6 +401,22 @@ async function writeFeedback(feedback) {
   return containerClient.getBlockBlobClient(blobName).url.toString();
 }
 
+async function sendInvite(inviteText) {
+  try {
+    console.log('Handler got invite: ', inviteText);
+    const invite = {
+      datetime: new Date(),
+      invite: inviteText
+    };
+    const ct = await getInviteContainer();
+    const result = await ct.insertOne(invite);
+    console.log('Invite inserted now:', result.insertedId);
+    //return result.insertedId;
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}
+
 async function sendmail() {
   const sgMail = require('@sendgrid/mail');
   sgMail.setApiKey('your_sendgrid_api_key');
@@ -415,4 +442,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback};
+module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

@@ -34,6 +34,10 @@ db.self_care_stats.aggregate([{$match:{name:{$regex:".*"}}}, {$group: {_id:"$nam
 use('amplifycares-db-catita');
 db.team_info.find();
 
+// all invite
+use('amplifycares-db-catita');
+db.invite_info.find();
+
 // find all entries on a particular date
 use('amplifycares-db-catita');
 db.self_care_stats.find({DateTime: { $gt: new Date('2023-08-01') }});

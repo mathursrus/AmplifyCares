@@ -31,8 +31,10 @@ function TeamList() {
 
   const inviteMembersToTeam = (members) => {
     console.log("User ", user, " invited members ", members, " to team ", addingMemberToTeam);
-    setAddingMemberToTeam(null);
-
+    // save the invitation
+    const invite = "User " + user + " invited " + members + " to join team " + addingMemberToTeam;
+    fetch(getApiHost() + "/sendInvite?invite=" + JSON.stringify(invite));
+    setAddingMemberToTeam(null);      
   };
 
   const cancelAddToTeam = () => {
@@ -46,6 +48,9 @@ function TeamList() {
 
   const inviteMembersToCreateNewTeam = (members) => {
     console.log("User ", user, " invited members ", members, " to create new team ");
+    // save the invitation
+    const invite = "User " + user + " invited " + members + " to create a new team";
+    fetch(getApiHost() + "/sendInvite?invite=" + JSON.stringify(invite));
     setAddingNewTeam(false);
   };
 

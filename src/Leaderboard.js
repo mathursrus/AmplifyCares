@@ -54,6 +54,9 @@ function Leaderboard() {
 
   const createNewChallenge = (e) => {
     console.log("User ", user, " has challenged colleagues ", e);
+    // save the invitation
+    const invite = "User " + user + " invited " + e + " to a challenge";
+    fetch(getApiHost() + "/sendInvite?invite=" + JSON.stringify(invite));
     setNewChallenge(false);
   }
 

@@ -23,6 +23,7 @@ var getTeamList = routesModules.getTeamList;
 var writeRecommendation = routesModules.writeRecommendation;
 var readRecommendations = routesModules.getRecommendations;
 var writeFeedback = routesModules.writeFeedback;
+var sendInvite = routesModules.sendInvite;
 
 async function startSignalRHub() {
   console.log("Starting hub");
@@ -94,6 +95,8 @@ app[getTeamStats.method](getTeamStats.path, getTeamStats.handler);
 app[writeRecommendation.method](writeRecommendation.path, writeRecommendation.handler);
 app[readRecommendations.method](readRecommendations.path, readRecommendations.handler);
 app[writeFeedback.method](writeFeedback.path, writeFeedback.handler);
+app[sendInvite.method](sendInvite.path, sendInvite.handler);
+
 app.post('/hub/negotiate', (req, res) => {  
   console.log('Received negotiation request:', req.body);
 

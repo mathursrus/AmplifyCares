@@ -135,4 +135,15 @@ const writeFeedback = {
     }
 }
 
-module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback};
+const sendInvite = {
+    method: 'get',
+    path: '/sendInvite', 
+    handler: async (req, res) => {
+        const item = req.query.invite;  
+        const response = await handlers.sendInvite(JSON.parse(item));
+
+        res.status(200).json(response);
+    }
+}
+
+module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
