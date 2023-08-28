@@ -36,11 +36,11 @@ db.team_info.find();
 
 // find all entries on a particular date
 use('amplifycares-db-catita');
-db.self_care_stats.find({DateTime: { $gt: new Date('2023-07-11') }});
+db.self_care_stats.find({DateTime: { $gt: new Date('2023-08-01') }});
 
 // find matching entries
 use('amplifycares-db-catita');
-db.self_care_stats.find({ name: "sidm@microsoft.com", DateTime: { $lt: new Date('2023-07-11') } });
+db.self_care_stats.find({ name: "ankitch@microsoft.com", DateTime: { $gt: new Date('2023-07-11') } });
 
 // delete matching entries
 use('amplifycares-db-catita');
