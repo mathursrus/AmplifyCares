@@ -15,14 +15,14 @@
   input::placeholder { font-size: 16px; }
 
   .react-datepicker__input-container {
+    margin-left: 5px;
     background-color: transparent;
     position: relative;
   }
 
   .react-datepicker__input-container input {
+    border-color: black;
     background-color: transparent;
-    border: none;
-    border-bottom: 1px solid #ccc; /* Add a bottom border to the input */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a box shadow to create depth */
     padding: 5px; /* Add some padding to give the input some space */
   }
@@ -34,7 +34,7 @@
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
+    color: #090000;
   }
 
 

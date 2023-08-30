@@ -132,7 +132,7 @@ const SubmitTimePage = () => {
             </div>        
             <form>
                 <center>
-                    Select the date you're submitting time for:
+                    Select the date you're submitting time for  
                     <DatePicker
                     selected={selectedDate}
                     onChange={(date) => {console.log("Selected date ", date); setSelectedDate(date)}}
