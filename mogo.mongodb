@@ -293,6 +293,10 @@ db.self_care_stats.find({name:"Bob"}).sort({DateTime:-1});
 use('amplifycares-db-catita');
 db.userInfo.find();
 
+/* Delete some user info */
+use('amplifycares-db-catita');
+db.userInfo.deleteMany({username:"sidm@microsoft.com"});
+
 /* All details for a person on a particular date */
 use('amplifycares-db');
 db.self_care_stats.find({name:"Gordon", DateTime:{$eq: new Date('2023-02-10')}});

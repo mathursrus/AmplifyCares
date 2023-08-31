@@ -17,6 +17,10 @@ function FirstRunExperience({ screen, onClose }) {
 
   const features = [
     {
+        title:"Now available as a Teams app",
+        description: "@Satish - Thank you for pushing for a Teams app. You can now sideload the Teams app at <a href='http://aka.ms/AmplifyCaresTeamsApp' target='_blank' rel='noopener noreferrer'>aka.ms/AmplifyCaresTeamsApp</a> by following these instructions <a href='https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/deploy-and-publish/apps-upload' target='_blank' rel='noopener noreferrer'>here</a>",
+    },
+    {
         title:"Entering historical data",
         description:"@Manohar @ScottHas - Thank you for expressing the need to enter historical data. You can now pick the date for your self care hours.",
     },
@@ -25,12 +29,8 @@ function FirstRunExperience({ screen, onClose }) {
         description:"@Jesus - Thank you for telling us that you felt screamed at by the SubmitTime page. We've mellowed down thanks to you.",
     },
     {
-        title:"Pop-up blocker warning",
-        description:"@Sarah - You brought it to our attention that authentication appeared to be stuck if browser pop-up blockers weren't turned off. We have now updated the authenticating message to make this step clearer. Thank you! ",
-    },
-    {
         title:"Cold Start Performance",
-        description:"@ScottHas - Thank you for your feedback on the terrible perf. We've reduced cold start perf from 40 seconds to 1 second. Your feedback helped improve the experience for all.",
+        description:"@ScottHas - Thank you for your feedback on the terrible perf at first boot. We've reduced cold start perf from 40 seconds to 1 second. Your feedback helped improve the experience for all.",
     }
   ];
 
@@ -106,7 +106,7 @@ function FirstRunExperience({ screen, onClose }) {
               */}
                 <div className="featuretext-container">
                     <b>{feature.title}</b>
-                    <p>{feature.description}</p>
+                    <p dangerouslySetInnerHTML={{ __html: feature.description }} />
                 </div>
             </div>
           ))}                 

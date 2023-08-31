@@ -100,21 +100,12 @@ function AppPage() {
     const checkAuthentication = async () => {
       localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.AUTHENTICATING);
       
-      if (window.parent !== window) {
-        console.log("Trying to initiatlize with location ", window, " and parent ", window.parent);
-        console.log("Teams object ", microsoftTeams);
+      try {
         await microsoftTeams.app.initialize();
         setInTeams(true);
+        console.log("In Teams");
         try{
-          microsoftTeams.app.notifySuccess();
-          /*
-          microsoftTeams.pages.config.setValidityState(true);
-          console.log("In config state and it worked");
-          microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
-            saveEvent.notifySuccess();
-            console.log("Config saved");
-          });
-          */
+          microsoftTeams.app.notifySuccess();          
         }
         catch (error) {
           console.log("Its ok to ignore this error, not in config state ", error);
@@ -150,9 +141,9 @@ function AppPage() {
           },
           failureCallback: function(error) { console.log("Error getting token: " + error); }
         }); 
-      } else
+      } catch (e) // not in teams
       {
-        console.log(window.location.search);
+        console.log("Not in Teams ", window.location.search);
 
         const isLogoutRedirect = window.location.search.includes("logout=true");
         if (isLogoutRedirect) {
@@ -191,6 +182,7 @@ function AppPage() {
     
     if (current_auth_state === null || current_auth_state === "" || current_auth_state !== desired_state) {
       try {    
+        console.log("Trying to initiatlize with location ", window, " and parent ", window.parent);           
         checkAuthentication();
       } catch (error) {
         console.log('Authentication failed:', error);          
@@ -311,7 +303,7 @@ function AppPage() {
   };
 
   return (
-    <div>
+    <div>              
       {userExists ? (
         <div className="App">                    
           <Routes>

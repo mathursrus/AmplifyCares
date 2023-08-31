@@ -17,7 +17,7 @@
     width: max-content;
     max-height: max-content;
     z-index: 1;    
-    position: fixed;
+    position: relative;
   }
   
   .typeahead-list li {
