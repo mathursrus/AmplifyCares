@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./ChallengeForm.css";
 import { getApiHost } from './utils/urlUtil';
 
@@ -8,7 +8,8 @@ function ChallengeForm({ formTitle, textBoxPlaceholder, exclude, onSubmit, onCan
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [knownEmails, setKnownEmails] = useState([]);
   const [filteredEmails, setFilteredEmails] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(-1); 
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [submitCalled, setSubmitCalled] = useState(false); 
   const inputRef = useRef(null); // Reference to the input field
 
   useEffect(() => {
@@ -34,10 +35,13 @@ function ChallengeForm({ formTitle, textBoxPlaceholder, exclude, onSubmit, onCan
   };
 
   const handleEmailSelect = (email) => {
-    if (!selectedEmails.includes(email)) {
-      setSelectedEmails([...selectedEmails, email]);
+    const isValid = validateEmail(email);
+    console.log("For email ", email, ", isValid is ", isValidEmail);
+    setIsValidEmail(isValid);
+    if (isValid && email && !selectedEmails.includes(email)) {
+        setSelectedEmails([...selectedEmails, email]);
+        setEmailInput(""); // Clear the input after selecting
     }
-    setEmailInput(""); // Clear the input after selecting
     inputRef.current.focus(); // Focus on the input after selecting
   };
 
@@ -51,18 +55,9 @@ function ChallengeForm({ formTitle, textBoxPlaceholder, exclude, onSubmit, onCan
       event.preventDefault();
       var selectedEmail = emailInput.trim();
       if (selectedIndex !== -1) {
-        selectedEmail = filteredEmails[selectedIndex];
-      }
-      const isValid = validateEmail(selectedEmail);
-      setIsValidEmail(isValid);
-      if (isValid && selectedEmail && !selectedEmails.includes(selectedEmail)) {
-        setSelectedEmails([...selectedEmails, selectedEmail]);
-        setEmailInput(""); // Clear the input after selecting
-      }
-      else {
-        // set focus back on the text field
-        inputRef.current.focus();
-      }
+        selectedEmail = filteredEmails[selectedIndex];        
+      }      
+      handleEmailSelect(selectedEmail);
     }
     if (event.key === "Escape") {
         event.preventDefault();
@@ -88,18 +83,30 @@ function ChallengeForm({ formTitle, textBoxPlaceholder, exclude, onSubmit, onCan
 
   function validateEmail(email) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return (email==="" || pattern.test(email));
+    return (email==="" || pattern.test(email.trim()));
   }
   
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("Handle submit got email ", emailInput);
+    handleEmailSelect(emailInput);
+    setSubmitCalled(true);
+  }
+
+  const memoizedOnSubmit = useCallback(onSubmit, [onSubmit]);
+
+  useEffect(() => {
+    console.log("New use effect called ", submitCalled);
+    if (!submitCalled) return;
+    if (!isValidEmail) {setSubmitCalled(false); return;}
     if (selectedEmails.length === 0) {
         setIsValidEmail(false);
+        setSubmitCalled(false);
     }
     else {
-        onSubmit(selectedEmails);
+        memoizedOnSubmit(selectedEmails);
     }
-  };
+  }, [submitCalled, isValidEmail, selectedEmails, memoizedOnSubmit]);
 
   const handleCancel = () => {
     var cancel = true;
