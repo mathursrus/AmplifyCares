@@ -271,16 +271,18 @@ function AppPage() {
 
   // Update the last login time of a user or add a new user
   const updateUserLastLogin = async (username, lastLogin) => {
-    const currentTime = new Date().toISOString();
+    const currentTime = new Date();
     console.log("Got last login of ", lastLogin);
-    if (lastLogin)  {
+    // if the user has logged in before and it's been more than 1 seconds ago, dont show FRE
+    if (lastLogin && (Math.floor((currentTime - new Date(lastLogin))/1000)>1))  {
       console.log("No FRE here");
       setShowFirstRunExperience(0);
     }
     else {
+      // set the login info
+      fetch(getApiHost() + `/setUserLogin?user=${username}&logintime=${currentTime.toISOString()}`);
       setShowFirstRunExperience(1);
     }
-    fetch(getApiHost() + `/setUserLogin?user=${username}&logintime=${currentTime}`);
     //sendNotification(username);
   };
 
