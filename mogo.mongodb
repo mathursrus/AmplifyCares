@@ -38,6 +38,10 @@ db.team_info.find();
 use('amplifycares-db-catita');
 db.invite_info.find();
 
+// delete some invites
+use('amplifycares-db-catita');
+db.invite_info.deleteMany({invite: {$regex:"User sidm@.*"}});
+
 // find all entries on a particular date
 use('amplifycares-db-catita');
 db.self_care_stats.find({DateTime: { $gt: new Date('2023-08-01') }});
@@ -295,7 +299,7 @@ db.userInfo.find();
 
 /* Delete some user info */
 use('amplifycares-db-catita');
-db.userInfo.deleteMany({username:"sidm@microsoft.com"});
+db.userInfo.deleteMany({username:"janebo@microsoft.com"});
 
 /* All details for a person on a particular date */
 use('amplifycares-db');
