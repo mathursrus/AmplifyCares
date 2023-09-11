@@ -51,8 +51,10 @@ const getSelfCareStats = {
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
         const item = await req.query.item;  
-        console.log("Got item: ", item);      
-        const response = await handlers.readEntries(item);
+        const startDay = await req.query.startDay;
+        const endDay = await req.query.endDay;
+        console.log("Got self care stats request: ", item, startDay, endDay);      
+        const response = await handlers.readEntries(item, startDay, endDay);
         res.status(200).json(response);
     }
 }
@@ -63,8 +65,10 @@ const getPercentiles = {
     handler: async (req, res) => {
         console.log("Got perc req: ", req.query);
         const item = await req.query.item;  
-        console.log("Got perc item: ", item);      
-        const response = await handlers.readPercentile(item);
+        const startDay = await req.query.startDay;
+        const endDay = await req.query.endDay;
+        console.log("Got perc request: ", item, startDay, endDay);
+        const response = await handlers.readPercentile(item, startDay, endDay);
         res.status(200).json(response);
     }
 }

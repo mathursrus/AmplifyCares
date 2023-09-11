@@ -8,7 +8,7 @@ export const getApiHost = () => {
         window.location.reload();
     }
     
-    //return "http://localhost:8080";
+    return "http://localhost:8080";
     
-    return "https://amplifycaresserver.azurewebsites.net";
+    //return "https://amplifycaresserver.azurewebsites.net";
 }

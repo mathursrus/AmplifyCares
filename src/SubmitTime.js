@@ -12,22 +12,31 @@ import { evaluate } from 'mathjs';
 import 'react-datepicker/dist/react-datepicker.css';
 import './SubmitTime.css';
 import UserBadges from './UserBadges';
+import { ReactTags } from 'react-tag-autocomplete';
 
 const React = require('react');
-const { useState, useEffect } = React;
+const { useState, useEffect, useCallback } = React;
 
 const placeholderStrings = {
-    MentalHealth: 'Minutes you dedicated to mental health today. (eg meditation, learning, brain games, ..)',
-    PhysicalHealth: 'Minutes you dedicated to physical health today. (eg exercise, sports, doctor visit, ..)',
-    SpiritualHealth: 'Minutes you dedicated to spirtual health today. (eg prayers, religious activities, ...)',
-    SocialHealth: 'Minutes you dedicated to social health today. (eg volunteering, team lunch, mentoring, ...)'
-}
+    MentalHealth: 'Minutes you dedicated to mental health.',
+    PhysicalHealth: 'Minutes you dedicated to physical health.',
+    SpiritualHealth: 'Minutes you dedicated to spirtual health.',
+    SocialHealth: 'Minutes you dedicated to social health.'
+};
+
+const wellKnownTags = {
+    MentalHealth: ['meditation', 'learning', 'brain games', /* Add more tags here */],
+    PhysicalHealth: ['exercise', 'sports', 'doctor visit', /* Add more tags here */],
+    SpiritualHealth: ['prayers', 'religious activities', /* Add more tags here */],
+    SocialHealth: ['volunteering', 'team lunch', 'mentoring', /* Add more tags here */],
+  };
+  
 
 const SubmitTimePage = () => {
-    const [MentalHealth, setMentalHealth] = useState('');
-    const [PhysicalHealth, setPhysicalHealth] = useState('');
-    const [SpiritualHealth, setSpiritualHealth] = useState('');
-    const [SocialHealth, setSocialHealth] = useState('');
+    const [MentalHealth, setMentalHealth] = useState({ time: '', tags: [] });
+    const [PhysicalHealth, setPhysicalHealth] = useState({ time: '', tags: [] });
+    const [SpiritualHealth, setSpiritualHealth] = useState({ time: '', tags: [] });
+    const [SocialHealth, setSocialHealth] = useState({ time: '', tags: [] });
     // Create a state variable to store the selected animation
     const [animation, setAnimation] = React.useState(null);
     //const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
@@ -40,8 +49,7 @@ const SubmitTimePage = () => {
     const getRandomNumber = () => {
         return Math.floor(Math.random() * 4) + 1;
     };
-    
-    
+
     const getSubmissionTime = () => {
         // Get Current Date
         /*var today = new Date();
@@ -68,12 +76,16 @@ const SubmitTimePage = () => {
         console.log(e);
         // Submit form data
         const itemData = {
-        name: localStorage.getItem('userName'),
-        DateTime: getSubmissionTime(),
-        mental_health_time: MentalHealth===''?0:parseInt(MentalHealth),
-        physical_health_time: PhysicalHealth===''?0:parseInt(PhysicalHealth),
-        spiritual_health_time: SpiritualHealth===''?0:parseInt(SpiritualHealth),
-        societal_health_time: SocialHealth===''?0:parseInt(SocialHealth),
+            name: localStorage.getItem('userName'),
+            DateTime: getSubmissionTime(),
+            mental_health_time: MentalHealth.time === '' ? 0 : parseInt(MentalHealth.time),
+            mental_health_activity: MentalHealth.tags.map(item => item.label),
+            physical_health_time: PhysicalHealth.time === '' ? 0 : parseInt(PhysicalHealth.time),
+            physical_health_activity: PhysicalHealth.tags.map(item => item.label),
+            spiritual_health_time: SpiritualHealth.time === '' ? 0 : parseInt(SpiritualHealth.time),
+            spiritual_health_activity: SpiritualHealth.tags.map(item => item.label),
+            societal_health_time: SocialHealth.time === '' ? 0 : parseInt(SocialHealth.time),
+            societal_health_activity: SocialHealth.tags.map(item => item.label),
         }
         console.log(itemData)
         const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(itemData));
@@ -119,8 +131,8 @@ const SubmitTimePage = () => {
     const handleCloseFlyout = () => {
         setFlyoutState(0);
         console.log("Clicked close");        
-    }
-
+    }        
+    
     useEffect(() => {
         console.log("Flyout state is ", flyoutState); 
       }, [flyoutState]); // Run the effect only when flyoutState changes
@@ -148,21 +160,42 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>                        
                     </label>
-                    <input
-                        type="text"
-                        className="text-field"
-                        value={MentalHealth}
-                        onChange={(e) => {
-                            const input = e.target.value;
-                            try {
-                              const result = evaluate(input);
-                              setMentalHealth(result.toString());
-                            } catch (error) {
-                              setMentalHealth('');
-                            }
-                          }}
-                        placeholder={placeholderStrings.MentalHealth}
-                    />
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            className="text-field time-input"
+                            value={MentalHealth.time}
+                            onChange={(e) => {
+                                const input = e.target.value;
+                                try {
+                                    const result = evaluate(input);
+                                    const time = result.toString();
+                                    console.log("Time is ", time);
+                                    setMentalHealth((prev) => ({ ...prev, time }));
+                                } catch (error) {
+                                    const time = '';
+                                    setMentalHealth((prev) => ({ ...prev, time }));
+                                }
+                            }}
+                            placeholder={placeholderStrings.MentalHealth}
+                        />
+                        <ReactTags
+                            selected={MentalHealth.tags}
+                            suggestions={wellKnownTags.MentalHealth.map((name, index) => ({ value: index, label: name }))}
+                            onDelete={useCallback(
+                                (tagIndex) => {
+                                    setMentalHealth(((prev) => ({ ...prev, tags: (MentalHealth.tags.filter((_, i) => i !== tagIndex))})));                                    
+                                }, [MentalHealth.tags])}
+                            onAdd={useCallback(
+                                (newTag) => {
+                                    setMentalHealth(((prev) => ({ ...prev, tags: [...MentalHealth.tags, newTag] })))            
+                                }, [MentalHealth.tags])}
+                            placeholderText="Select or Add activity"
+                            allowNew="true"
+                            labelText=''
+                            collapseOnSelect="true"
+                        />                        
+                    </div>
                 </div>
                 <br></br>
                 <div className='row'>
@@ -172,21 +205,42 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
-                    <input 
-                        type="text" 
-                        className="text-field" 
-                        value={PhysicalHealth} 
-                        onChange={(e) => {
-                            const input = e.target.value;
-                            try {
-                              const result = evaluate(input);
-                              setPhysicalHealth(result.toString());
-                            } catch (error) {
-                                setPhysicalHealth('');
-                            }
-                          }} 
-                        placeholder={placeholderStrings.PhysicalHealth}
-                    />
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            className="text-field time-input"
+                            value={PhysicalHealth.time}
+                            onChange={(e) => {
+                                const input = e.target.value;
+                                try {
+                                    const result = evaluate(input);
+                                    const time = result.toString();
+                                    console.log("Time is ", time);
+                                    setPhysicalHealth((prev) => ({ ...prev, time }));
+                                } catch (error) {
+                                    const time = '';
+                                    setPhysicalHealth((prev) => ({ ...prev, time }));
+                                }
+                            }}
+                            placeholder={placeholderStrings.PhysicalHealth}
+                        />
+                        <ReactTags
+                            selected={PhysicalHealth.tags}
+                            suggestions={wellKnownTags.PhysicalHealth.map((name, index) => ({ value: index, label: name }))}
+                            onDelete={useCallback(
+                                (tagIndex) => {
+                                    setPhysicalHealth(((prev) => ({ ...prev, tags: (PhysicalHealth.tags.filter((_, i) => i !== tagIndex))})));                                    
+                                }, [PhysicalHealth.tags])}
+                            onAdd={useCallback(
+                                (newTag) => {
+                                    setPhysicalHealth(((prev) => ({ ...prev, tags: [...PhysicalHealth.tags, newTag] })))            
+                                }, [PhysicalHealth.tags])}
+                            placeholderText="Select or Add activity"
+                            allowNew="true"
+                            labelText=''
+                            collapseOnSelect="true"
+                        />                        
+                    </div>
                 </div>
                 <br></br>
                 <div className='row'>
@@ -196,21 +250,42 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
-                    <input 
-                        type="text" 
-                        className="text-field" 
-                        value={SpiritualHealth} 
-                        onChange={(e) => {
-                            const input = e.target.value;
-                            try {
-                              const result = evaluate(input);
-                              setSpiritualHealth(result.toString());
-                            } catch (error) {
-                                setSpiritualHealth('');
-                            }
-                          }} 
-                        placeholder={placeholderStrings.SpiritualHealth}
-                    />
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            className="text-field time-input"
+                            value={SpiritualHealth.time}
+                            onChange={(e) => {
+                                const input = e.target.value;
+                                try {
+                                    const result = evaluate(input);
+                                    const time = result.toString();
+                                    console.log("Time is ", time);
+                                    setSpiritualHealth((prev) => ({ ...prev, time }));
+                                } catch (error) {
+                                    const time = '';
+                                    setSpiritualHealth((prev) => ({ ...prev, time }));
+                                }
+                            }}
+                            placeholder={placeholderStrings.SpiritualHealth}
+                        />
+                        <ReactTags
+                            selected={SpiritualHealth.tags}
+                            suggestions={wellKnownTags.SpiritualHealth.map((name, index) => ({ value: index, label: name }))}
+                            onDelete={useCallback(
+                                (tagIndex) => {
+                                    setSpiritualHealth(((prev) => ({ ...prev, tags: (SpiritualHealth.tags.filter((_, i) => i !== tagIndex))})));                                    
+                                }, [PhysicalHealth.tags])}
+                            onAdd={useCallback(
+                                (newTag) => {
+                                    setSpiritualHealth(((prev) => ({ ...prev, tags: [...SpiritualHealth.tags, newTag] })))            
+                                }, [SpiritualHealth.tags])}
+                            placeholderText="Select or Add activity"
+                            allowNew="true"
+                            labelText=''
+                            collapseOnSelect="true"
+                        />                        
+                    </div>
                 </div>
                 <br></br>
                 <div className='row'>
@@ -220,21 +295,42 @@ const SubmitTimePage = () => {
                             <FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} />
                         </a>
                     </label>
-                    <input 
-                        type="text" 
-                        className="text-field" 
-                        value={SocialHealth} 
-                        onChange={(e) => {
-                            const input = e.target.value;
-                            try {
-                              const result = evaluate(input);
-                              setSocialHealth(result.toString());
-                            } catch (error) {
-                                setSocialHealth('');
-                            }
-                          }}  
-                        placeholder={placeholderStrings.SocialHealth}
-                    />
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            className="text-field time-input"
+                            value={SocialHealth.time}
+                            onChange={(e) => {
+                                const input = e.target.value;
+                                try {
+                                    const result = evaluate(input);
+                                    const time = result.toString();
+                                    console.log("Time is ", time);
+                                    setSocialHealth((prev) => ({ ...prev, time }));
+                                } catch (error) {
+                                    const time = '';
+                                    setSocialHealth((prev) => ({ ...prev, time }));
+                                }
+                            }}
+                            placeholder={placeholderStrings.SocialHealth}
+                        />
+                        <ReactTags
+                            selected={SocialHealth.tags}
+                            suggestions={wellKnownTags.SocialHealth.map((name, index) => ({ value: index, label: name }))}
+                            onDelete={useCallback(
+                                (tagIndex) => {
+                                    setSocialHealth(((prev) => ({ ...prev, tags: (SocialHealth.tags.filter((_, i) => i !== tagIndex))})));                                    
+                                }, [SocialHealth.tags])}
+                            onAdd={useCallback(
+                                (newTag) => {
+                                    setSocialHealth(((prev) => ({ ...prev, tags: [...SocialHealth.tags, newTag] })))            
+                                }, [SocialHealth.tags])}
+                            placeholderText="Select or Add activity"
+                            allowNew="true"
+                            labelText=''
+                            collapseOnSelect="true"
+                        />                        
+                    </div>
                 </div>
                 {flyoutState > 0 && (
                             <div className="flyout show">

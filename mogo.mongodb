@@ -5,9 +5,9 @@ use('amplifycares-db-catita');
 db.getCollectionNames();
 
 // aggregate each of the times for Sid
-use('amplifycares-db');
-db.self_care_stats.aggregate([{$match:{name:{$regex:"sid.*"}}}, 
-{$group: {_id:"$name", 
+use('amplifycares-db-catita');
+db.self_care_stats.aggregate([{$match:{name:{$regex:"sidm@*"}, DateTime: {$gt: new Date('2023-09-02')}}}, 
+{$group: {_id:"$DateTime", 
 total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
 total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},
 total_spiritual_health: {$sum:{$add:[{$toInt: "$spiritual_health_time"}]}},
@@ -16,7 +16,7 @@ total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
 
 
 // find all self care entries with non-integer time values
-use('amplifycares-db');
+use('amplifycares-db-catita');
 db.self_care_stats.find({ mental_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
 db.self_care_stats.find({ physical_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
 db.self_care_stats.find({ spiritual_health_time: { $not: { $regex: /^[0-9]+(\.[0-9]+)?$/ }, $type: "string" } });
@@ -44,7 +44,11 @@ db.invite_info.deleteMany({invite: {$regex:"User sidm@.*"}});
 
 // find all entries on a particular date
 use('amplifycares-db-catita');
-db.self_care_stats.find({DateTime: { $gt: new Date('2023-08-01') }});
+db.self_care_stats.find({DateTime: { $gt: new Date('2023-09-05') }});
+
+// find all entries for a user
+use('amplifycares-db-catita');
+db.self_care_stats.find({ name:"sidm@microsoft.com" }).sort({"DateTime":-1});
 
 // find matching entries
 use('amplifycares-db-catita');
@@ -126,37 +130,94 @@ db.self_care_stats.aggregate([
   }
 ])
 
-/* Find the total self care time for a particular person across everyday */
-use('amplifycares-db');
-let x="sid@catita365.onmicrosoft.com";
+/* Find the total self care time for a particular person across everyday, also add all self-care acitivites */
+use('amplifycares-db-catita');
+let x = "sidm@microsoft.com";
+let date = new Date("9/1/2023");
 db.self_care_stats.aggregate([
   {
     $match: {
-      name:x
+      name: x,
+      DateTime: { $gt: date }
     }
   },
   {
     $group: {
       _id: { $dateToString: { format: "%Y-%m-%d", date: "$DateTime" } },
       total_health_time: {
-       $sum: {
-            $add: [
+        $sum: {
+          $add: [
             { $toInt: "$mental_health_time" },
             { $toInt: "$physical_health_time" },
             { $toInt: "$spiritual_health_time" },
             { $toInt: "$societal_health_time" }
-            ]
-       }
+          ]
+        }
+      },
+      activities: {
+        $push: {
+          $concatArrays: [
+            {
+              $cond: {
+                if: { $ne: ["$mental_health_activity", null] },
+                then: [["$mental_health_activity", "$mental_health_time"]],
+                else: []
+              }
+            },
+            {
+              $cond: {
+                if: { $ne: ["$physical_health_activity", null] },
+                then: [["$physical_health_activity", "$physical_health_time"]],
+                else: []
+              }
+            },
+            {
+              $cond: {
+                if: { $ne: ["$spiritual_health_activity", null] },
+                then: [["$spiritual_health_activity", "$spiritual_health_time"]],
+                else: []
+              }
+            },
+            {
+              $cond: {
+                if: { $ne: ["$societal_health_activity", null] },
+                then: [["$societal_health_activity", "$societal_health_time"]],
+                else: []
+              }
+            }
+          ]
+        }
       }
     }
   },
+  {
+    $project: {
+      total_health_time: 1,
+      activities: {
+        $reduce: {
+          input: "$activities",
+          initialValue: [],
+          in: {
+            $concatArrays: ["$$value", "$$this"]
+          },              
+        }        
+      }
+    }
+  }
 ]);
 
 
+
 /* Find Xth %ile of total self care time across everyday across everybody */
-use('amplifycares-db');
-let x=10;
+use('amplifycares-db-catita');
+let x=50;
+let date=new Date("9/1/2023");
 db.self_care_stats.aggregate([
+  {
+    $match: {
+      DateTime: {$gt: date}
+    }
+  },
   {
     $group: {
       _id: {
@@ -172,7 +233,7 @@ db.self_care_stats.aggregate([
             { $toInt: "$societal_health_time" }
             ]
         }
-      }
+      },      
     }
   },
   {
@@ -193,6 +254,124 @@ db.self_care_stats.aggregate([
     }
   },
 ]);
+
+
+/* Find X%ile of total health time and self care activities */
+use('amplifycares-db-catita');
+let x = 50;
+let date = new Date("9/1/2023");
+db.self_care_stats.aggregate([
+  {
+    $match: {
+      DateTime: { $gt: date }
+    }
+  },
+  {
+    $group: {
+      _id: {
+        DateTime: { $dateToString: { format: "%Y-%m-%d", date: "$DateTime" } },
+        Name: "$name"
+      },
+      total_health_time: {
+        $sum: {
+          $add: [
+            { $toInt: "$mental_health_time" },
+            { $toInt: "$physical_health_time" },
+            { $toInt: "$spiritual_health_time" },
+            { $toInt: "$societal_health_time" }
+          ]
+        }
+      },
+      mental_care_activities: {
+        $push: {
+          $cond: {
+            if: { $ne: ["$mental_health_activity", null] }, // Check if mental_health_activity is not null
+            then: ["$mental_health_activity", "$mental_health_time"], // Include activity and time  
+            else: []          
+          }
+        }
+      },
+      physical_care_activities: {
+        $push: {
+          $cond: {
+            if: { $ne: ["$physical_health_activity", null] }, // Check if physical_health_activity is not null
+            then: ["$physical_health_activity", "$physical_health_time"], // Include activity and time            
+            else: []
+          }
+        }
+      },
+      spiritual_care_activities: {
+        $push: {
+          $cond: {
+            if: { $ne: ["$spiritual_health_activity", null] }, // Check if spiritual_health_activity is not null
+            then: ["$spiritual_health_activity", "$spiritual_health_time"], // Include activity and time            
+            else: []
+          }
+        }
+      },
+      social_care_activities: {
+        $push: {
+          $cond: {
+            if: { $ne: ["$social_health_activity", null] }, // Check if social_health_activity is not null
+            then: ["$social_health_activity", "$social_health_time"], // Include activity and time            
+            else: []
+          }
+        }
+      }      
+    }
+  },
+  {
+    $sort: { "_id.DateTime": 1, "total_health_time": 1 }
+  },
+  {
+    $group: {
+      _id: "$_id.DateTime",
+      values: { $push: "$total_health_time" },
+      activities: {
+        $push: {
+          total_health_time: "$total_health_time",
+          self_care_activities: {
+            $concatArrays: [
+              "$mental_care_activities", 
+              "$physical_care_activities", 
+              "$spiritual_care_activities",
+              "$social_care_activities", 
+            ]          
+          }
+        }
+      },
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      ptile: {
+        $arrayElemAt: ["$values", { $floor: { $multiply: ["$count", x / 100] } }]
+      },
+      activities: 1  
+    }
+  },
+  {
+    $project: {
+      ptile: "$ptile",
+      activities: {
+        $reduce: {
+          input: "$activities",
+          initialValue: [],
+          in: {
+            $cond: {
+              if: { $lte: ["$$this.total_health_time", "$ptile"] },
+              then: { $concatArrays: ["$$value", "$$this.self_care_activities"] },
+              else: "$$value"
+            }
+          }
+        }
+      }
+    }
+  }  
+]);
+
+
 
 /* Find median of mental health time across teams */
 use('amplifycares-db-catita');
@@ -385,9 +564,13 @@ use(`amplifycares-db-catita`);
   // populate teams
   use(`amplifycares-db-catita`);
   db.team_info.insertOne({
-    team_name: "Team Jed",
+    team_name: "Team Manohar",
     team_members: [
-      { member_id: "brownjed@microsoft.com" },
+      { member_id: "ramadhir@microsoft.com" },
+      { member_id: "yangpan@microsoft.com" },
+      { member_id: "barbwong@microsoft.com" },
+      { member_id: "nizachar@microsoft.com" },
+      { member_id: "kkhilnani@microsoft.com" },
     ]
   });
   db.team_info.insertOne({

@@ -130,13 +130,17 @@ async function writeEntry(item) {
   }
   
 
-async function readEntries(itemId) {
+async function readEntries(itemId, startDay, endDay) {
   console.log(`Got called with id: ${itemId}`);
   const ct = await getContainer();
   const result=await ct.aggregate([
     {
       $match: {
-        name:itemId
+        name:itemId,
+        DateTime: {
+          $gte: new Date(startDay),
+          $lte: new Date(endDay)
+        }
       }
     },
     {
@@ -144,16 +148,64 @@ async function readEntries(itemId) {
         _id: { $dateToString: { format: "%Y-%m-%d", date: "$DateTime" } },
         total_health_time: {
           $sum: {
-              $add: [
+            $add: [
               { $toInt: "$mental_health_time" },
               { $toInt: "$physical_health_time" },
               { $toInt: "$spiritual_health_time" },
               { $toInt: "$societal_health_time" }
-              ]
+            ]
+          }
+        },
+        activities: {
+          $push: {
+            $concatArrays: [
+              {
+                $cond: {
+                  if: { $ne: ["$mental_health_activity", null] },
+                  then: [["$mental_health_activity", "$mental_health_time"]],
+                  else: []
+                }
+              },
+              {
+                $cond: {
+                  if: { $ne: ["$physical_health_activity", null] },
+                  then: [["$physical_health_activity", "$physical_health_time"]],
+                  else: []
+                }
+              },
+              {
+                $cond: {
+                  if: { $ne: ["$spiritual_health_activity", null] },
+                  then: [["$spiritual_health_activity", "$spiritual_health_time"]],
+                  else: []
+                }
+              },
+              {
+                $cond: {
+                  if: { $ne: ["$societal_health_activity", null] },
+                  then: [["$societal_health_activity", "$societal_health_time"]],
+                  else: []
+                }
+              }
+            ]
           }
         }
       }
     },
+    {
+      $project: {
+        total_health_time: 1,
+        activities: {
+          $reduce: {
+            input: "$activities",
+            initialValue: [],
+            in: {
+              $concatArrays: ["$$value", "$$this"]
+            },              
+          }        
+        }
+      }
+    }
   ]).toArray();
   console.log(`Result is: ${result}`);
   const final = JSON.stringify(result);
@@ -161,11 +213,19 @@ async function readEntries(itemId) {
   return final;
 }
 
-async function readPercentile(percentile) {
+async function readPercentile(percentile, startDay, endDay) {
   console.log(`Median called with percentile: ${percentile}`);
   percentile= parseInt(percentile);
   const ct = await getContainer();
   const result= await ct.aggregate([
+    {
+      $match: {
+        DateTime: {
+          $gte: new Date(startDay),
+          $lte: new Date(endDay)
+        }
+      }
+    },
     {
       $group: {
         _id: {
@@ -174,33 +234,101 @@ async function readPercentile(percentile) {
         },
         total_health_time: {
           $sum: {
-              $add: [
+            $add: [
               { $toInt: "$mental_health_time" },
               { $toInt: "$physical_health_time" },
               { $toInt: "$spiritual_health_time" },
               { $toInt: "$societal_health_time" }
-              ]
+            ]
           }
-        }
+        },
+        mental_care_activities: {
+          $push: {
+            $cond: {
+              if: { $ne: ["$mental_health_activity", null] }, // Check if mental_health_activity is not null
+              then: ["$mental_health_activity", "$mental_health_time"], // Include activity and time  
+              else: []          
+            }
+          }
+        },
+        physical_care_activities: {
+          $push: {
+            $cond: {
+              if: { $ne: ["$physical_health_activity", null] }, // Check if physical_health_activity is not null
+              then: ["$physical_health_activity", "$physical_health_time"], // Include activity and time            
+              else: []
+            }
+          }
+        },
+        spiritual_care_activities: {
+          $push: {
+            $cond: {
+              if: { $ne: ["$spiritual_health_activity", null] }, // Check if spiritual_health_activity is not null
+              then: ["$spiritual_health_activity", "$spiritual_health_time"], // Include activity and time            
+              else: []
+            }
+          }
+        },
+        social_care_activities: {
+          $push: {
+            $cond: {
+              if: { $ne: ["$social_health_activity", null] }, // Check if social_health_activity is not null
+              then: ["$social_health_activity", "$social_health_time"], // Include activity and time            
+              else: []
+            }
+          }
+        }      
       }
     },
     {
-      $sort: {"_id.DateTime":1, "total_health_time": 1 }
+      $sort: { "_id.DateTime": 1, "total_health_time": 1 }
     },
     {
       $group: {
         _id: "$_id.DateTime",
         values: { $push: "$total_health_time" },
+        activities: {
+          $push: {
+            total_health_time: "$total_health_time",
+            self_care_activities: {
+              $concatArrays: [
+                "$mental_care_activities", 
+                "$physical_care_activities", 
+                "$spiritual_care_activities",
+                "$social_care_activities", 
+              ]          
+            }
+          }
+        },
         count: { $sum: 1 }
       }
     },
     {
       $project: {
         ptile: {
-          $arrayElemAt: ["$values", {$floor: {$multiply: ["$count", percentile/100]}}]
-        }
+          $arrayElemAt: ["$values", { $floor: { $multiply: ["$count", percentile / 100] } }]
+        },
+        activities: 1  
       }
     },
+    {
+      $project: {
+        ptile: "$ptile",
+        activities: {
+          $reduce: {
+            input: "$activities",
+            initialValue: [],
+            in: {
+              $cond: {
+                if: { $lte: ["$$this.total_health_time", "$ptile"] },
+                then: { $concatArrays: ["$$value", "$$this.self_care_activities"] },
+                else: "$$value"
+              }
+            }
+          }
+        }
+      }
+    }  
   ]).toArray();
   const final = JSON.stringify(result);
   console.log(`Median itemss : ${final}`);
