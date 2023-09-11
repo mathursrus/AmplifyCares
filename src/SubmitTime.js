@@ -275,7 +275,7 @@ const SubmitTimePage = () => {
                             onDelete={useCallback(
                                 (tagIndex) => {
                                     setSpiritualHealth(((prev) => ({ ...prev, tags: (SpiritualHealth.tags.filter((_, i) => i !== tagIndex))})));                                    
-                                }, [PhysicalHealth.tags])}
+                                }, [SpiritualHealth.tags])}
                             onAdd={useCallback(
                                 (newTag) => {
                                     setSpiritualHealth(((prev) => ({ ...prev, tags: [...SpiritualHealth.tags, newTag] })))            

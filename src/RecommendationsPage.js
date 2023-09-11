@@ -55,13 +55,14 @@ const RecommendationsPage = (props) => {
   async function handleAddRecommendation(e)   {
     e.preventDefault();
     if (newRecommendation.title.trim() !== '' && newRecommendation.url.trim() !== '') {
+      newRecommendation.contributor = localStorage.getItem('userName');
       recos.push(newRecommendation);
       setNewRecommendation({ title: '', url: '' });
       const itemData = {
         title: newRecommendation.title,
         type: recoType,
         url: newRecommendation.url,
-        contributor: localStorage.getItem('userName'),
+        contributor: newRecommendation.contributor,
       }
       await fetch(getApiUrl("/writerecommendation/?item="+JSON.stringify(itemData)));
     }

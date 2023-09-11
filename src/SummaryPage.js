@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import './SummaryPage.css';
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
@@ -26,32 +26,7 @@ const SummaryPage = () => {
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
   const [startDay, setStartDay] = useState(firstDayOfMonth);
 
-  useEffect(() => {
-    async function fetchData() {
-      // fix the end date
-      const today = new Date();
-      const utcEnd = (today > endDay)? 
-                endDay:
-                today;
-      // get self-care data from cache
-      const selfCareData = await getAggregateStats(getApiUrl(`/getselfcarestats/?item=${userName}&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
-      const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
-      const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
-
-      setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
-      setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));
-    }
-    console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
-    fetchData();
-  }, [endDay, startDay, userName]);
-  
-  async function getAggregateStats(url) {
-    const response = await fetch(url);
-    const data = await response.json();
-    return JSON.parse(data);
-  };
-
-  function processChartData(selfCareData, medianCareData, highCareData, start, end) {
+  const processChartData = useCallback((selfCareData, medianCareData, highCareData, start, end) => {
     const myData = [];
     console.log("Processing for dates ", start, " to ", end);
 
@@ -77,9 +52,9 @@ const SummaryPage = () => {
     }
 
     return myData;
-  };
+  }, []);
 
-  function processActivitiesData(selfCareData, medianCareData, highCareData) {
+  const processActivitiesData = useCallback((selfCareData, medianCareData, highCareData) => {
     const myData = [];
     const selfCareActivities = processActivityData(selfCareData);
     const medianCareActivities = processActivityData(medianCareData);
@@ -95,7 +70,32 @@ const SummaryPage = () => {
     });
     console.log("Activity data is ", myData);
     return myData;
-  }
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      // fix the end date
+      const today = new Date();
+      const utcEnd = (today > endDay)? 
+                endDay:
+                today;
+      // get self-care data from cache
+      const selfCareData = await getAggregateStats(getApiUrl(`/getselfcarestats/?item=${userName}&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
+      const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
+      const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
+
+      setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
+      setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));
+    }
+    console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
+    fetchData();
+  }, [endDay, startDay, userName, processChartData, processActivitiesData]);
+  
+  async function getAggregateStats(url) {
+    const response = await fetch(url);
+    const data = await response.json();
+    return JSON.parse(data);
+  };  
 
   function processActivityData(data) {
     const activityMap = new Map();
