@@ -11,8 +11,8 @@ const SummaryPage = () => {
   const [chartData, setChartData] = useState([]);
   const [activitiesData, setActivitiesData] = useState([]);
   const [showSelf, setShowSelf] = useState(true);
-  const [showMostOthers, setShowMostOthers] = useState(false);
-  const [showTheBest, setShowTheBest] = useState(false);
+  const [showMostOthers, setShowMostOthers] = useState(true);
+  const [showTheBest, setShowTheBest] = useState(true);
   const userName = localStorage.getItem('userName');
   const currentDate = new Date(); // Get the current date
   const currentMonth = currentDate.getMonth(); // Get the current month

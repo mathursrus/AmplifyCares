@@ -110,8 +110,8 @@ const writeRecommendation = {
     path: '/writerecommendation', 
     handler: async (req, res) => {
         console.log("Writing Recommendation: ", req.query);
-        const item = await req.query.item;        
-        const response = await handlers.writeRecommendation(JSON.parse(item));
+        const item = await req.query.item;  // Don't decode item here      
+        const response = await handlers.writeRecommendation(JSON.parse(item)); // Decode the entire item
         res.status(200).json(response);
     }
 }

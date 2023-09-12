@@ -1,27 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './RecommendationsPage.css';
-import { getApiUrl } from './utils/urlUtil';
+import { getApiUrl, isValidURL } from './utils/urlUtil';
 
-/*
-const recommendationsData = [
-  {
-    contributor: 'Sid',
-    title: 'Meditation Video',
-    url: 'https://www.youtube.com/embed/erZK7JBpOaI&t=1146s',
-  },
-  {
-    contributor: 'Alice',
-    title: 'Running book',
-    url: 'https://www.amazon.com/Fourth-Wing-Empyrean-Rebecca-Yarros/dp/1649374046/ref=zg_sccl_2/134-4893920-4839467?pd_rd_w=LweOu&content-id=amzn1.sym.193afb92-0c19-4833-86f8-850b5ba40291&pf_rd_p=193afb92-0c19-4833-86f8-850b5ba40291&pf_rd_r=4GM1TR2D713XK0KRAJQS&pd_rd_wg=dPYD1&pd_rd_r=be352e14-2b97-447e-8e75-751339b30d04&pd_rd_i=1649374046&psc=1',
-  },
-  {
-    contributor: 'Bob',
-    title: 'Spirituality podcast',
-    url: 'https://www.amazon.com/Fourth-Wing-Empyrean-Rebecca-Yarros/dp/1649374046/ref=zg_sccl_2/134-4893920-4839467?pd_rd_w=LweOu&content-id=amzn1.sym.193afb92-0c19-4833-86f8-850b5ba40291&pf_rd_p=193afb92-0c19-4833-86f8-850b5ba40291&pf_rd_r=4GM1TR2D713XK0KRAJQS&pd_rd_wg=dPYD1&pd_rd_r=be352e14-2b97-447e-8e75-751339b30d04&pd_rd_i=1649374046&psc=1',    
-  },
-  // Add more recommendations here
-];
-*/
+
 
 const RecommendationsPage = (props) => {
   const [showInputFields, setShowInputFields] = useState(false);
@@ -54,7 +35,7 @@ const RecommendationsPage = (props) => {
 
   async function handleAddRecommendation(e)   {
     e.preventDefault();
-    if (newRecommendation.title.trim() !== '' && newRecommendation.url.trim() !== '') {
+    if (newRecommendation.title.trim() !== '' && newRecommendation.url.trim() !== '' && isValidURL(newRecommendation.url)) {
       newRecommendation.contributor = localStorage.getItem('userName');
       recos.push(newRecommendation);
       setNewRecommendation({ title: '', url: '' });
@@ -64,10 +45,11 @@ const RecommendationsPage = (props) => {
         url: newRecommendation.url,
         contributor: newRecommendation.contributor,
       }
-      await fetch(getApiUrl("/writerecommendation/?item="+JSON.stringify(itemData)));
-    }
-    setShowInputFields(false);
+      await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
+      setShowInputFields(false);
+    }    
   };
+
 
   return (
     <div className="recommendations-page">
