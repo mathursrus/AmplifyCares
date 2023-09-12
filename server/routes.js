@@ -53,8 +53,9 @@ const getSelfCareStats = {
         const item = await req.query.item;  
         const startDay = await req.query.startDay;
         const endDay = await req.query.endDay;
-        console.log("Got self care stats request: ", item, startDay, endDay);      
-        const response = await handlers.readEntries(item, startDay, endDay);
+        const category = await req.query.category;
+        console.log("Got self care stats request: ", item, startDay, endDay, category);      
+        const response = await handlers.readEntries(item, startDay, endDay, category);
         res.status(200).json(response);
     }
 }
@@ -67,8 +68,9 @@ const getPercentiles = {
         const item = await req.query.item;  
         const startDay = await req.query.startDay;
         const endDay = await req.query.endDay;
-        console.log("Got perc request: ", item, startDay, endDay);
-        const response = await handlers.readPercentile(item, startDay, endDay);
+        const category = await req.query.category;
+        console.log("Got perc request: ", item, startDay, endDay, category);
+        const response = await handlers.readPercentile(item, startDay, endDay, category);
         res.status(200).json(response);
     }
 }

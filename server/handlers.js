@@ -130,8 +130,17 @@ async function writeEntry(item) {
   }
   
 
-async function readEntries(itemId, startDay, endDay) {
+async function readEntries(itemId, startDay, endDay, category) {
   console.log(`Got called with id: ${itemId}`);
+  if (category === undefined)  {
+    category = "total";
+  }
+  console.log("Category is ", category);
+  let include_mental = (category === "total" || category === "mental");
+  let include_physical = (category === "total" || category === "physical");
+  let include_social = (category === "total" || category === "social");
+  let include_spiritual = (category === "total" || category === "spiritual");
+
   const ct = await getContainer();
   const result=await ct.aggregate([
     {
@@ -149,10 +158,10 @@ async function readEntries(itemId, startDay, endDay) {
         total_health_time: {
           $sum: {
             $add: [
-              { $toInt: "$mental_health_time" },
-              { $toInt: "$physical_health_time" },
-              { $toInt: "$spiritual_health_time" },
-              { $toInt: "$societal_health_time" }
+              {$cond: [include_mental,{ $toInt: "$mental_health_time" }, 0]},
+              {$cond: [include_physical,{ $toInt: "$physical_health_time" }, 0]},
+              {$cond: [include_spiritual,{ $toInt: "$spiritual_health_time" }, 0]},
+              {$cond: [include_social,{ $toInt: "$societal_health_time" }, 0]},
             ]
           }
         },
@@ -161,28 +170,48 @@ async function readEntries(itemId, startDay, endDay) {
             $concatArrays: [
               {
                 $cond: {
-                  if: { $ne: ["$mental_health_activity", null] },
+                  if: {
+                    $and: [
+                      include_mental,
+                      { $ne: ["$mental_health_activity", null] } // Check if mental_health_activity is not null
+                    ]
+                  },
                   then: [["$mental_health_activity", "$mental_health_time"]],
                   else: []
-                }
+                }              
               },
               {
                 $cond: {
-                  if: { $ne: ["$physical_health_activity", null] },
+                  if: {
+                    $and: [
+                      include_physical,
+                      { $ne: ["$physical_health_activity", null] } // Check if mental_health_activity is not null
+                    ]
+                  },
                   then: [["$physical_health_activity", "$physical_health_time"]],
                   else: []
                 }
               },
               {
                 $cond: {
-                  if: { $ne: ["$spiritual_health_activity", null] },
+                  if: {
+                    $and: [
+                      include_spiritual,
+                      { $ne: ["$spiritual_health_activity", null] } // Check if mental_health_activity is not null
+                    ]
+                  },
                   then: [["$spiritual_health_activity", "$spiritual_health_time"]],
                   else: []
                 }
               },
               {
                 $cond: {
-                  if: { $ne: ["$societal_health_activity", null] },
+                  if: {
+                    $and: [
+                      include_social,
+                      { $ne: ["$societal_health_activity", null] } // Check if mental_health_activity is not null
+                    ]
+                  },
                   then: [["$societal_health_activity", "$societal_health_time"]],
                   else: []
                 }
@@ -213,9 +242,18 @@ async function readEntries(itemId, startDay, endDay) {
   return final;
 }
 
-async function readPercentile(percentile, startDay, endDay) {
+async function readPercentile(percentile, startDay, endDay, category) {
   console.log(`Median called with percentile: ${percentile}`);
   percentile= parseInt(percentile);
+  if (category === undefined)  {
+    category = "total";
+  }
+  console.log("Category is ", category);
+  let include_mental = (category === "total" || category === "mental");
+  let include_physical = (category === "total" || category === "physical");
+  let include_social = (category === "total" || category === "social");
+  let include_spiritual = (category === "total" || category === "spiritual");
+  
   const ct = await getContainer();
   const result= await ct.aggregate([
     {
@@ -235,27 +273,37 @@ async function readPercentile(percentile, startDay, endDay) {
         total_health_time: {
           $sum: {
             $add: [
-              { $toInt: "$mental_health_time" },
-              { $toInt: "$physical_health_time" },
-              { $toInt: "$spiritual_health_time" },
-              { $toInt: "$societal_health_time" }
+              {$cond: [include_mental,{ $toInt: "$mental_health_time" }, 0]},
+              {$cond: [include_physical,{ $toInt: "$physical_health_time" }, 0]},
+              {$cond: [include_spiritual,{ $toInt: "$spiritual_health_time" }, 0]},
+              {$cond: [include_social,{ $toInt: "$societal_health_time" }, 0]},
             ]
           }
         },
         mental_care_activities: {
           $push: {
             $cond: {
-              if: { $ne: ["$mental_health_activity", null] }, // Check if mental_health_activity is not null
-              then: ["$mental_health_activity", "$mental_health_time"], // Include activity and time  
-              else: []          
-            }
+              if: {
+                $and: [
+                  include_mental,
+                  { $ne: ["$mental_health_activity", null] } // Check if mental_health_activity is not null
+                ]
+              },
+              then: ["$mental_health_activity", "$mental_health_time"],
+              else: []
+            }  
           }
         },
         physical_care_activities: {
           $push: {
             $cond: {
-              if: { $ne: ["$physical_health_activity", null] }, // Check if physical_health_activity is not null
-              then: ["$physical_health_activity", "$physical_health_time"], // Include activity and time            
+              if: {
+                $and: [
+                  include_physical,
+                  { $ne: ["$physical_health_activity", null] } // Check if mental_health_activity is not null
+                ]
+              },
+              then: ["$physical_health_activity", "$physical_health_time"],
               else: []
             }
           }
@@ -263,8 +311,13 @@ async function readPercentile(percentile, startDay, endDay) {
         spiritual_care_activities: {
           $push: {
             $cond: {
-              if: { $ne: ["$spiritual_health_activity", null] }, // Check if spiritual_health_activity is not null
-              then: ["$spiritual_health_activity", "$spiritual_health_time"], // Include activity and time            
+              if: {
+                $and: [
+                  include_spiritual,
+                  { $ne: ["$spiritual_health_activity", null] } // Check if mental_health_activity is not null
+                ]
+              },
+              then: ["$spiritual_health_activity", "$spiritual_health_time"],
               else: []
             }
           }
@@ -272,8 +325,13 @@ async function readPercentile(percentile, startDay, endDay) {
         social_care_activities: {
           $push: {
             $cond: {
-              if: { $ne: ["$social_health_activity", null] }, // Check if social_health_activity is not null
-              then: ["$social_health_activity", "$social_health_time"], // Include activity and time            
+              if: {
+                $and: [
+                  include_social,
+                  { $ne: ["$societal_health_activity", null] } // Check if mental_health_activity is not null
+                ]
+              },
+              then: ["$societal_health_activity", "$societal_health_time"],
               else: []
             }
           }

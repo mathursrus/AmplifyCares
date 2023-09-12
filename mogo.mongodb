@@ -133,7 +133,12 @@ db.self_care_stats.aggregate([
 /* Find the total self care time for a particular person across everyday, also add all self-care acitivites */
 use('amplifycares-db-catita');
 let x = "sidm@microsoft.com";
+let activity = "spiritual";
 let date = new Date("9/1/2023");
+let include_mental = (activity === "total" || activity === "mental");
+let include_physical = (activity === "total" || activity === "physical");
+let include_social = (activity === "total" || activity === "social");
+let include_spiritual = (activity === "total" || activity === "spiritual");
 db.self_care_stats.aggregate([
   {
     $match: {
@@ -147,10 +152,10 @@ db.self_care_stats.aggregate([
       total_health_time: {
         $sum: {
           $add: [
-            { $toInt: "$mental_health_time" },
-            { $toInt: "$physical_health_time" },
-            { $toInt: "$spiritual_health_time" },
-            { $toInt: "$societal_health_time" }
+            {$cond: [include_mental,{ $toInt: "$mental_health_time" }, 0]},
+            {$cond: [include_physical,{ $toInt: "$physical_health_time" }, 0]},
+            {$cond: [include_spiritual,{ $toInt: "$spiritual_health_time" }, 0]},
+            {$cond: [include_social,{ $toInt: "$societal_health_time" }, 0]},            
           ]
         }
       },
@@ -159,28 +164,48 @@ db.self_care_stats.aggregate([
           $concatArrays: [
             {
               $cond: {
-                if: { $ne: ["$mental_health_activity", null] },
+                if: {
+                  $and: [
+                    include_mental,
+                    { $ne: ["$mental_health_activity", null] } // Check if mental_health_activity is not null
+                  ]
+                },
                 then: [["$mental_health_activity", "$mental_health_time"]],
                 else: []
-              }
+              }              
             },
             {
               $cond: {
-                if: { $ne: ["$physical_health_activity", null] },
+                if: {
+                  $and: [
+                    include_physical,
+                    { $ne: ["$physical_health_activity", null] } // Check if mental_health_activity is not null
+                  ]
+                },
                 then: [["$physical_health_activity", "$physical_health_time"]],
                 else: []
               }
             },
             {
               $cond: {
-                if: { $ne: ["$spiritual_health_activity", null] },
+                if: {
+                  $and: [
+                    include_spiritual,
+                    { $ne: ["$spiritual_health_activity", null] } // Check if mental_health_activity is not null
+                  ]
+                },
                 then: [["$spiritual_health_activity", "$spiritual_health_time"]],
                 else: []
               }
             },
             {
               $cond: {
-                if: { $ne: ["$societal_health_activity", null] },
+                if: {
+                  $and: [
+                    include_social,
+                    { $ne: ["$societal_health_activity", null] } // Check if mental_health_activity is not null
+                  ]
+                },
                 then: [["$societal_health_activity", "$societal_health_time"]],
                 else: []
               }
@@ -470,7 +495,7 @@ db.self_care_stats.find().sort({DateTime:-1});
 
 /* All details for a person */
 use('amplifycares-db-catita');
-db.self_care_stats.find({name:"Bob"}).sort({DateTime:-1});
+db.self_care_stats.find({name:"scotthas@microsoft.com"}).sort({DateTime:-1});
 
 /* All user info */
 use('amplifycares-db-catita');
@@ -535,7 +560,7 @@ db.recommendations.find({type:1});
 
 // delete some recommendations 
 use('amplifycares-db-catita');
-db.recommendations.deleteMany({title: {$regex:"dffds*"}}, {contributor: {$regex:"sidm@*"}});
+db.recommendations.deleteMany({title: {$regex:"This*"}}, {contributor: {$regex:"sidm@*"}});
 
 // show all databases
 show databases;

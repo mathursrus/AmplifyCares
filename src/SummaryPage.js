@@ -13,6 +13,7 @@ const SummaryPage = () => {
   const [showSelf, setShowSelf] = useState(true);
   const [showMostOthers, setShowMostOthers] = useState(true);
   const [showTheBest, setShowTheBest] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("total");
   const userName = localStorage.getItem('userName');
   const currentDate = new Date(); // Get the current date
   const currentMonth = currentDate.getMonth(); // Get the current month
@@ -80,16 +81,16 @@ const SummaryPage = () => {
                 endDay:
                 today;
       // get self-care data from cache
-      const selfCareData = await getAggregateStats(getApiUrl(`/getselfcarestats/?item=${userName}&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
-      const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
-      const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}`));
+      const selfCareData = await getAggregateStats(getApiUrl(`/getselfcarestats/?item=${userName}&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}&category=${selectedCategory}`));
+      const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}&category=${selectedCategory}`));
+      const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}&category=${selectedCategory}`));
 
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
       setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));
     }
     console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
     fetchData();
-  }, [endDay, startDay, userName, processChartData, processActivitiesData]);
+  }, [endDay, startDay, userName, selectedCategory, processChartData, processActivitiesData]);
   
   async function getAggregateStats(url) {
     const response = await fetch(url);
@@ -105,7 +106,7 @@ const SummaryPage = () => {
   
       activities.forEach((activity) => {
         const [activityNames, activityValue] = activity;
-        if (activityNames.length > 0) {
+        if (activityNames !== undefined && activityNames.length > 0) {          
           activityNames.forEach((activityName) => {
             if (activityName !== null) {
               if (activityMap.has(activityName)) {
@@ -124,10 +125,7 @@ const SummaryPage = () => {
       activityMap.forEach((value, key) => {
         result.push({text: key, value});
       });
-    }
-    else {
-      result.push({text: '0 activities', value: 100});
-    }
+    }    
   
     return result;
   }
@@ -162,6 +160,16 @@ const SummaryPage = () => {
           setEndDay={setEndDay}
           message={`Your Self Care Data for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
           />
+        <center>
+          {/* Add a dropdown select for category selection */}
+          <select className="category" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+            <option value="total">Overall</option>
+            <option value="mental">Mental</option>
+            <option value="physical">Physical</option>
+            <option value="spiritual">Spiritual</option>
+            <option value="social">Social</option>            
+          </select>          
+        </center>
         <center>
           <div style={{marginTop: '1rem'}}/>
           <h2 className="subheader">See your self care journey (and enhance it by learning from others like you).</h2>

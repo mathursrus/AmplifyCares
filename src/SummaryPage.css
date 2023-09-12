@@ -85,6 +85,14 @@
   margin-top: 0 auto; 
 }
 
+.summary-container .category {
+  background-color: transparent;
+}
+
+.summary-container .category option {
+  background-color: transparent; /* Set the background color of options to transparent */
+  color: black; /* Set the text color */
+}
 
 /* Add a media query to target screens with a maximum width of 768px (adjust as needed) */
 @media screen and (max-width: 768px) {
@@ -111,9 +119,7 @@
   .label {
     /* Adjust the font size and margin for the label on smaller screens */
     font-size: 0px;
-  }
-
-
+  } 
 }
 
 
