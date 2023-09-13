@@ -157,9 +157,14 @@
 
         // Helper function to map tags with 'value' based on 'wellKnownTags'
         const mapTagsWithValues = (tags) => {
-            return tags.map((tagName) => {
-                return { label: tagName, value: tagName };
-            });
+            if (tags !== undefined && tags !== null)  {
+                return tags.map((tagName) => {
+                    return { label: tagName, value: tagName };
+                });
+            }
+            else {
+                return [];
+            }
         };
 
         const mentalHealthRecommendations = (e) => {

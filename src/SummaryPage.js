@@ -8,6 +8,7 @@ import WordCloud from 'react-d3-cloud';
 
 const SummaryPage = () => {
 
+  const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [activitiesData, setActivitiesData] = useState([]);
   const [showSelf, setShowSelf] = useState(true);
@@ -75,6 +76,7 @@ const SummaryPage = () => {
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       // fix the end date
       const today = new Date();
       const utcEnd = (today > endDay)? 
@@ -87,6 +89,7 @@ const SummaryPage = () => {
 
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
       setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));
+      setLoading(false);
     }
     console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
     fetchData();
@@ -175,8 +178,10 @@ const SummaryPage = () => {
           <h2 className="subheader">See your self care journey (and enhance it by learning from others like you).</h2>
           <br></br>
           
-          {chartData.length > 0 && activitiesData.length > 0 ? 
-          (
+          {!loading?  
+          (<div>
+           {chartData.length > 0 && activitiesData.length > 0 ?
+           (
             <div class="summary-chart">
               <LineChart width={750} height={300} data={chartData}>
                 <XAxis 
@@ -308,7 +313,11 @@ const SummaryPage = () => {
                     );
                   }}
               /> 
-            </div>              
+            </div>
+            ) : (
+            <p>No Data</p>
+            )} 
+            </div>             
           ) : (
             <p>Loading...</p>
           )}
