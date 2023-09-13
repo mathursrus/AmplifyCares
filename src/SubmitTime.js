@@ -1,4 +1,3 @@
-    //import React from 'react';
     import Container from 'react-bootstrap/Container';
     import Button from 'react-bootstrap/Button';
     import Confetti from "react-confetti";
@@ -6,7 +5,7 @@
     import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
     import { faInfoCircle, faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
     import { getApiHost, getApiUrl } from './utils/urlUtil';
-    import { useNavigate } from 'react-router-dom';
+    //import { useNavigate } from 'react-router-dom';
     import DatePicker from 'react-datepicker';
     import { evaluate } from 'mathjs';
     import 'react-datepicker/dist/react-datepicker.css';
@@ -40,7 +39,7 @@
         // Create a state variable to store the selected animation
         const [animation, setAnimation] = React.useState(null);
         //const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
-        const navigate = useNavigate();
+        //const navigate = useNavigate();
         const [flyoutState, setFlyoutState] = useState(0);
         const [selectedDate, setSelectedDate] = useState(new Date());
         // for edit mode
@@ -48,11 +47,7 @@
         const [editingEntry, setEditingEntry] = useState(null);
         const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
 
-        useEffect(() => {
-            clearFields();            
-        }, [selectedDate]);
-        
-        const clearFields = () => {
+        const clearFields = useCallback(() => {
             setMentalHealth({time: '', tags: []});
             setPhysicalHealth({time: '', tags: []});
             setSpiritualHealth({time: '', tags: []});
@@ -60,8 +55,14 @@
             setEditingEntry(null);
             setIsEditMode(false);
             fetchEntries(selectedDate);
-        };
+        }, [selectedDate]);
 
+
+        useEffect(() => {
+            clearFields();            
+        }, [clearFields]);
+        
+        
         const fetchEntries = async (date) => {
             try {
                 const formattedDate = date.toLocaleDateString();
