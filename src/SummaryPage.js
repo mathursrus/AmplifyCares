@@ -158,16 +158,16 @@ const SummaryPage = () => {
           endDay={endDay}
           setStartDay={setStartDay}
           setEndDay={setEndDay}
-          message={`Your Self Care Data for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
+          message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
           />
         <center>
           {/* Add a dropdown select for category selection */}
           <select className="category" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-            <option value="total">Overall</option>
-            <option value="mental">Mental</option>
-            <option value="physical">Physical</option>
-            <option value="spiritual">Spiritual</option>
-            <option value="social">Social</option>            
+            <option value="total">Overall Self Care</option>
+            <option value="mental">Mental Care</option>
+            <option value="physical">Physical Care</option>
+            <option value="spiritual">Spiritual Care</option>
+            <option value="social">Social Care</option>            
           </select>          
         </center>
         <center>

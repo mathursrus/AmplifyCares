@@ -80,7 +80,7 @@ function Layout() {
                 to="/summary-page"
                 className={location.pathname === '/summary-page' ? 'active' : ''}
               >
-                Self Care Data
+                Self Care Stats
               </Nav.Link>
               <Nav.Link
                 as={Link}

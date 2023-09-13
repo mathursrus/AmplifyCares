@@ -6,6 +6,7 @@ const teamId = "team_info";
 const recoId = "recommendations";
 const userId = "userInfo";
 const inviteId = "invite_info";
+const ObjectId = require('mongodb').ObjectId;
 
 let dbClient = null;
 let team_container = null;
@@ -117,17 +118,29 @@ async function getAllUsers(domain) {
 
 
 async function writeEntry(item) {
-    try {
-        console.log('Handler got item: ', item)
-        item.DateTime = new Date(item.DateTime);
-        const ct = await getContainer();
-        const result = await ct.insertOne(item);
-        console.log('Item inserted now:', result.insertedId);
-        //return result.insertedId;
-      } catch (err) {
-        console.error('Error:', err);
+  try {
+      console.log('Handler got item: ', item)
+      item.DateTime = new Date(item.DateTime);
+      const ct = await getContainer();
+      
+      // Check if the item with the same ID already exists in the database
+      const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
+      
+      if (existingItem) {
+          // Item exists, perform an update
+          item._id = ObjectId(item._id);
+          const result = await ct.updateOne({ _id: item._id }, { $set: item });
+          console.log('Item updated:', item._id);
+      } else {
+          // Item does not exist, perform an insert
+          const result = await ct.insertOne(item);
+          console.log('Item inserted:', result.insertedId);
       }
+  } catch (err) {
+      console.error('Error:', err);
   }
+}
+
   
 
 async function readEntries(itemId, startDay, endDay, category) {
@@ -393,32 +406,24 @@ async function readPercentile(percentile, startDay, endDay, category) {
   return final;
 }
 
-async function readIndividualStats() {
-  console.log(`Get Individual Stats request`);
+async function readIndividualData(user, date) {
+  console.log(`Get Individual Data request`);
   const ct = await getContainer();
-  const result=await ct.aggregate([
-    {
-      $group: {
-        _id: {Name:"$name"},
-        total_health_time: {
-          $sum: {
-              $add: [
-              { $toInt: "$mental_health_time" },
-              { $toInt: "$physical_health_time" },
-              { $toInt: "$spiritual_health_time" },
-              { $toInt: "$societal_health_time" }
-              ]
-          }
-        }
-      }
-    },
-    {
-      $sort: {"total_health_time": -1 }
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0); // Set the time to midnight for the same day
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
+
+  const result = await ct.find({
+    name: user,
+    DateTime: {
+      $gte: startOfDay,
+      $lte: endOfDay
     }
-  ]).toArray();
-  console.log(`Individual Stats are: ${result}`);
+  }).toArray();
+  console.log(`Individual Data is: ${result}`);
   const final = JSON.stringify(result);
-  console.log(`Final individual stats are ${final}`);
+  console.log(`Final individual data is ${final}`);
   return final;
 }
 
@@ -628,4 +633,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualStats, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

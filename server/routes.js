@@ -75,12 +75,14 @@ const getPercentiles = {
     }
 }
 
-const getIndividualStats = {
+const getIndividualData = {
     method: 'get',
-    path: '/getindividualstats',
+    path: '/getselfcaredata',
     handler: async (req, res) => {
-        console.log("Got individual stats req: ", req.query);
-        const response = await handlers.readIndividualStats();
+        console.log("Got individual data req: ", req.query);
+        const item = await req.query.item;
+        const date = await req.query.date;
+        const response = await handlers.readIndividualData(item, date);
         res.status(200).json(response);
     }
 }
@@ -152,4 +154,4 @@ const sendInvite = {
     }
 }
 
-module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualStats, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

@@ -38,6 +38,24 @@
   }
 
 
+  /* CSS for non-bold table headings */
+  .non-bold {
+    font-weight: normal;
+  }
+
+  /* CSS for table borders */
+  .entry-table {
+    margin-top: 5px;
+    border-collapse: collapse;
+    
+  }
+
+  .entry-table th, .entry-table td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 8px;
+  }
+
 
   .flyout {
     /* Existing styles */

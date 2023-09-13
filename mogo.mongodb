@@ -44,11 +44,32 @@ db.invite_info.deleteMany({invite: {$regex:"User sidm@.*"}});
 
 // find all entries on a particular date
 use('amplifycares-db-catita');
-db.self_care_stats.find({DateTime: { $gt: new Date('2023-09-05') }});
+db.self_care_stats.find({DateTime: { $gt: new Date('2023-09-11') }});
+
+// find entry with id 
+use('amplifycares-db-catita');
+db.self_care_stats.findOne({ _id: ObjectId("64ff81e0aa705d46e4fce721")});
 
 // find all entries for a user
 use('amplifycares-db-catita');
 db.self_care_stats.find({ name:"sidm@microsoft.com" }).sort({"DateTime":-1});
+
+// find all entries for a user on a particular date
+use('amplifycares-db-catita');
+const targetDate = "9/7/2023"; // Example target date with time
+const startOfDay = new Date(targetDate);
+startOfDay.setHours(0, 0, 0, 0); // Set the time to midnight for the same day
+const endOfDay = new Date(targetDate);
+endOfDay.setHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
+
+db.self_care_stats.find({
+  name: "sidm@microsoft.com",
+  DateTime: {
+    $gte: startOfDay,
+    $lte: endOfDay
+  }
+});
+
 
 // find matching entries
 use('amplifycares-db-catita');
