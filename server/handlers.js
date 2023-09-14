@@ -1,7 +1,7 @@
 const { BlobServiceClient } = require('@azure/storage-blob');
 const MongoClient = require('mongodb');
-const databaseId = "amplifycares-db-catita";
-const containerId = "self_care_stats";
+const databaseId = process.env.MONGODB_DATABASE_ID;
+const containerId = process.env.MONGODB_CONTAINER_ID;
 const teamId = "team_info";
 const recoId = "recommendations";
 const userId = "userInfo";
@@ -17,7 +17,7 @@ let invite_container = null;
 
 async function getMongoDbClient() {
   if (!dbClient) {
-    const client = await new MongoClient("mongodb://amplifycares-server:iRIAx1TOBoMR0c035T1u6oB9DjEQUX0ySCwwyXF8G7CT02b92BbdYOGezGDn7Fv2JGKRdUWVxKnPACDb30unbw==@amplifycares-server.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@amplifycares-server@")
+    const client = await new MongoClient(process.env.MONGODB_CONNECTION_STRING);
     console.log(client)
     dbClient = await client.db(databaseId);
     console.log('db client:', dbClient);
@@ -573,7 +573,7 @@ async function getRecommendations(itemId) {
 }
 
 async function writeFeedback(feedback) {
-  const connectionString = 'DefaultEndpointsProtocol=https;AccountName=videofeedback;AccountKey=6t8Yt+nzMkliEjDkczVXsRQPbgQwlMh0LfAOyPZn/AexG2AJELAkCWc0JFmFn4ZpZxxOVILiiWDk+ASt+J0hYQ==;EndpointSuffix=core.windows.net';
+  const connectionString = process.env.AZURE_BLOB_CONNECTION_STRING;
   const containerName = 'mp4';
 
   // Create a BlobServiceClient object using the connection string
@@ -610,7 +610,7 @@ async function sendInvite(inviteText) {
 
 async function sendmail() {
   const sgMail = require('@sendgrid/mail');
-  sgMail.setApiKey('your_sendgrid_api_key');
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
   const ct = await getUserContainer();
   const reipients = await ct.find().toArray();

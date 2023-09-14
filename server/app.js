@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { HubConnectionBuilder, LogLevel } = require('@microsoft/signalr');
 const { v4: uuidv4 } = require('uuid');
 
@@ -29,7 +30,7 @@ async function startSignalRHub() {
   console.log("Starting hub");
 
   const hubConnection = new HubConnectionBuilder()
-    .withUrl('http://localhost:8080/hub') // Update the URL to match your server's URL
+    .withUrl(process.env.SIGNALR_HUB_CONNECTION) // Update the URL to match your server's URL
     .configureLogging(LogLevel.Information)
     .build();
 
@@ -103,7 +104,7 @@ app.post('/hub/negotiate', (req, res) => {
   const connectionId = uuidv4();
 
   const negotiationResponse = {
-    url: 'http://localhost:8080/hub', // Update the URL if necessary
+    url: process.env.SIGNALR_HUB_CONNECTION, // Update the URL if necessary
     accessToken: 'AmplifyCares',
     connectionId: connectionId
   };
