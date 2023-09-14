@@ -1,5 +1,50 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import './FirstRunExperience.css'; 
+
+export const features = [
+  {
+      date: "9/13/2023",
+      title:"Gain inspiration for self care",
+      description: "Self Care Stats now shows a wordcloud view of your common activities and those of others (in aggregate) so you can be inspired to build new self care habits",
+  },
+  {
+      date: "9/1/2023",
+      title:"Now available as a Teams app",
+      description: "@Satish - Thank you for pushing for a Teams app. You can now sideload the Teams app at <a href='http://aka.ms/AmplifyCaresTeamsApp' target='_blank' rel='noopener noreferrer'>aka.ms/AmplifyCaresTeamsApp</a> by following these instructions <a href='https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/deploy-and-publish/apps-upload' target='_blank' rel='noopener noreferrer'>here</a>",
+  },
+  {
+      date: "8/30/2023",
+      title:"Entering historical data",
+      description:"@Manohar @ScottHas - Thank you for expressing the need to enter historical data. You can now pick the date for your self care hours.",
+  },
+  {
+      date: "8/15/2023",
+      title:"No more screaming",
+      description:"@Jesus - Thank you for telling us that you felt screamed at by the SubmitTime page. We've mellowed down thanks to you.",
+  },
+  {
+      date: "7/15/2023",
+      title:"Cold Start Performance",
+      description:"@ScottHas - Thank you for your feedback on the terrible perf at first boot. We've reduced cold start perf from 40 seconds to 1 second. Your feedback helped improve the experience for all.",
+  }
+];
+
+const comingsoon = [
+  {
+      title:"Accessibility",
+      description:"@Maggie - Thank you for calling out that the color scheme is not accessible. We will work on fixing this soon.",
+  },
+  {
+    title:"Personalized Insights to help your self care",
+    description:"Learn from what others do well. Amplify Cares will give you suggestions on what you can do to take even better care of yourself.",
+  },
+  {
+    title:"Challenges to keep you going",
+    description:"Think you're doing a great job of self care? Beat the challenges and prove it to yourself.",
+  },
+];
 
 function FirstRunExperience({ screen, onClose }) {
   const [currentScreen, setCurrentScreen] = useState(screen);
@@ -14,40 +59,6 @@ function FirstRunExperience({ screen, onClose }) {
     const videoElement = document.getElementById('video-element');
     if (videoElement) videoElement.load();
   }, [currentScreen]);
-
-  const features = [
-    {
-        title:"Now available as a Teams app",
-        description: "@Satish - Thank you for pushing for a Teams app. You can now sideload the Teams app at <a href='http://aka.ms/AmplifyCaresTeamsApp' target='_blank' rel='noopener noreferrer'>aka.ms/AmplifyCaresTeamsApp</a> by following these instructions <a href='https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/deploy-and-publish/apps-upload' target='_blank' rel='noopener noreferrer'>here</a>",
-    },
-    {
-        title:"Entering historical data",
-        description:"@Manohar @ScottHas - Thank you for expressing the need to enter historical data. You can now pick the date for your self care hours.",
-    },
-    {
-        title:"No more screaming",
-        description:"@Jesus - Thank you for telling us that you felt screamed at by the SubmitTime page. We've mellowed down thanks to you.",
-    },
-    {
-        title:"Cold Start Performance",
-        description:"@ScottHas - Thank you for your feedback on the terrible perf at first boot. We've reduced cold start perf from 40 seconds to 1 second. Your feedback helped improve the experience for all.",
-    }
-  ];
-
-  const comingsoon = [
-    {
-        title:"Accessibility",
-        description:"@Maggie - Thank you for calling out that the color scheme is not accessible. We will work on fixing this soon.",
-    },
-    {
-      title:"Personalized Insights to help your self care",
-      description:"Learn from what others do well. Amplify Cares will give you suggestions on what you can do to take even better care of yourself.",
-    },
-    {
-      title:"Challenges to keep you going",
-      description:"Think you're doing a great job of self care? Beat the challenges and prove it to yourself.",
-    },
-  ];
 
   // Define the content for each screen
   const screens = [
@@ -89,11 +100,11 @@ function FirstRunExperience({ screen, onClose }) {
       ),
     },
     {
-      title: "What's new for you in Amplify Cares?",
+      title: "What's new for you in Amplify Cares",
       content: (
         <div>
-          We're constantly improving Amplify Cares, so you can constantly improve your self care. Keep the feedback coming.
-          <br></br><br></br>
+          <i>We're constantly improving Amplify Cares, so you can constantly improve your self care. Keep the feedback coming.</i>
+          <br></br><br></br><br></br>
           {features.map((feature, index) => (
             <div className="feature-row">
                 {/*
@@ -105,7 +116,10 @@ function FirstRunExperience({ screen, onClose }) {
                 </div>
               */}
                 <div className="featuretext-container">
-                    <b>{feature.title}</b>
+                {(new Date(feature.date) > new Date(localStorage.getItem('lastLogin'))) && (
+                  <FontAwesomeIcon icon={faStar} style={{ color: 'gold', marginRight: '5px' }} />
+                )}
+                    <b>{feature.date}: {feature.title}</b>
                     <p dangerouslySetInnerHTML={{ __html: feature.description }} />
                 </div>
             </div>
@@ -117,8 +131,8 @@ function FirstRunExperience({ screen, onClose }) {
       title: "Coming soon to Amplify Cares",
       content: (
         <div>
-          We're constantly improving Amplify Cares, so you can constantly improve your self care. Keep the feedback coming.
-          <br></br><br></br>
+          <i>We're constantly improving Amplify Cares, so you can constantly improve your self care. Keep the feedback coming.</i>
+          <br></br><br></br><br></br>
           {comingsoon.map((feature, index) => (
             <div className="feature-row">                
                 <div className="featuretext-container">

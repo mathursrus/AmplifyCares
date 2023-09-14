@@ -4,13 +4,14 @@ import SummaryPage from "./SummaryPage";
 import TeamList from "./TeamList";
 import LogoutSuccessPage from './Logout';
 import FirstRunExperience from './FirstRunExperience';
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
 import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
 import { getApiHost } from './utils/urlUtil';
 import * as microsoftTeams from "@microsoft/teams-js";
+import { features } from "./FirstRunExperience";
 import './App.css';
 
 const config = {
@@ -93,8 +94,113 @@ function AppPage() {
   // Function to handle closing the first-run experience modal
   const handleCloseFirstRunExperience = () => {
     console.log("Turning off FRE");
+    setUserLogin();
     setShowFirstRunExperience(0);
   };
+
+  const setUserBadges = useCallback(async (badges) => {
+    const temp_badges = [
+    { badgelisttype: 'current', badgelist: [
+      { badgetype: 'streak', badgetext: 'Get a 30 day streak of self care'} ,
+      { badgetype: 'rookie', badgetext: 'You are new to the app, Be the Rookie of the month' },
+      { badgetype: 'winner', badgetext: 'Be among the top 10% of self care for the month' },
+      { badgetype: 'team', badgetext: 'Help your team top the leaderboard' },
+    ]},
+    {badgelisttype: 'historical', badgelist: [
+      /*{ badgetype: 'winner', badgetext: 'June iCare champ' },
+      { badgetype: 'rookie', badgetext: 'May iCare Rookie of month' },
+      { badgetype: 'streak', badgetext: '30-day streak' },
+      { badgetype: 'team', badgetext: 'June weCare champ' },*/
+    ]},
+    ];
+    await localStorage.setItem('badges', JSON.stringify(temp_badges));        
+  }, []);
+
+  // Update the last login time of a user or add a new user
+  const updateUserLastLogin = useCallback(async (lastLogin) => {
+    console.log("Got last login of ", lastLogin);
+    localStorage.setItem('lastLogin', lastLogin);
+    // if the user has logged in before and it's been more than 1 seconds ago, dont show FRE
+    if (!lastLogin) {
+      console.log("Show FRE here");
+      setShowFirstRunExperience(1);
+    } else if (new Date(features[0].date) > new Date(lastLogin)) {
+      console.log("Show WhatsNew here");
+      setShowFirstRunExperience(3);      
+    }
+    else {
+      console.log("Nothing to show here");
+      setShowFirstRunExperience(0);
+      setUserLogin();      
+    }
+    //sendNotification(username);
+  }, []);
+
+  const getAndSetUserInfo = useCallback(async (username) => {
+    const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));
+    const data = await response.json();
+    const userInfo = JSON.parse(data);
+    console.log("Got user info ", userInfo);
+    const badges = userInfo.length>0 ? userInfo[0].badgesOnTrack : null;
+    const lastLogin = userInfo.length>0 ? userInfo[0].lastLoginTime : null;
+    await setUserBadges(badges);
+    console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));       
+    updateUserLastLogin(lastLogin);
+  }, [setUserBadges, updateUserLastLogin]);
+
+  const setUser = useCallback(async (response) => {
+    console.log("Set user called with ", response);
+    if (response) {
+      user.current = response[0];
+      localStorage.setItem('userName', response[0]);
+      localStorage.setItem('userDisplayName', response[1]);
+      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.AUTHENTICATED);
+      await getAndSetUserInfo(response[0]); 
+      setUserExists(true);             
+    }
+    else {
+      user.current = null;
+      localStorage.setItem('userName', null);
+      localStorage.setItem('userDisplayName', null);
+      localStorage.setItem('badges', null);
+      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.LOGGED_OUT);
+
+      setUserExists(false);
+      console.log("User set to null");
+    }
+  }, [AUTH_STATE_VALUES.AUTHENTICATED, AUTH_STATE_VALUES.LOGGED_OUT, getAndSetUserInfo]);
+
+  
+  const setUserLogin = () => {
+    fetch(getApiHost() + `/setUserLogin?user=${localStorage.getItem('userName')}&logintime=${(new Date()).toISOString()}`);      
+  }
+
+  const login = useCallback(async () => {    
+    console.log("In Login, Authenticating is ", localStorage.getItem(AUTH_STATE));
+    try {      
+      msalInstance.handleRedirectPromise().then(authResult => {
+        console.log("Handle redirect promise called with auth ", authResult);
+        if (authResult && authResult.account) {
+          const account = authResult.account;
+          console.log("Setting active account to ", account);
+          msalInstance.setActiveAccount(account);              
+          setUser([account.username, account.name]);
+        }
+        else {
+          setUser(null);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+
+      await msalInstance.loginRedirect();
+
+    } catch (error) {
+      console.log('Login failed:', error);          
+    }      
+  }, [msalInstance, setUser]);
+
+  
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -190,101 +296,7 @@ function AppPage() {
     } else {
       console.log("Ignoring auth since state is ", current_auth_state);
     }
-  }); 
-
-  const login = async () => {    
-    console.log("In Login, Authenticating is ", localStorage.getItem(AUTH_STATE));
-    try {      
-      msalInstance.handleRedirectPromise().then(authResult => {
-        console.log("Handle redirect promise called with auth ", authResult);
-        if (authResult && authResult.account) {
-          const account = authResult.account;
-          console.log("Setting active account to ", account);
-          msalInstance.setActiveAccount(account);              
-          setUser([account.username, account.name]);
-        }
-        else {
-          setUser(null);
-        }
-      }).catch(err => {
-        console.log(err);
-      });
-
-      await msalInstance.loginRedirect();
-
-    } catch (error) {
-      console.log('Login failed:', error);          
-    }      
-  };
-
-  const setUser = async (response) => {
-    console.log("Set user called with ", response);
-    if (response) {
-      user.current = response[0];
-      localStorage.setItem('userName', response[0]);
-      localStorage.setItem('userDisplayName', response[1]);
-      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.AUTHENTICATED);
-      await getAndSetUserInfo(response[0]); 
-      setUserExists(true);             
-    }
-    else {
-      user.current = null;
-      localStorage.setItem('userName', null);
-      localStorage.setItem('userDisplayName', null);
-      localStorage.setItem('badges', null);
-      localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.LOGGED_OUT);
-
-      setUserExists(false);
-      console.log("User set to null");
-    }
-  };
- 
-  const getAndSetUserInfo = async (username) => {
-    const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));
-    const data = await response.json();
-    const userInfo = JSON.parse(data);
-    console.log("Got user info ", userInfo);
-    const badges = userInfo.length>0 ? userInfo[0].badgesOnTrack : null;
-    const lastLogin = userInfo.length>0 ? userInfo[0].lastLoginTime : null;
-    await setUserBadges(badges);
-    console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));       
-    updateUserLastLogin(username, lastLogin);
-  }
-
-  const setUserBadges = async (badges) => {
-      const temp_badges = [
-      { badgelisttype: 'current', badgelist: [
-        { badgetype: 'streak', badgetext: 'Get a 30 day streak of self care'} ,
-        { badgetype: 'rookie', badgetext: 'You are new to the app, Be the Rookie of the month' },
-        { badgetype: 'winner', badgetext: 'Be among the top 10% of self care for the month' },
-        { badgetype: 'team', badgetext: 'Help your team top the leaderboard' },
-      ]},
-      {badgelisttype: 'historical', badgelist: [
-        /*{ badgetype: 'winner', badgetext: 'June iCare champ' },
-        { badgetype: 'rookie', badgetext: 'May iCare Rookie of month' },
-        { badgetype: 'streak', badgetext: '30-day streak' },
-        { badgetype: 'team', badgetext: 'June weCare champ' },*/
-      ]},
-    ];
-    await localStorage.setItem('badges', JSON.stringify(temp_badges));        
-  }
-
-  // Update the last login time of a user or add a new user
-  const updateUserLastLogin = async (username, lastLogin) => {
-    const currentTime = new Date();
-    console.log("Got last login of ", lastLogin);
-    // if the user has logged in before and it's been more than 1 seconds ago, dont show FRE
-    if (lastLogin && (Math.floor((currentTime - new Date(lastLogin))/1000)>1))  {
-      console.log("No FRE here");
-      setShowFirstRunExperience(0);
-    }
-    else {
-      // set the login info
-      fetch(getApiHost() + `/setUserLogin?user=${username}&logintime=${currentTime.toISOString()}`);
-      setShowFirstRunExperience(1);
-    }
-    //sendNotification(username);
-  };
+  }, [AUTH_STATE_VALUES.AUTHENTICATING, AUTH_STATE_VALUES.LOGGING_OUT, login, msalInstance, setUser]);     
 
   const handleLogout = async (event) => {
     //event.preventDefault();
