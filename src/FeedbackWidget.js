@@ -252,7 +252,8 @@ const FeedbackWidget = () => {
           <div className="feedback-widget">
             <div className="thank-you-wrapper">
               <div className="thank-you-message">
-                Thank you for your feedback. We have logged it&nbsp;
+                {issueURL && (<i>Thank you for improving Amplify Cares</i>)}
+                {/*! have logged it&nbsp;
                 {issueURL && (
                   <>
                     <a href={issueURL} target="_blank" rel="noopener noreferrer">
@@ -260,7 +261,7 @@ const FeedbackWidget = () => {
                     </a>
                     .
                   </>
-                )}
+                )}*/}
               </div>
               <button className="close-button" onClick={handleClose}>
                 X

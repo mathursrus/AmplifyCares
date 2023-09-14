@@ -74,7 +74,7 @@ function Leaderboard() {
         setEndDay={setEndDay}
         message= {`Leaderboard for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
         />
-        <center>You succeed as a team when you bring others along. This is the daily time spent on self care by the <u>median team member</u>. </center>
+        <center>You succeed as a team when you bring others along. This is the daily time spent on self care by the <b>median team member</b>. </center>
         <br/>
             
         {leaders ? (
