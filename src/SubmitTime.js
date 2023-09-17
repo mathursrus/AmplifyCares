@@ -5,13 +5,14 @@
     import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
     import { faInfoCircle, faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
     import { getApiHost, getApiUrl } from './utils/urlUtil';
-    //import { useNavigate } from 'react-router-dom';
+    import { useNavigate } from 'react-router-dom';
     import DatePicker from 'react-datepicker';
     import { evaluate } from 'mathjs';
     import 'react-datepicker/dist/react-datepicker.css';
     import './SubmitTime.css';
     import UserBadges from './UserBadges';
     import { ReactTags } from 'react-tag-autocomplete';
+    import SpeechRecognition from './SpeechToText';
 
     const React = require('react');
     const { useState, useEffect, useCallback } = React;
@@ -39,7 +40,7 @@
         // Create a state variable to store the selected animation
         const [animation, setAnimation] = React.useState(null);
         //const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
-        //const navigate = useNavigate();
+        const navigate = useNavigate();
         const [flyoutState, setFlyoutState] = useState(0);
         const [selectedDate, setSelectedDate] = useState(new Date());
         // for edit mode
@@ -89,6 +90,14 @@
             return date;
         }        
 
+        const showData = async (results) => {
+            console.log("Submits time got data ", results);  
+            if (results.length > 0) {
+                await setSelectedDate(new Date(results[0].DateTime));
+                celebrate();
+            }
+        }
+
         const handleSubmit = async(e) => {             
             // Submit form data
             const itemData = {
@@ -115,16 +124,21 @@
                 console.log("Ugh");
             }
             else {
-                clearFields();
-                // Set the state variable to the random number
-                const rand = getRandomNumber();
-                setAnimation(rand);                    
-                setTimeout(() => {
-                    setAnimation(null);
-                    //navigate('/summary-page');
-                }, 6000);
+                clearFields();            
+                celebrate();
             }            
         };
+
+        const celebrate = () => {
+            console.log("Celebrating");
+            // Set the state variable to the random number
+            const rand = getRandomNumber();
+            setAnimation(rand);                    
+            setTimeout(() => {
+                setAnimation(null);
+                navigate('/summary-page');
+            }, 6000);
+        }
 
         const handleEditClick = (entry) => {
             // Set the entry to be edited in the state and enter edit mode
@@ -205,6 +219,7 @@
                 <div>
                     <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
                 </div>        
+                <SpeechRecognition endpoint={"gettimeinput"} onResults={showData}/>
                 <form>
                     <center>
                         Select the date you're submitting time for  
@@ -337,7 +352,7 @@
                                 placeholderText="Select or Add activity"
                                 allowNew="true"
                                 labelText=''
-                                collapseOnSelect="true"
+                                collapseOnSelect="true"                                
                             />                        
                         </div>
                     </div>

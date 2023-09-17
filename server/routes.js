@@ -109,6 +109,18 @@ const getTeamStats = {
     }
 }
 
+const getTimeInputFromSpeech = {
+    method: 'post',
+    path: '/gettimeinput', 
+    handler: async (req, res) => {
+        const item = req.body.item; 
+        const user = req.body.username; 
+        const response = await handlers.getTimeInputFromSpeech(user, item);
+
+        res.status(200).json(response);
+    }
+}
+
 const writeRecommendation = {
     method: 'get',
     path: '/writerecommendation', 
@@ -154,4 +166,4 @@ const sendInvite = {
     }
 }
 
-module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

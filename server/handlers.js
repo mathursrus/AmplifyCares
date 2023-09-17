@@ -1,4 +1,5 @@
 const { BlobServiceClient } = require('@azure/storage-blob');
+const FormData = require('form-data');
 const MongoClient = require('mongodb');
 const databaseId = "amplifycares-db-catita";
 const containerId = "self_care_stats";
@@ -7,6 +8,7 @@ const recoId = "recommendations";
 const userId = "userInfo";
 const inviteId = "invite_info";
 const ObjectId = require('mongodb').ObjectId;
+const axios  = require('axios');
 
 let dbClient = null;
 let team_container = null;
@@ -532,20 +534,142 @@ async function readTeamStats(startDay, endDay) {
   return final;
 }
 
-async function readHighBar(itemId) {
-  console.log(`Got called with id: ${itemId}`);
-  //const { resource: item } = await container.item(itemId, itemId).read();
-  const ct = await getContainer();
-  const result= await ct.aggregate([{$match:{name:"$itemId"}}, 
-    {$group: {_id:"$name", 
-      total_mental_health: {$sum:{$add:[{$toInt: "$mental_health_time"}]}},
-      total_physical_health: {$sum:{$add:[{$toInt: "$physical_health_time"}]}},
-      total_spiritual_health: {$sum:{$add:[{$toInt: "$spiritual_health_time"}]}},
-      total_societal_health: {$sum:{$add:[{$toInt: "$societal_health_time"}]}},
-    }}]).toArray();
-  const final = JSON.stringify(result);
-  console.log(`Read itemss : ${final}`);
-  return final;
+async function getTimeInputFromSpeech(username, item) {
+  const audioBuffer = Buffer.from(item, 'base64');
+  const formData = new FormData(); 
+  formData.append('file', audioBuffer, {
+    contentType: 'audio/wav', 
+    filename: 'audio.wav', 
+  });
+  formData.append('model', 'whisper-1');
+  
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/audio/transcriptions',
+      formData.getBuffer(), 
+      {
+        headers: {
+          Authorization: `Bearer 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`, 
+          ...formData.getHeaders(),          
+        },
+      }
+    );
+    const result = response.data.text;
+    console.log("Speech to text is ", response.data.text);
+        
+    const openairesult = await callOpenAICompletions(result);
+    console.log("OpenAI result is ", openairesult);
+
+    const final = await convertOpenAIToTimeEntries(username, openairesult);
+    console.log("Final entries are result is ", final);
+
+    return JSON.stringify(final);
+  }
+  catch (error) {
+    if (error.response) {
+      // The request was made, but the server responded with an error status code
+      console.error('OpenAI Error:', error.response.data.error.message);
+    } else if (error.request) {
+      // The request was made, but no response was received
+      console.error('No response received from OpenAI');
+    } else {
+      // Something else happened while setting up the request
+      console.error('Axios Error:', error.message);
+    }
+  }
+}
+
+async function callOpenAICompletions(text) {
+  try {
+    const prompt = "Please format the following input into the specified format: {date in mm/dd/yyyy format, category, time spent in minutes, activities performed}. \
+    Categories should be one of Mental Health, Physical Health, Spiritual Health, Social Health.\
+    The user can use references like yesterday, last Saturday. You should convert them to dates. If no date is referenced, assume the date is today's date. \
+    Today is " + new Date() + ".\
+    Input: On 20th September 2023, I practiced mindfulness meditation for 20 minutes and went for a 25-minute jog.\
+    Output: {09/20/2023, Mental Health, 20, mindfulness meditation}, {09/20/2023, Physical Health, 25, jog}."
+
+    const conversation = [
+      { role: 'system', content: prompt }
+    ];
+
+    const userMessage = { role: 'user', content: `Input: ${text}. Output: `};
+    conversation.push(userMessage);
+
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: conversation,
+      },
+      {
+        headers: {
+          Authorization: `Bearer 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`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    const completedText = response.data.choices[0].message.content;
+    console.log('OpenAI Completions Result:', completedText);    
+
+    return completedText;
+  } catch (error) {
+    console.error('Error calling OpenAI Completions:', error.message);
+    throw error;
+  }
+}
+
+async function convertOpenAIToTimeEntries(username, inputString) {  
+  // Split the input string into individual entries
+  const entries = inputString.split("}, {");
+
+  // Create a function to parse date strings into Date objects
+  function parseDate(dateString) {
+    const [month, day, year] = dateString.split("/");
+    return new Date(year, month - 1, day);
+  }
+
+  // Initialize an array to store the resulting objects
+  const resultArray = [];
+  const promises = [];
+
+  // Iterate through each entry
+  entries.forEach(async (entry) => {
+    // Remove curly braces and split the entry into components
+    const components = entry.replace(/{|}/g, "").split(", ");
+
+    // Extract individual components
+    const date = parseDate(components[0]);
+    const category = components[1];
+    const time = parseInt(components[2]);
+    const activity = components[3];
+
+    if (["Mental Health", "Physical Health", "Spiritual Health", "Social Health"].includes(category))  {
+      // Create an object in the desired format
+      const itemData = {
+        name: username,
+        DateTime: date,
+        lastEdited: date,
+        mental_health_time: category === "Mental Health" ? time : 0,
+        mental_health_activity: category === "Mental Health" ? [activity] : [],
+        physical_health_time: category === "Physical Health" ? time : 0,
+        physical_health_activity: category === "Physical Health" ? [activity] : [],
+        spiritual_health_time: category === "Spiritual Health" ? time : 0,
+        spiritual_health_activity: category === "Spiritual Health" ? [activity] : [],
+        societal_health_time: category === "Social Health" ? time : 0,
+        societal_health_activity: category === "Social Health" ? [activity] : [],
+      };
+
+      promises.push(writeEntry(itemData));
+      // Push the object to the result array
+      resultArray.push(itemData);
+    }
+  });
+
+  await Promise.all(promises);
+  
+  console.log(resultArray);    
+  return resultArray;    
 }
 
 async function writeRecommendation(item) {
@@ -633,4 +757,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
