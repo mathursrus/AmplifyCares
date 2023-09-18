@@ -240,3 +240,8 @@
 .react-tags__listbox-option-highlight {
   background-color: #ffdd00;
 }
+
+.icon-space {
+  margin-right: 10px; /* Adjust the margin-right value to control the space between the icons */
+}
+

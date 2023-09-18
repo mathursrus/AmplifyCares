@@ -127,16 +127,25 @@ async function writeEntry(item) {
       
       // Check if the item with the same ID already exists in the database
       const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
-      
+      const isEmptyItem = (item.mental_health_time === 0) && (item.physical_health_time === 0) && (item.spiritual_health_time === 0) && (item.societal_health_time === 0);
       if (existingItem) {
-          // Item exists, perform an update
-          item._id = ObjectId(item._id);
-          const result = await ct.updateOne({ _id: item._id }, { $set: item });
-          console.log('Item updated:', item._id);
+          item._id = ObjectId(item._id);            
+          if (isEmptyItem) {
+            // if all entries are 0, then delete
+            const result = await ct.deleteOne({ _id: item._id });
+            console.log('Item deleted:', item._id);
+          }
+          else {
+            // Item exists, perform an update
+            const result = await ct.updateOne({ _id: item._id }, { $set: item });
+            console.log('Item updated:', item._id);
+          }
       } else {
-          // Item does not exist, perform an insert
-          const result = await ct.insertOne(item);
-          console.log('Item inserted:', result.insertedId);
+        if (!isEmptyItem) {
+            // Item does not exist, perform an insert
+            const result = await ct.insertOne(item);
+            console.log('Item inserted:', result.insertedId);
+        }
       }
   } catch (err) {
       console.error('Error:', err);

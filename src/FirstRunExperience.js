@@ -5,6 +5,11 @@ import './FirstRunExperience.css';
 
 export const features = [
   {
+    date: "9/18/2023",
+    title:"Talk to Amplify Cares",
+    description: "Powered by OpenAI Speech to Text and GPT, you can use the mic icon to tell Amplify Cares what you did for self care. Easy?",
+  },
+  {
       date: "9/13/2023",
       title:"Gain inspiration for self care",
       description: "Self Care Stats now shows a wordcloud view of your common activities and those of others (in aggregate) so you can be inspired to build new self care habits",

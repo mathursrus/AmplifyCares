@@ -1,16 +1,22 @@
-.fa-microphone {
-    color: #14A76C;
-}
-
-.fa-microphone:hover {
-    color: #0c6e47;
-}
-
-.output-display {
-    background-color: #383b4b;
-    height: 700px;
-}
-
-.fas, .fa {
+/* Style for the mic icon container */
+.mic-icon {
     cursor: pointer;
-}
+    margin-right: 10px; /* Adjust the margin as needed */
+  }
+  
+  /* Style for the mic icon */
+  .mic-icon svg {
+    transition: color 0.2s ease-in-out; /* Add a color transition effect */
+  }
+  
+  /* Style for the countdown timer */
+  .countdown-timer {
+    font-size: 18px; /* Adjust the font size as needed */
+    color: green; /* Set the text color */
+  }
+  
+  .countdown-timer.red {
+    /* Set the text color to red */
+    color: red;
+  }
+  

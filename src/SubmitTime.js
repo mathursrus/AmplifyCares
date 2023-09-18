@@ -3,7 +3,7 @@
     import Confetti from "react-confetti";
     import RecommendationsPage from './RecommendationsPage';
     import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-    import { faInfoCircle, faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
+    import { faInfoCircle, faTimes, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
     import { getApiHost, getApiUrl } from './utils/urlUtil';
     import { useNavigate } from 'react-router-dom';
     import DatePicker from 'react-datepicker';
@@ -48,8 +48,8 @@
         const [editingEntry, setEditingEntry] = useState(null);
         const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
 
-        //const niceWorkAudio = new Audio('/NiceWork.mp3');
-        //const sorryAudio = new Audio('/Sorry.mp3');
+        const niceWorkAudio = new Audio('/GoodJob.mp3');
+        const sorryAudio = new Audio('/Error.mp3');
 
         const clearFields = useCallback(() => {
             setMentalHealth({time: '', tags: []});
@@ -69,7 +69,7 @@
         
         const fetchEntries = async (date) => {
             try {
-                const formattedDate = date.toLocaleDateString();
+                const formattedDate = date.toUTCString();
                 // Make a server request to get entries for the selected date
                 const response = await fetch(getApiUrl(`/getselfcaredata/?item=${localStorage.getItem('userName')}&date=${formattedDate}`));
                 if (response.ok) {
@@ -87,7 +87,7 @@
         };
 
         const getSubmissionTime = () => {            
-            const date = selectedDate.toLocaleDateString();
+            const date = selectedDate.toUTCString();
             console.log(date);
             return date;
         }        
@@ -97,12 +97,12 @@
             if (results.length > 0) {
                 await setSelectedDate(new Date(results[0].DateTime));
                 // play sound clip celebrating
-                //niceWorkAudio.play();
+                niceWorkAudio.play();
                 celebrate();
             }
             else {
                 // play sound clip saying error happened
-                //sorryAudio.play();
+                sorryAudio.play();
             }
         }
 
@@ -177,6 +177,24 @@
             setIsEditMode(true);
         };
 
+        const handleDeleteClick = async (entry) => {
+            const confirmDelete = window.confirm('Are you sure you want to delete this entry?');
+            if (confirmDelete) {
+                entry.mental_health_time = 0;
+                entry.physical_health_time = 0;
+                entry.spiritual_health_time = 0;
+                entry.societal_health_time = 0;
+                const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(entry));
+                if (response.ok) {
+                    console.log("Successful delete");
+                    fetchEntries(selectedDate); //refresh
+                }
+                else {
+                    console.log("Something failed ", response.body);
+                }
+            }
+        }
+
         // Helper function to map tags with 'value' based on 'wellKnownTags'
         const mapTagsWithValues = (tags) => {
             if (tags !== undefined && tags !== null)  {
@@ -227,7 +245,7 @@
                 <div>
                     <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
                 </div>        
-                <SpeechRecognition endpoint={"gettimeinput"} onResults={showData}/>
+                <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>
                 <form>
                     <center>
                         Select the date you're submitting time for  
@@ -265,6 +283,12 @@
                                                     icon={faEdit}
                                                     className="edit-icon"
                                                     onClick={() => handleEditClick(entry)}
+                                                />
+                                                <span className="icon-space"></span>
+                                                <FontAwesomeIcon
+                                                    icon={faTrash}
+                                                    className="delete-icon"
+                                                    onClick={() => handleDeleteClick(entry)}
                                                 />
                                             </td>
                                         </tr>

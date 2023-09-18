@@ -3,13 +3,13 @@ import { ReactMic } from 'react-mic';
 import { getApiHost } from './utils/urlUtil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import './SpeechToText.css';
 
 
-const SpeechRecognition = ({endpoint, onResults}) => {
+const SpeechRecognition = ({endpoint, onResults, onHover}) => {
     
   const [isRecording, setIsRecording] = useState(false);
   const [countdown, setCountdown] = useState(15); // Initial countdown time in seconds
-  const gotItAudio = new Audio('/GotIt.mp3');
   
   const startCountdown = useCallback ((time) => {
     setCountdown(time); // Reset the countdown to the maximum time
@@ -58,9 +58,7 @@ const SpeechRecognition = ({endpoint, onResults}) => {
   const sendAudioForRecognition = async (audioBlob) => {
     
     console.log("Audio Blob is ", audioBlob);
-    // play sound clip saying input received
-    gotItAudio.play();
-
+    
     return new Promise((resolve, reject) => {
         if (!audioBlob) {
           reject("No blob found");
@@ -115,8 +113,9 @@ const SpeechRecognition = ({endpoint, onResults}) => {
           icon={faMicrophone}
           size="2x"
           color={isRecording ? 'red' : 'green'}
+          title={onHover}
         />
-        {isRecording && <p>{countdown} seconds</p>}
+        {isRecording && <div className={`countdown-timer ${countdown < 4?'red':''}`}>{countdown}</div>}
       </div>
       {/*<audio ref={audioRef} controls style={{ display: 'none' }} />*/}
       <ReactMic
@@ -124,10 +123,10 @@ const SpeechRecognition = ({endpoint, onResults}) => {
         onStop={onStop}
         mimeType="audio/wav"
         border="none"
-        strokeColor="black"
+        strokeColor='black'
         backgroundColor="transparent"
-        width={50} // Adjust the width as needed
-        height={50} // Adjust the height as needed
+        width={0} // Adjust the width as needed
+        height={0} // Adjust the height as needed
       />
       </center>
     </div>
