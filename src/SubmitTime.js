@@ -187,7 +187,7 @@
                 const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(entry));
                 if (response.ok) {
                     console.log("Successful delete");
-                    fetchEntries(selectedDate); //refresh
+                    clearFields();
                 }
                 else {
                     console.log("Something failed ", response.body);

@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../../../openai"
+		},
+		{
+			"path": "../AmplifyCares"
 		}
 	]
 }
