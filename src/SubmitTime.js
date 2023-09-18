@@ -48,6 +48,9 @@
         const [editingEntry, setEditingEntry] = useState(null);
         const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
 
+        //const niceWorkAudio = new Audio('/NiceWork.mp3');
+        //const sorryAudio = new Audio('/Sorry.mp3');
+
         const clearFields = useCallback(() => {
             setMentalHealth({time: '', tags: []});
             setPhysicalHealth({time: '', tags: []});
@@ -71,7 +74,6 @@
                 const response = await fetch(getApiUrl(`/getselfcaredata/?item=${localStorage.getItem('userName')}&date=${formattedDate}`));
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("Setting past entries to ", data, " from response ", response);
                     setPastEntries(JSON.parse(data));
                 }
             } catch (error) {
@@ -94,7 +96,13 @@
             console.log("Submits time got data ", results);  
             if (results.length > 0) {
                 await setSelectedDate(new Date(results[0].DateTime));
+                // play sound clip celebrating
+                //niceWorkAudio.play();
                 celebrate();
+            }
+            else {
+                // play sound clip saying error happened
+                //sorryAudio.play();
             }
         }
 

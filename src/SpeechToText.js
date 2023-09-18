@@ -1,23 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ReactMic } from 'react-mic';
 import { getApiHost } from './utils/urlUtil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 
+
 const SpeechRecognition = ({endpoint, onResults}) => {
     
   const [isRecording, setIsRecording] = useState(false);
+  const [countdown, setCountdown] = useState(15); // Initial countdown time in seconds
+  const gotItAudio = new Audio('/GotIt.mp3');
   
-  useState(() => {
-    console.log("Endpoint is ", endpoint, "onResults is ", onResults);
-  });
+  const startCountdown = useCallback ((time) => {
+    setCountdown(time); // Reset the countdown to the maximum time
+  
+    const countdownInterval = setInterval(() => {
+      setCountdown((prevCountdown) => {
+        if (!isRecording) {
+          clearInterval(countdownInterval);          
+        }        
+        if (prevCountdown <= 1) {
+          clearInterval(countdownInterval); // Stop the countdown when it reaches 0
+          setIsRecording(false);
+          return 0;
+        }
+        return prevCountdown - 1;
+      });
+    }, 1000); // Update the countdown every second
+  }, [isRecording]);
+
+  useEffect(() => {
+    if (isRecording) {
+      console.log("use state called and we are recording");
+      // max recording for 15 seconds
+      startCountdown(15);    
+    }
+  }, [isRecording, startCountdown]);
+  
 
   const onStop = (recordedData) => {
     // Check if there's audio data
-    if (recordedData.blob.size > 0) {
-        // Play back the recorded audio
+    if (recordedData.blob.size > 0) {        
       //playRecordedAudio(recordedData.blob);
-
       sendAudioForRecognition(recordedData.blob);
     }
   };  
@@ -34,7 +58,9 @@ const SpeechRecognition = ({endpoint, onResults}) => {
   const sendAudioForRecognition = async (audioBlob) => {
     
     console.log("Audio Blob is ", audioBlob);
-    
+    // play sound clip saying input received
+    gotItAudio.play();
+
     return new Promise((resolve, reject) => {
         if (!audioBlob) {
           reject("No blob found");
@@ -90,6 +116,7 @@ const SpeechRecognition = ({endpoint, onResults}) => {
           size="2x"
           color={isRecording ? 'red' : 'green'}
         />
+        {isRecording && <p>{countdown} seconds</p>}
       </div>
       {/*<audio ref={audioRef} controls style={{ display: 'none' }} />*/}
       <ReactMic
@@ -97,10 +124,10 @@ const SpeechRecognition = ({endpoint, onResults}) => {
         onStop={onStop}
         mimeType="audio/wav"
         border="none"
-        strokeColor="transparent"
+        strokeColor="black"
         backgroundColor="transparent"
-        width={0} // Adjust the width as needed
-        height={0} // Adjust the height as needed
+        width={50} // Adjust the width as needed
+        height={50} // Adjust the height as needed
       />
       </center>
     </div>

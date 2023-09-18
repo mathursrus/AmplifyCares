@@ -549,7 +549,7 @@ async function getTimeInputFromSpeech(username, item) {
       formData.getBuffer(), 
       {
         headers: {
-          Authorization: `Bearer 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`, 
+          Authorization: `Bearer ${process.env.OPEN_AI_KEY}`, 
           ...formData.getHeaders(),          
         },
       }
@@ -603,7 +603,7 @@ async function callOpenAICompletions(text) {
       },
       {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer ${process.env.OPEN_AI_KEY}`,
           'Content-Type': 'application/json',
         },
       }
