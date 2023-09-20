@@ -9,6 +9,7 @@ const userId = "userInfo";
 const inviteId = "invite_info";
 const ObjectId = require('mongodb').ObjectId;
 const axios  = require('axios');
+//const nlp = require('compromise');
 
 let dbClient = null;
 let team_container = null;
@@ -118,6 +119,23 @@ async function getAllUsers(domain) {
   }
 }
 
+/*
+function lemmatizeActivities(activityArray) {
+  const resultArray = [];
+  if (activityArray) {
+    activityArray.forEach((activity) => {
+      const doc = nlp(activity);
+      const lemmatizedVerbs = doc
+        .match('#Verb')
+        .toInfinitive()
+        .out('array');
+      
+      const lemmatizedResult = lemmatizedVerbs.join(' ');
+      resultArray.push(lemmatizedResult);
+    });    
+  }
+  return resultArray;
+}*/
 
 async function writeEntry(item) {
   try {
@@ -127,7 +145,15 @@ async function writeEntry(item) {
       
       // Check if the item with the same ID already exists in the database
       const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
-      const isEmptyItem = (item.mental_health_time === 0) && (item.physical_health_time === 0) && (item.spiritual_health_time === 0) && (item.societal_health_time === 0);
+      const isEmptyItem = (item.mental_health_time === 0) && (item.physical_health_time === 0) && (item.spiritual_health_time === 0) && (item.societal_health_time === 0);      
+      // if not an empty item, lemmatize the activities
+      /*if (!isEmptyItem) {
+        item.mental_health_activity = lemmatizeActivities(item.mental_health_activity);
+        item.physical_health_activity = lemmatizeActivities(item.physical_health_activity);
+        item.spiritual_health_activity = lemmatizeActivities(item.spiritual_health_activity);
+        item.societal_health_activity = lemmatizeActivities(item.societal_health_activity);
+      }*/
+
       if (existingItem) {
           item._id = ObjectId(item._id);            
           if (isEmptyItem) {
@@ -590,10 +616,10 @@ async function getTimeInputFromSpeech(username, item) {
 
 async function callOpenAICompletions(text) {
   try {
-    const prompt = "Please format the following input into the specified format: {date in mm/dd/yyyy format, category, time spent in minutes, activities performed}. \
+    const prompt = "Please format the following input into the specified format: {date in mm/dd/yyyy format, category, time spent in minutes, activity performed}. \
     Categories should be one of Mental Health, Physical Health, Spiritual Health, Social Health.\
     The user can use references like yesterday, last Saturday. You should convert them to dates. If no date is referenced, assume the date is today's date. \
-    Today is " + new Date() + ".\
+    Today is " + new Date() + ". Activity performed should be a single word capturing the action verb. \
     Input: On 20th September 2023, I practiced mindfulness meditation for 20 minutes and went for a 25-minute jog.\
     Output: {09/20/2023, Mental Health, 20, mindfulness meditation}, {09/20/2023, Physical Health, 25, jog}."
 
@@ -650,7 +676,8 @@ async function convertOpenAIToTimeEntries(username, inputString) {
     // Extract individual components
     const date = parseDate(components[0]);
     const category = components[1];
-    const time = parseInt(components[2]);
+    const timeCheck = parseInt(components[2]);
+    const time = (isNaN(timeCheck) || timeCheck < 0)?0:timeCheck;
     const activity = components[3];
 
     if (["Mental Health", "Physical Health", "Spiritual Health", "Social Health"].includes(category))  {
@@ -658,7 +685,7 @@ async function convertOpenAIToTimeEntries(username, inputString) {
       const itemData = {
         name: username,
         DateTime: date,
-        lastEdited: date,
+        lastEdited: new Date(),
         mental_health_time: category === "Mental Health" ? time : 0,
         mental_health_activity: category === "Mental Health" ? [activity] : [],
         physical_health_time: category === "Physical Health" ? time : 0,

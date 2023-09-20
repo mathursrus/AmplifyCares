@@ -44,7 +44,7 @@ db.invite_info.deleteMany({invite: {$regex:"User josefair@.*"}});
 
 // find all entries on a particular date
 use('amplifycares-db-catita');
-db.self_care_stats.find({DateTime: { $gt: new Date('2023-09-11') }});
+db.self_care_stats.find({DateTime: { $gt: new Date('2023-09-18') }});
 
 // find entry with id 
 use('amplifycares-db-catita');

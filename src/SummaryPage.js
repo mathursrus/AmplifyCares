@@ -83,9 +83,9 @@ const SummaryPage = () => {
                 endDay:
                 today;
       // get self-care data from cache
-      const selfCareData = await getAggregateStats(getApiUrl(`/getselfcarestats/?item=${userName}&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}&category=${selectedCategory}`));
-      const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}&category=${selectedCategory}`));
-      const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toISOString()}&endDay=${utcEnd.toISOString()}&category=${selectedCategory}`));
+      const selfCareData = await getAggregateStats(getApiUrl(`/getselfcarestats/?item=${userName}&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
+      const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
+      const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
 
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
       setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));

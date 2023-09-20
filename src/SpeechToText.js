@@ -10,6 +10,7 @@ const SpeechRecognition = ({endpoint, onResults, onHover}) => {
     
   const [isRecording, setIsRecording] = useState(false);
   const [countdown, setCountdown] = useState(15); // Initial countdown time in seconds
+  const [isProcessing, setIsProcessing] = useState(false);
   
   const startCountdown = useCallback ((time) => {
     setCountdown(time); // Reset the countdown to the maximum time
@@ -58,7 +59,8 @@ const SpeechRecognition = ({endpoint, onResults, onHover}) => {
   const sendAudioForRecognition = async (audioBlob) => {
     
     console.log("Audio Blob is ", audioBlob);
-    
+    setIsProcessing(true);
+
     return new Promise((resolve, reject) => {
         if (!audioBlob) {
           reject("No blob found");
@@ -90,9 +92,11 @@ const SpeechRecognition = ({endpoint, onResults, onHover}) => {
           }
           })
           .then((result) => {
+              setIsProcessing(false)
               resolve(result); // Resolve with the URL from the server response
           })
           .catch((error) => {
+              setIsProcessing(false)
               reject(error);
           });
         };
@@ -109,13 +113,19 @@ const SpeechRecognition = ({endpoint, onResults, onHover}) => {
       <center>
       <br></br>
       <div className="mic-icon" onClick={toggleRecording}>
-        <FontAwesomeIcon
+        {!isProcessing && (<FontAwesomeIcon
           icon={faMicrophone}
           size="2x"
           color={isRecording ? 'red' : 'green'}
-          title={onHover}
-        />
+          title={onHover}          
+        />)}
         {isRecording && <div className={`countdown-timer ${countdown < 4?'red':''}`}>{countdown}</div>}
+        {isProcessing && (
+          <div className="spinner-container">
+            <div className="spinner"></div>
+            <div>Just a second...</div>
+          </div>
+        )}
       </div>
       {/*<audio ref={audioRef} controls style={{ display: 'none' }} />*/}
       <ReactMic

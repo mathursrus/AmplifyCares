@@ -26,9 +26,9 @@
 
     const wellKnownTags = {
         MentalHealth: ['meditation', 'learning', 'brain games', /* Add more tags here */],
-        PhysicalHealth: ['exercise', 'sports', 'doctor visit', /* Add more tags here */],
+        PhysicalHealth: ['exercise', 'sports', 'doctor visit', 'yoga', 'dog walking' /* Add more tags here */],
         SpiritualHealth: ['prayers', 'religious activities', /* Add more tags here */],
-        SocialHealth: ['volunteering', 'team lunch', 'mentoring', /* Add more tags here */],
+        SocialHealth: ['volunteering', 'team lunch', 'mentoring', 'family games', 'hanging with friends' /* Add more tags here */],
     };
     
 
@@ -47,6 +47,7 @@
         const [pastEntries, setPastEntries] = useState([]);
         const [editingEntry, setEditingEntry] = useState(null);
         const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
+        // to get past activity tags
 
         const niceWorkAudio = new Audio('/GoodJob.mp3');
         const sorryAudio = new Audio('/Error.mp3');
@@ -69,7 +70,7 @@
         
         const fetchEntries = async (date) => {
             try {
-                const formattedDate = date.toUTCString();
+                const formattedDate = date.toLocaleDateString();
                 // Make a server request to get entries for the selected date
                 const response = await fetch(getApiUrl(`/getselfcaredata/?item=${localStorage.getItem('userName')}&date=${formattedDate}`));
                 if (response.ok) {
@@ -87,7 +88,7 @@
         };
 
         const getSubmissionTime = () => {            
-            const date = selectedDate.toUTCString();
+            const date = selectedDate.toLocaleDateString();
             console.log(date);
             return date;
         }        
@@ -111,7 +112,7 @@
             const itemData = {
                 name: localStorage.getItem('userName'),
                 DateTime: getSubmissionTime(),
-                lastEdited: getSubmissionTime(),
+                lastEdited: new Date(),
                 mental_health_time: MentalHealth.time === '' ? 0 : parseInt(MentalHealth.time),
                 mental_health_activity: MentalHealth.tags.map(item => item.label),
                 physical_health_time: PhysicalHealth.time === '' ? 0 : parseInt(PhysicalHealth.time),
@@ -474,7 +475,7 @@
                                 placeholderText="Select or Add activity"
                                 allowNew="true"
                                 labelText=''
-                                collapseOnSelect="true"
+                                collapseOnSelect="false"
                             />                        
                         </div>
                     </div>

@@ -89,8 +89,7 @@
   .flyout.show {
     /* Add animation properties */
     animation-name: flyoutAnimation;
-  }
-  
+  }  
   
   .flyout-header {
     display: flex;
@@ -137,13 +136,15 @@
   /* Do not use display: contents, it's too buggy */
   display: inline;
   align-items: center;
-  padding: 0;    
+  padding: 0;      
 }
 
 .react-tags__list-item {
   display: inline;
   list-style: none;  
 }
+
+
 
 .react-tags__tag {
   margin: 0 0.25rem 0.25rem 0;
@@ -200,7 +201,7 @@
   left: -2px;
   right: -2px;
   font-size: small;
-  max-height: 12.5rem;
+  max-height: 10rem;
   overflow-y: auto;
   background: #ffffff;
   border: 1px solid #afb8c1;
