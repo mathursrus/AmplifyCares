@@ -115,7 +115,8 @@ const getTimeInputFromSpeech = {
     handler: async (req, res) => {
         const item = req.body.item; 
         const user = req.body.username; 
-        const response = await handlers.getTimeInputFromSpeech(user, item);
+        const timezone = req.body.timezone;
+        const response = await handlers.getTimeInputFromSpeech(user, item, timezone);
 
         res.status(200).json(response);
     }

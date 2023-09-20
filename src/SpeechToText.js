@@ -73,6 +73,7 @@ const SpeechRecognition = ({endpoint, onResults, onHover}) => {
             const base64data = reader.result.split(",")[1];
             requestBody.item = base64data;
             requestBody.username = localStorage.getItem('userName');
+            requestBody.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
             fetch(getApiHost() + `/${endpoint}`, {
               method: "POST",

@@ -451,6 +451,8 @@ async function readIndividualData(user, date) {
   const endOfDay = new Date(date);
   endOfDay.setHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
 
+  console.log("Start ", startOfDay, ", End ", endOfDay);
+
   const result = await ct.find({
     name: user,
     DateTime: {
@@ -569,7 +571,7 @@ async function readTeamStats(startDay, endDay) {
   return final;
 }
 
-async function getTimeInputFromSpeech(username, item) {
+async function getTimeInputFromSpeech(username, item, timezone) {
   const audioBuffer = Buffer.from(item, 'base64');
   const formData = new FormData(); 
   formData.append('file', audioBuffer, {
@@ -592,7 +594,7 @@ async function getTimeInputFromSpeech(username, item) {
     const result = response.data.text;
     console.log("Speech to text is ", response.data.text);
         
-    const openairesult = await callOpenAICompletions(result);
+    const openairesult = await callOpenAICompletions(result, timezone);
     console.log("OpenAI result is ", openairesult);
 
     const final = await convertOpenAIToTimeEntries(username, openairesult);
@@ -614,15 +616,18 @@ async function getTimeInputFromSpeech(username, item) {
   }
 }
 
-async function callOpenAICompletions(text) {
+async function callOpenAICompletions(text, timezone) {
   try {
+    const today = new Date().toLocaleDateString('en-US', { timeZone: timezone });
     const prompt = "Please format the following input into the specified format: {date in mm/dd/yyyy format, category, time spent in minutes, activity performed}. \
     Categories should be one of Mental Health, Physical Health, Spiritual Health, Social Health.\
-    The user can use references like yesterday, last Saturday. You should convert them to dates. If no date is referenced, assume the date is today's date. \
-    Today is " + new Date() + ". Activity performed should be a single word capturing the action verb. \
+    The user can use references like yesterday, last Saturday. You should convert them to dates in the " + timezone + " time zone. If no date is referenced, assume the date is today's date. \
+    Today is " + today + ". Activity performed should be a single word capturing the action verb. \
     Input: On 20th September 2023, I practiced mindfulness meditation for 20 minutes and went for a 25-minute jog.\
     Output: {09/20/2023, Mental Health, 20, mindfulness meditation}, {09/20/2023, Physical Health, 25, jog}."
 
+    console.log("Prompt ", prompt);
+    
     const conversation = [
       { role: 'system', content: prompt }
     ];
