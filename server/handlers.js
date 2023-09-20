@@ -141,6 +141,7 @@ async function writeEntry(item) {
   try {
       console.log('Handler got item: ', item)
       item.DateTime = new Date(item.DateTime);
+      item.DateTime.setUTCHours(0, 0, 0, 0);      
       const ct = await getContainer();
       
       // Check if the item with the same ID already exists in the database
@@ -197,8 +198,8 @@ async function readEntries(itemId, startDay, endDay, category) {
       $match: {
         name:itemId,
         DateTime: {
-          $gte: new Date(startDay),
-          $lte: new Date(endDay)
+          $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
+          $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
         }
       }
     },
@@ -309,8 +310,8 @@ async function readPercentile(percentile, startDay, endDay, category) {
     {
       $match: {
         DateTime: {
-          $gte: new Date(startDay),
-          $lte: new Date(endDay)
+          $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
+          $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
         }
       }
     },
@@ -447,9 +448,9 @@ async function readIndividualData(user, date) {
   console.log(`Get Individual Data request`);
   const ct = await getContainer();
   const startOfDay = new Date(date);
-  startOfDay.setHours(0, 0, 0, 0); // Set the time to midnight for the same day
+  startOfDay.setUTCHours(0, 0, 0, 0); // Set the time to midnight for the same day
   const endOfDay = new Date(date);
-  endOfDay.setHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
+  endOfDay.setUTCHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
 
   console.log("Start ", startOfDay, ", End ", endOfDay);
 
@@ -503,8 +504,8 @@ async function readTeamStats(startDay, endDay) {
     {
       $match: {
         "team_members.DateTime": {
-          $gte: new Date(startDay),
-          $lte: new Date(endDay)
+          $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
+          $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
         }
       }
     },
@@ -666,7 +667,7 @@ async function convertOpenAIToTimeEntries(username, inputString) {
   // Create a function to parse date strings into Date objects
   function parseDate(dateString) {
     const [month, day, year] = dateString.split("/");
-    return new Date(year, month - 1, day);
+    return (new Date(year, month - 1, day)).setUTCHours(0, 0, 0, 0);
   }
 
   // Initialize an array to store the resulting objects
