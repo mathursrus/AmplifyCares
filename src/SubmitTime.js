@@ -96,7 +96,13 @@
         const showData = async (results) => {
             console.log("Submits time got data ", results);  
             if (results.length > 0) {
-                await setSelectedDate(new Date(results[0].DateTime));
+                const dateString = results[0].DateTime;
+                const year = parseInt(dateString.substring(0, 4));
+                const month = parseInt(dateString.substring(5, 7)) - 1; // Months are zero-based
+                const day = parseInt(dateString.substring(8, 10));
+                const returnedDate = new Date(year, month, day);
+                console.log("setting selected date to ", returnedDate);
+                await setSelectedDate(returnedDate);            
                 // play sound clip celebrating
                 niceWorkAudio.play();
                 celebrate();

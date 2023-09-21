@@ -257,11 +257,15 @@ db.self_care_stats.aggregate([
 /* Find Xth %ile of total self care time across everyday across everybody */
 use('amplifycares-db-catita');
 let x=50;
-let date=new Date("9/1/2023");
+let startDay=new Date("9/1/2023");
+let endDay=new Date("9/21/2023");
 db.self_care_stats.aggregate([
   {
     $match: {
-      DateTime: {$gt: date}
+      DateTime: {
+        $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
+        $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
+      }
     }
   },
   {
@@ -305,11 +309,17 @@ db.self_care_stats.aggregate([
 /* Find X%ile of total health time and self care activities */
 use('amplifycares-db-catita');
 let x = 50;
-let date = new Date("9/1/2023");
+let startDay=new Date("8/1/2023");
+startDay.setUTCHours(0,0,0,0);
+let endDay=new Date("9/21/2023");
+endDay.setHours(23,59,59,999);
 db.self_care_stats.aggregate([
   {
     $match: {
-      DateTime: { $gt: date }
+      DateTime: {
+        $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
+        $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
+      }
     }
   },
   {
@@ -421,6 +431,10 @@ db.self_care_stats.aggregate([
 
 /* Find median of mental health time across teams */
 use('amplifycares-db-catita');
+let startDay = (new Date("2023-08-01T00:00:00.000Z"));
+startDay.setUTCHours(0,0,0,0);
+let endDay = new Date("2023-09-21T00:00:00.000Z");
+endDay.setHours(23,59,59,999);
 db.team_info.aggregate([
   {
     $match: {
@@ -441,8 +455,8 @@ db.team_info.aggregate([
   {
     $match: {
       "team_members.DateTime": {
-        $gte: new Date("2023-08-01T00:00:00.000Z"),
-        $lte: new Date("2023-08-31T00:00:00.000Z")
+        $gte: startDay,
+        $lte: endDay,
       }
     }
   },

@@ -192,14 +192,19 @@ async function readEntries(itemId, startDay, endDay, category) {
   let include_social = (category === "total" || category === "social");
   let include_spiritual = (category === "total" || category === "spiritual");
 
+  let startDate=new Date(startDay);
+  startDate.setUTCHours(0, 0, 0, 0);
+  let endDate=new Date(endDay);
+  endDate.setUTCHours(23, 59, 59, 999);
+
   const ct = await getContainer();
   const result=await ct.aggregate([
     {
       $match: {
         name:itemId,
         DateTime: {
-          $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
-          $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
+          $gte: startDate,
+          $lte: endDate
         }
       }
     },
@@ -305,13 +310,18 @@ async function readPercentile(percentile, startDay, endDay, category) {
   let include_social = (category === "total" || category === "social");
   let include_spiritual = (category === "total" || category === "spiritual");
   
+  let startDate=new Date(startDay);
+  startDate.setUTCHours(0, 0, 0, 0);
+  let endDate=new Date(endDay);
+  endDate.setUTCHours(23, 59, 59, 999);
+
   const ct = await getContainer();
   const result= await ct.aggregate([
     {
       $match: {
         DateTime: {
-          $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
-          $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
+          $gte: startDate,
+          $lte: endDate
         }
       }
     },
@@ -484,6 +494,11 @@ async function readTeamStats(startDay, endDay) {
   const numberOfDays = Math.floor((new Date(endDay).getTime() - new Date(startDay).getTime()) / (1000 * 60 * 60 * 24))+1;
   console.log("Number of days ", numberOfDays);
 
+  let startDate=new Date(startDay);
+  startDate.setUTCHours(0, 0, 0, 0);
+  let endDate=new Date(endDay);
+  endDate.setUTCHours(23, 59, 59, 999);
+
   const result=await tct.aggregate([
     {
       $match: {
@@ -504,8 +519,8 @@ async function readTeamStats(startDay, endDay) {
     {
       $match: {
         "team_members.DateTime": {
-          $gte: (new Date(startDay)).setUTCHours(0, 0, 0, 0),
-          $lte: (new Date(endDay)).setUTCHours(23, 59, 59, 999)
+          $gte: startDate,
+          $lte: endDate
         }
       }
     },
