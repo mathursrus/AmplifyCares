@@ -146,7 +146,13 @@ async function writeEntry(item) {
       
       // Check if the item with the same ID already exists in the database
       const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
-      const isEmptyItem = (item.mental_health_time === 0) && (item.physical_health_time === 0) && (item.spiritual_health_time === 0) && (item.societal_health_time === 0);      
+      const isEmptyItem =
+        ((item.mental_health_time || 0) === 0) &&
+        ((item.physical_health_time || 0) === 0) &&
+        ((item.spiritual_health_time || 0) === 0) &&
+        ((item.societal_health_time || 0) === 0);
+
+
       // if not an empty item, lemmatize the activities
       /*if (!isEmptyItem) {
         item.mental_health_activity = lemmatizeActivities(item.mental_health_activity);
@@ -214,10 +220,18 @@ async function readEntries(itemId, startDay, endDay, category) {
         total_health_time: {
           $sum: {
             $add: [
-              {$cond: [include_mental,{ $toInt: "$mental_health_time" }, 0]},
-              {$cond: [include_physical,{ $toInt: "$physical_health_time" }, 0]},
-              {$cond: [include_spiritual,{ $toInt: "$spiritual_health_time" }, 0]},
-              {$cond: [include_social,{ $toInt: "$societal_health_time" }, 0]},
+              {
+                $cond: [include_mental, { $toInt: { $ifNull: ["$mental_health_time", 0] } }, 0]
+              },
+              {
+                $cond: [include_physical, { $toInt: { $ifNull: ["$physical_health_time", 0] } }, 0]
+              },
+              {
+                $cond: [include_spiritual, { $toInt: { $ifNull: ["$spiritual_health_time", 0] } }, 0]
+              },
+              {
+                $cond: [include_social, { $toInt: { $ifNull: ["$societal_health_time", 0] } }, 0]
+              }
             ]
           }
         },
@@ -229,22 +243,28 @@ async function readEntries(itemId, startDay, endDay, category) {
                   if: {
                     $and: [
                       include_mental,
-                      { $ne: ["$mental_health_activity", null] } // Check if mental_health_activity is not null
+                      { $ne: [
+                        { $ifNull: ["$mental_health_activity", null] },
+                        null
+                      ] } // Check if mental_health_activity is not null
                     ]
                   },
-                  then: [["$mental_health_activity", "$mental_health_time"]],
+                  then: [["$mental_health_activity", { $ifNull: ["$mental_health_time", 0] }]],
                   else: []
-                }              
+                }
               },
               {
                 $cond: {
                   if: {
                     $and: [
                       include_physical,
-                      { $ne: ["$physical_health_activity", null] } // Check if mental_health_activity is not null
+                      { $ne: [
+                        { $ifNull: ["$physical_health_activity", null] },
+                        null
+                      ] } // Check if physical_health_activity is not null
                     ]
                   },
-                  then: [["$physical_health_activity", "$physical_health_time"]],
+                  then: [["$physical_health_activity", { $ifNull: ["$physical_health_time", 0] }]],
                   else: []
                 }
               },
@@ -253,10 +273,13 @@ async function readEntries(itemId, startDay, endDay, category) {
                   if: {
                     $and: [
                       include_spiritual,
-                      { $ne: ["$spiritual_health_activity", null] } // Check if mental_health_activity is not null
+                      { $ne: [
+                        { $ifNull: ["$spiritual_health_activity", null] },
+                        null
+                      ] } // Check if spiritual_health_activity is not null
                     ]
                   },
-                  then: [["$spiritual_health_activity", "$spiritual_health_time"]],
+                  then: [["$spiritual_health_activity", { $ifNull: ["$spiritual_health_time", 0] }]],
                   else: []
                 }
               },
@@ -265,10 +288,13 @@ async function readEntries(itemId, startDay, endDay, category) {
                   if: {
                     $and: [
                       include_social,
-                      { $ne: ["$societal_health_activity", null] } // Check if mental_health_activity is not null
+                      { $ne: [
+                        { $ifNull: ["$societal_health_activity", null] },
+                        null
+                      ] } // Check if societal_health_activity is not null
                     ]
                   },
-                  then: [["$societal_health_activity", "$societal_health_time"]],
+                  then: [["$societal_health_activity", { $ifNull: ["$societal_health_time", 0] }]],
                   else: []
                 }
               }
@@ -334,10 +360,18 @@ async function readPercentile(percentile, startDay, endDay, category) {
         total_health_time: {
           $sum: {
             $add: [
-              {$cond: [include_mental,{ $toInt: "$mental_health_time" }, 0]},
-              {$cond: [include_physical,{ $toInt: "$physical_health_time" }, 0]},
-              {$cond: [include_spiritual,{ $toInt: "$spiritual_health_time" }, 0]},
-              {$cond: [include_social,{ $toInt: "$societal_health_time" }, 0]},
+              {
+                $cond: [include_mental, { $toInt: { $ifNull: ["$mental_health_time", 0] } }, 0]
+              },
+              {
+                $cond: [include_physical, { $toInt: { $ifNull: ["$physical_health_time", 0] } }, 0]
+              },
+              {
+                $cond: [include_spiritual, { $toInt: { $ifNull: ["$spiritual_health_time", 0] } }, 0]
+              },
+              {
+                $cond: [include_social, { $toInt: { $ifNull: ["$societal_health_time", 0] } }, 0]
+              }
             ]
           }
         },
@@ -346,13 +380,15 @@ async function readPercentile(percentile, startDay, endDay, category) {
             $cond: {
               if: {
                 $and: [
-                  include_mental,
-                  { $ne: ["$mental_health_activity", null] } // Check if mental_health_activity is not null
-                ]
-              },
-              then: ["$mental_health_activity", "$mental_health_time"],
-              else: []
-            }  
+                  include_mental, 
+                  { $ne: [
+                    { $ifNull: ["$mental_health_activity", null] },
+                    null
+                  ] }, // Check if mental_health_activity is not null
+                ]},
+              then: ["$mental_health_activity", { $ifNull: ["$mental_health_time", 0] }],  
+              else: []          
+            }
           }
         },
         physical_care_activities: {
@@ -361,10 +397,12 @@ async function readPercentile(percentile, startDay, endDay, category) {
               if: {
                 $and: [
                   include_physical,
-                  { $ne: ["$physical_health_activity", null] } // Check if mental_health_activity is not null
-                ]
-              },
-              then: ["$physical_health_activity", "$physical_health_time"],
+                  { $ne: [
+                    { $ifNull: ["$physical_health_activity", null] },
+                    null
+                  ] }, // Check if physical_health_activity is not null
+                ]},
+              then: ["$physical_health_activity", { $ifNull: ["$physical_health_time", 0] }],            
               else: []
             }
           }
@@ -374,11 +412,13 @@ async function readPercentile(percentile, startDay, endDay, category) {
             $cond: {
               if: {
                 $and: [
-                  include_spiritual,
-                  { $ne: ["$spiritual_health_activity", null] } // Check if mental_health_activity is not null
-                ]
-              },
-              then: ["$spiritual_health_activity", "$spiritual_health_time"],
+                  include_spiritual, 
+                  { $ne: [
+                    { $ifNull: ["$spiritual_health_activity", null] },
+                    null
+                  ] }, // Check if spiritual_health_activity is not null
+                ]},
+              then: ["$spiritual_health_activity", { $ifNull: ["$spiritual_health_time", 0] }],
               else: []
             }
           }
@@ -389,14 +429,16 @@ async function readPercentile(percentile, startDay, endDay, category) {
               if: {
                 $and: [
                   include_social,
-                  { $ne: ["$societal_health_activity", null] } // Check if mental_health_activity is not null
-                ]
-              },
-              then: ["$societal_health_activity", "$societal_health_time"],
+                  { $ne: [
+                    { $ifNull: ["$societal_health_activity", null] },
+                    null
+                  ] }, // Check if social_health_activity is not null
+                ]},
+              then: ["$societal_health_activity", { $ifNull: ["$societal_health_time", 0] }],
               else: []
             }
           }
-        }      
+        }            
       }
     },
     {
@@ -533,10 +575,10 @@ async function readTeamStats(startDay, endDay) {
         total_time: {
           $sum: {
             $add: [
-              "$team_members.mental_health_time",
-              "$team_members.physical_health_time",
-              "$team_members.spiritual_health_time",
-              "$team_members.societal_health_time"
+              { $toInt: { $ifNull: ["$team_members.mental_health_time", 0] } },
+              { $toInt: { $ifNull: ["$team_members.physical_health_time", 0] } },
+              { $toInt: { $ifNull: ["$team_members.spiritual_health_time", 0] } },
+              { $toInt: { $ifNull: ["$team_members.societal_health_time", 0] } },                                          
             ]
           }
         }
@@ -677,12 +719,14 @@ async function callOpenAICompletions(text, timezone) {
 
 async function convertOpenAIToTimeEntries(username, inputString) {  
   // Split the input string into individual entries
-  const entries = inputString.split("}, {");
+  const entries = inputString.split("},");
 
   // Create a function to parse date strings into Date objects
   function parseDate(dateString) {
     const [month, day, year] = dateString.split("/");
-    return (new Date(year, month - 1, day)).setUTCHours(0, 0, 0, 0);
+    const date = new Date(year, month - 1, day);
+    date.setUTCHours(0, 0, 0, 0)
+    return date;
   }
 
   // Initialize an array to store the resulting objects
@@ -707,15 +751,27 @@ async function convertOpenAIToTimeEntries(username, inputString) {
         name: username,
         DateTime: date,
         lastEdited: new Date(),
-        mental_health_time: category === "Mental Health" ? time : 0,
-        mental_health_activity: category === "Mental Health" ? [activity] : [],
-        physical_health_time: category === "Physical Health" ? time : 0,
-        physical_health_activity: category === "Physical Health" ? [activity] : [],
-        spiritual_health_time: category === "Spiritual Health" ? time : 0,
-        spiritual_health_activity: category === "Spiritual Health" ? [activity] : [],
-        societal_health_time: category === "Social Health" ? time : 0,
-        societal_health_activity: category === "Social Health" ? [activity] : [],
       };
+
+      if (category === "Mental Health") {
+        itemData.mental_health_time = time;
+        itemData.mental_health_activity = [activity];
+      }
+
+      if (category === "Physical Health") {
+        itemData.physical_health_time = time;
+        itemData.physical_health_activity = [activity];
+      }
+
+      if (category === "Spiritual Health") {
+        itemData.spiritual_health_time = time;
+        itemData.spiritual_health_activity = [activity];
+      }
+
+      if (category === "Social Health") {
+        itemData.societal_health_time = time;
+        itemData.societal_health_activity = [activity];
+      }
 
       promises.push(writeEntry(itemData));
       // Push the object to the result array

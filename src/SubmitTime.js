@@ -119,14 +119,22 @@
                 name: localStorage.getItem('userName'),
                 DateTime: getSubmissionTime(),
                 lastEdited: new Date(),
-                mental_health_time: MentalHealth.time === '' ? 0 : parseInt(MentalHealth.time),
-                mental_health_activity: MentalHealth.tags.map(item => item.label),
-                physical_health_time: PhysicalHealth.time === '' ? 0 : parseInt(PhysicalHealth.time),
-                physical_health_activity: PhysicalHealth.tags.map(item => item.label),
-                spiritual_health_time: SpiritualHealth.time === '' ? 0 : parseInt(SpiritualHealth.time),
-                spiritual_health_activity: SpiritualHealth.tags.map(item => item.label),
-                societal_health_time: SocialHealth.time === '' ? 0 : parseInt(SocialHealth.time),
-                societal_health_activity: SocialHealth.tags.map(item => item.label),
+            };
+            if (MentalHealth.time !== '') {
+                itemData.mental_health_time = parseInt(MentalHealth.time);
+                itemData.mental_health_activity = MentalHealth.tags.map(item => item.label);
+            }
+            if (PhysicalHealth.time !== '') {
+                itemData.physical_health_time = parseInt(PhysicalHealth.time);
+                itemData.physical_health_activity = PhysicalHealth.tags.map(item => item.label);
+            }
+            if (SpiritualHealth.time !== '') {
+                itemData.spiritual_health_time = parseInt(SpiritualHealth.time);
+                itemData.spiritual_health_activity = SpiritualHealth.tags.map(item => item.label);
+            }
+            if (SocialHealth.time !== '') {
+                itemData.societal_health_time = parseInt(SocialHealth.time);
+                itemData.societal_health_activity = SocialHealth.tags.map(item => item.label);
             }
             if (isEditMode) {
                 itemData._id = editingEntry._id;
@@ -139,7 +147,7 @@
                 console.log("Ugh");
             }
             else {
-                clearFields();            
+                await clearFields();            
                 celebrate();
             }            
         };
@@ -155,8 +163,9 @@
             }, 6000);
         }
 
-        const handleEditClick = (entry) => {
+        const handleEditClick = async (entry) => {
             // Set the entry to be edited in the state and enter edit mode
+            await clearFields();
             setEditingEntry(entry);
             console.log("Editing entry ", entry);
             // Map the tags in the entry to include the 'value' property based on 'wellKnownTags'
