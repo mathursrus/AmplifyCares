@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Widget, addResponseMessage, addUserMessage, deleteMessages, setQuickButtons } from 'react-chat-widget';
+import { Widget, addResponseMessage, addUserMessage, deleteMessages, setQuickButtons, toggleWidget } from 'react-chat-widget';
 import { getApiHost } from './utils/urlUtil';
 import 'react-chat-widget/lib/styles.css';
 import './CoPilot.css'; // Import a CSS file for styling
@@ -69,6 +69,17 @@ const CoPilot = ({endpoint, userprompts, systemprompts}) => {
     addResponseMessage(response);
     setRefresh(r=>!r);
   }, []);
+
+  useEffect(() => {
+    toggleWidget(true);
+    console.log("Toggled Copilot to show");
+
+    return () => {
+      // Toggle the widget to close when the component is unmounted
+      toggleWidget(false);
+      console.log("Toggled Copilot to hide");
+    };
+  });
 
   useEffect(() => {
     async function fetchData() {
