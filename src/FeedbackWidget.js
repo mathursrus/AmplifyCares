@@ -17,7 +17,7 @@ const FeedbackWidget = () => {
     const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
     const [issueURL, setIssueURL] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
-    const githubToken = "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";
+    const githubToken = process.env.REACT_APP_GITHUB_TOKEN;
 
     const handleOpen = () => {
         setIsOpen(true);

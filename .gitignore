@@ -101,3 +101,4 @@ AmplifyCaresTeamsApp/templates/azure/provision/azureStorageTab.bicep
 AmplifyCaresTeamsApp/templates/azure/provision/identity.bicep
 src/utils/urlUtil.js
 src/utils/urlUtil.js
+src/.env
