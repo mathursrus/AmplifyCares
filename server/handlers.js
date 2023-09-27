@@ -629,6 +629,66 @@ async function readTeamStats(startDay, endDay) {
   return final;
 }
 
+async function getSelfCareInsights(username, startDay, endDay, questions) {
+  console.log(`Self Care Insights request ${username}, ${startDay}, ${endDay}, ${questions}`);
+  const answers = [];
+  const promises = [];
+      
+  if (questions.length > 0) {
+    const ct = await getContainer();
+    const start = new Date(startDay);
+    start.setUTCHours(0, 0, 0, 0); // Set the time to midnight for the same day
+    const end = new Date(endDay);
+    end.setUTCHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
+
+    const allData = await ct.find({
+      name: username,
+      DateTime: {
+        $gte: start,
+        $lte: end
+      }
+    }).toArray();
+
+    const uniqueDays = new Set();
+    allData.forEach((data) => {
+      const dataDate = new Date(data.DateTime.toISOString().split('T')[0]); // Extract the date portion
+      uniqueDays.add(dataDate.toISOString()); // Store the unique day as a string to ensure uniqueness
+    });
+    if (uniqueDays.size >= 14) {
+      // Remove _id and lastEdited fields from each object in allData
+      const cleanedData = allData.map(({ _id, lastEdited, ...rest }) => rest);
+
+      // convert this into a GPT prompt
+      const promptBase = "Here is a set of self-care data. Process this data and then the user will ask you a question about it. \
+      Address the user like you are talking to them. \
+      Even if the user asks multiple questions, keep your answer brief with a maximum of 3 key points. \
+      Be helpful in your responses. Be specific and perform math on numbers from the provided data, if needed. \
+      The users name is " + username +". Their data over the last 60 days is: ";
+
+      const prompt = promptBase + JSON.stringify(cleanedData);
+
+      questions.forEach((question) => {
+        const answerPromise = callOpenAICompletions(prompt, question);
+        promises.push(answerPromise);
+      });
+
+      // Wait for all answer promises to resolve
+      const resolvedAnswers = await Promise.all(promises);
+      answers.push(...resolvedAnswers);
+    } else {
+      questions.forEach((question) => {
+        answers.push("Thank you for your interest in self care. I need at least 14 days of self care data over a 60 day time period to provide insights. Please add data in the Submit page of the app");
+      });  
+    }
+  } else  {
+    console.log("Got no questions");
+  }
+
+  console.log("Returning ", answers);
+  return JSON.stringify(answers);
+}
+
+
 async function getTimeInputFromSpeech(username, item, timezone) {
   const audioBuffer = Buffer.from(item, 'base64');
   const formData = new FormData(); 
@@ -651,8 +711,16 @@ async function getTimeInputFromSpeech(username, item, timezone) {
     );
     const result = response.data.text;
     console.log("Speech to text is ", response.data.text);
-        
-    const openairesult = await callOpenAICompletions(result, timezone);
+      
+    const today = new Date().toLocaleDateString('en-US', { timeZone: timezone });
+    const prompt = "Please format the following input into the specified format: {date in mm/dd/yyyy format, category, time spent in minutes, activity performed}. \
+    Categories should be one of Mental Health, Physical Health, Spiritual Health, Social Health.\
+    The user can use references like yesterday, last Saturday. You should convert them to dates in the " + timezone + " time zone. If no date is referenced, assume the date is today's date. \
+    Today is " + today + ". Activity performed should be a single word capturing the action verb. \
+    Input: On 20th September 2023, I practiced mindfulness meditation for 20 minutes and went for a 25-minute jog.\
+    Output: {09/20/2023, Mental Health, 20, mindfulness meditation}, {09/20/2023, Physical Health, 25, jog}."
+
+    const openairesult = await callOpenAICompletions(prompt, result);
     console.log("OpenAI result is ", openairesult);
 
     const final = await convertOpenAIToTimeEntries(username, openairesult);
@@ -674,16 +742,8 @@ async function getTimeInputFromSpeech(username, item, timezone) {
   }
 }
 
-async function callOpenAICompletions(text, timezone) {
-  try {
-    const today = new Date().toLocaleDateString('en-US', { timeZone: timezone });
-    const prompt = "Please format the following input into the specified format: {date in mm/dd/yyyy format, category, time spent in minutes, activity performed}. \
-    Categories should be one of Mental Health, Physical Health, Spiritual Health, Social Health.\
-    The user can use references like yesterday, last Saturday. You should convert them to dates in the " + timezone + " time zone. If no date is referenced, assume the date is today's date. \
-    Today is " + today + ". Activity performed should be a single word capturing the action verb. \
-    Input: On 20th September 2023, I practiced mindfulness meditation for 20 minutes and went for a 25-minute jog.\
-    Output: {09/20/2023, Mental Health, 20, mindfulness meditation}, {09/20/2023, Physical Health, 25, jog}."
-
+async function callOpenAICompletions(prompt, text) {
+  try {    
     console.log("Prompt ", prompt);
     
     const conversation = [
@@ -870,4 +930,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

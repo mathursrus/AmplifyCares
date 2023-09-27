@@ -5,9 +5,14 @@ import './FirstRunExperience.css';
 
 export const features = [
   {
+    date: "9/27/2023",
+    title:"Personalized Self Care Insights (Beta)",
+    description: "Powered by GPT and your personal self care data, you can get insights into your self care routine, ideas on what you can do with other team members, and a lot more! Simply click on the copilot icon on the summary page. Happy self care!",
+  },
+  {
     date: "9/18/2023",
     title:"Talk to Amplify Cares",
-    description: "Powered by OpenAI Speech to Text and GPT, you can use the mic icon to tell Amplify Cares what you did for self care. Easy?",
+    description: "Powered by OpenAI Speech to Text and GPT, you can use the mic icon (on the Submit page) to tell Amplify Cares what you did for self care. Easy?",
   },
   {
       date: "9/13/2023",

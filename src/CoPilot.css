@@ -1,0 +1,87 @@
+  
+  /* Style the chat container */
+  .rcw-conversation-container.active {
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 15px;
+    right: 0;
+    bottom: 0;
+    margin: 10px;
+    z-index: 9999; /* Ensure it's on top of other elements */
+  }
+  
+  .rcw-close-button {
+    display: none;
+  }
+
+  /* Style the widget header (title, icon, etc.) */
+  #rcw-conversation-container .rcw-header {
+    background-color: rgba(97, 207, 207, 0.798);
+    border-radius: 10px; /* Remove border radius if needed */
+    padding: 10px; /* Add padding as needed */
+    color: black;
+  }
+  
+  /* Style the widget title */
+  #rcw-conversation-container .rcw-title {    
+    font-size: 20px; /* Customize the font size */
+  }
+
+  #rcw-conversation-container .rcw-messages-container {
+    background-color: white;
+    height: 60%;
+    max-height: 80%;
+    width: 100%;
+    max-width: 100%
+  }
+
+  #rcw-conversation-container .rcw-sender {
+    height: 0%;
+    max-height: 0%;  
+    padding: 0px;
+    min-height: 0px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */      
+  }
+
+  #rcw-conversation-container .rcw-picker-btn {
+    display: none;
+  }
+  
+  #rcw-conversation-container .rcw-picker-btn .rcw-picker-icon {
+    display: none;
+  }
+
+  #rcw-conversation-container .rcw-new-message {
+    height: 0px;
+    max-height: 0px;
+    padding: 0px;
+    width: 90%;
+  }
+
+  #rcw-conversation-container .rcw-new-message .rcw-input {
+    height: 0px;    
+  }
+ 
+  #rcw-conversation-container .rcw-send {
+    height: 0px;    
+  }
+
+  #rcw-conversation-container .rcw-send .rcw-send-icon {
+    height: 0px;    
+  }
+
+  #rcw-conversation-container .quick-buttons-container .quick-buttons {
+    text-align: left;
+  }
+
+#rcw-conversation-container .quick-buttons-container .quick-buttons .quick-list-button {
+    display: list-item;
+}
+
+#rcw-conversation-container .rcw-response .rcw-message-text {
+    max-width: 100%;
+}
+  

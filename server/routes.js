@@ -109,6 +109,20 @@ const getTeamStats = {
     }
 }
 
+const getSelfCareInsights = {
+    method: 'post',
+    path: '/getselfcareinsights', 
+    handler: async (req, res) => {
+        const questions = req.body.questions; 
+        const user = req.body.username; 
+        const startDay = req.body.startDay;
+        const endDay = req.body.endDay;
+        const response = await handlers.getSelfCareInsights(user, startDay, endDay, questions);
+
+        res.status(200).json(response);
+    }
+}
+
 const getTimeInputFromSpeech = {
     method: 'post',
     path: '/gettimeinput', 
@@ -167,4 +181,4 @@ const sendInvite = {
     }
 }
 
-module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

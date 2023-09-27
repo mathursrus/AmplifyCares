@@ -17,7 +17,7 @@ const FeedbackWidget = () => {
     const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
     const [issueURL, setIssueURL] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
-    const githubToken = "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";
+    const githubToken = "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";
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -222,6 +222,8 @@ const FeedbackWidget = () => {
         setErrorMessage('Please provide some feedback before submitting.');
         return;
       }
+
+      console.log("TOken is ", githubToken);
 
       const response = await fetch('https://api.github.com/repos/mathursrus/AmplifyCares/issues', {
         method: 'POST',

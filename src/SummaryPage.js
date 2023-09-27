@@ -1,10 +1,14 @@
 import React, { useCallback } from 'react';
+import Container from 'react-bootstrap/Container';
 import './SummaryPage.css';
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
 import { getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import CoPilot from './CoPilot';
 
 const SummaryPage = () => {
 
@@ -27,6 +31,24 @@ const SummaryPage = () => {
   // Set the startDay to the first day of the current month
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
   const [startDay, setStartDay] = useState(firstDayOfMonth);
+
+  // copilot
+  const [showCopilot, setShowCopilot] = useState(false);
+
+  // prompts with insights
+  const userPrompts = [
+    "How is my self-care routine?",
+    "Can you suggest self-care activities for reducing stress and improving mental well-being?",
+    "Learning from others in my team, what activities can I easily incorporate into my self-care routine?",
+    "How can I improve my social care activities?"
+  ]
+
+  const systemPrompts = [
+    "How is my self-care routine? Am I consistent across week days, week ends? Are there particular days where I am doing or not doing an activity? What am I doing well and what am I not?",
+    "What activities should I focus on for stress reduction and mental well-being? Am I already doing some, what am I not doing?",
+    "In addition to what I am doing, what are some easy activities I can incorporate into my self-care routine? When should I do them?",
+    "How is my social care? What can I do to improve social well being and gain joy from giving and interacting with others?"
+  ]
 
   const processChartData = useCallback((selfCareData, medianCareData, highCareData, start, end) => {
     const myData = [];
@@ -121,8 +143,8 @@ const SummaryPage = () => {
           });
         }
       });
-    });
-  
+    });      
+
     const result = [];
     if (activityMap.size > 0) {
       activityMap.forEach((value, key) => {
@@ -133,6 +155,10 @@ const SummaryPage = () => {
     return result;
   }
   
+  function launchCopilot() {
+    setShowCopilot(true);
+  }
+
   function findMaxMinValues(careData) {
     let max = 0;
     let min = 100000;
@@ -154,6 +180,7 @@ const SummaryPage = () => {
   };
 
   return (
+    <Container>            
     <div className="legend-container"> 
       <div className="summary-container">
         <DateRange
@@ -162,7 +189,11 @@ const SummaryPage = () => {
           setStartDay={setStartDay}
           setEndDay={setEndDay}
           message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
-          />
+          image={"Copilot.png"}
+          imageTitle={"Your self-care copilot"}
+          onImageClick={() => launchCopilot()}
+          />        
+
         <center>
           {/* Add a dropdown select for category selection */}
           <select className="category" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
@@ -312,7 +343,7 @@ const SummaryPage = () => {
                     </div>
                     );
                   }}
-              /> 
+              />                            
             </div>
             ) : (
             <p>No Data</p>
@@ -323,8 +354,18 @@ const SummaryPage = () => {
           )}
         </center>
         <br />
-      </div>      
+      </div>             
     </div>
+    {showCopilot && (
+          <div className="flyout show">            
+              <div className="flyout-header">
+                  {console.log("Opening copilot")}
+                  <FontAwesomeIcon className="flyout-close" icon={faTimes} onClick={() => setShowCopilot(false)} />
+                  <CoPilot endpoint={"getselfcareinsights"} userprompts={userPrompts} systemprompts={systemPrompts} />
+              </div>                      
+          </div>
+      )}
+    </Container>
   );
 };
 

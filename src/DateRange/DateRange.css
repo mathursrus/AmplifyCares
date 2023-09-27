@@ -1,0 +1,19 @@
+/* CSS */
+.message-container {
+    display: flex;
+    align-items: center; /* Vertically center the content */
+}
+  
+.stats-image {
+    position: relative;
+    margin-left: 10px; /* Adjust this value to control the horizontal spacing */
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  /* Style the image within the superscript */
+  .stats-image img {
+    width: 40px; /* Adjust the width as needed */
+    height: 40px; /* Adjust the height as needed */
+    vertical-align: middle;
+  }

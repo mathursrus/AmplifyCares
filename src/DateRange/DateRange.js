@@ -3,8 +3,9 @@ import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretLeft } from "@fortawesome/free-solid-svg-icons";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import './DateRange.css';
 
-export const DateRange = ({startDay, endDay, setStartDay, setEndDay, message}) => {
+export const DateRange = ({startDay, endDay, setStartDay, setEndDay, message, image, imageTitle, onImageClick}) => {
     return (
         <>
             <br></br>
@@ -20,8 +21,16 @@ export const DateRange = ({startDay, endDay, setStartDay, setEndDay, message}) =
                     </Button>
                 </div>
                 
-                < div>
+                <div className="message-container">
                     <h3>{message}</h3>
+                    {image && (
+                    <span className="stats-image">
+                        <img src={image} alt={imageTitle} title={imageTitle} 
+                        onClick={(event) => {
+                            event.preventDefault();
+                            onImageClick()}}/>
+                    </span>
+                    )}
                 </div>
 
                 <div>
