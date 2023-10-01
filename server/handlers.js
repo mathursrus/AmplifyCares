@@ -161,25 +161,31 @@ async function writeEntry(item) {
         item.societal_health_activity = lemmatizeActivities(item.societal_health_activity);
       }*/
 
+      var result = item;
       if (existingItem) {
           item._id = ObjectId(item._id);            
           if (isEmptyItem) {
             // if all entries are 0, then delete
-            const result = await ct.deleteOne({ _id: item._id });
+            ct.deleteOne({ _id: item._id });
             console.log('Item deleted:', item._id);
           }
           else {
             // Item exists, perform an update
-            const result = await ct.updateOne({ _id: item._id }, { $set: item });
+            await ct.updateOne({ _id: item._id }, { $set: item });
             console.log('Item updated:', item._id);
           }
       } else {
         if (!isEmptyItem) {
             // Item does not exist, perform an insert
-            const result = await ct.insertOne(item);
+            await ct.insertOne(item);
             console.log('Item inserted:', result.insertedId);
         }
+        else {
+          // nothing done since its a new empty item
+          result = null;
+        }
       }
+      return result;
   } catch (err) {
       console.error('Error:', err);
   }
@@ -788,9 +794,7 @@ async function convertOpenAIToTimeEntries(username, inputString) {
     date.setUTCHours(0, 0, 0, 0)
     return date;
   }
-
-  // Initialize an array to store the resulting objects
-  const resultArray = [];
+  
   const promises = [];
 
   // Iterate through each entry
@@ -833,16 +837,14 @@ async function convertOpenAIToTimeEntries(username, inputString) {
         itemData.societal_health_activity = [activity];
       }
 
-      promises.push(writeEntry(itemData));
-      // Push the object to the result array
-      resultArray.push(itemData);
+      promises.push(writeEntry(itemData));            
     }
   });
 
-  await Promise.all(promises);
+  const results = await Promise.all(promises);
   
-  console.log(resultArray);    
-  return resultArray;    
+  console.log(results);    
+  return results;    
 }
 
 async function writeRecommendation(item) {

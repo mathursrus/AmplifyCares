@@ -600,11 +600,12 @@ db.self_care_stats.find(
 
 /* All details for a person */
 use('amplifycares-db-catita');
-db.self_care_stats.find({name:"sidm@microsoft.com"}).sort({DateTime:-1});
+db.self_care_stats.find({name:"sid@catita365.onmicrosoft.com"}).sort({DateTime:-1});
+
 
 /* All user info */
 use('amplifycares-db-catita');
-db.userInfo.find({username: {$regex:".*@microsoft.com"}});
+db.userInfo.find({username: {$regex:".*@catita365.onmicrosoft.com"}});
 
 /* Delete some user info */
 use('amplifycares-db-catita');

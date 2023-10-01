@@ -18,7 +18,8 @@ const config = {
   auth: {
     //clientId: "93b00364-cb1c-49c6-8564-3709d70ad224",
     clientId: "1adf639b-57f8-4bb9-9c02-f5f51cd00c13",
-    authority: "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
+    //authority: "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47",
+    authority: "https://login.microsoftonline.com/common",
     redirectUri: window.location.origin,
     logoutRedirect: window.location.origin + "?logout=true",
     consentScopes: [],

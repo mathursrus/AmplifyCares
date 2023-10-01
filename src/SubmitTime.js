@@ -94,8 +94,8 @@
         }        
 
         const showData = async (results) => {
-            console.log("Submits time got data ", results);  
-            if (results.length > 0) {
+            console.log("Submit time got results ", results);  
+            if (results.length > 0 && results[0] !== null) {
                 const dateString = results[0].DateTime;
                 const year = parseInt(dateString.substring(0, 4));
                 const month = parseInt(dateString.substring(5, 7)) - 1; // Months are zero-based
