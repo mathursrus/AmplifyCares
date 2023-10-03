@@ -64,7 +64,8 @@ function TeamList() {
       <div style={{marginTop: '5rem'}}/>
       <div style={{marginTop: '1rem'}}/>
       <center>
-        <h3 className="subheader">Invite your colleagues to take care of themselves</h3>
+        <h3 className="subheader">Invite your colleagues to take care of themselves.</h3>
+        Want to join an existing team? Contact any of the existing team members and have them add you.
       </center>
       <br></br>
       { teams ?
