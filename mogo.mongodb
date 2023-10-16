@@ -706,13 +706,25 @@ db.self_care_stats.find({ societal_health_time: { $exists: true, $type: "string"
 use('amplifycares-db-catita');
 db.recommendations.find();
 
+// set all recommendations to be DIY 
+use('amplifycares-db-catita');
+db.recommendations.updateMany(
+  {},
+  {
+    $set: {
+      selfOrTogether: 'DIY'
+    }
+  },
+  { upsert: true }
+);
+
 // get all recommendations of specific type
 use('amplifycares-db-catita');
 db.recommendations.find({type:1});
 
 // delete some recommendations 
 use('amplifycares-db-catita');
-db.recommendations.deleteMany({title: {$regex:"This*"}}, {contributor: {$regex:"sidm@*"}});
+db.recommendations.deleteMany({title: {$regex:"No*"}}, {contributor: {$regex:"sidm@*"}});
 
 // show all databases
 show databases;

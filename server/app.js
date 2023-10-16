@@ -12,10 +12,12 @@ var indexRouter = require('./routes/index');
 var app = express();
 
 var routesModules = require('./routes');
-var getUserInfo = routesModules.getUserInfo;
+var getUserInfoWithToken = routesModules.getUserInfoWithToken;
+/*var getUserInfo = routesModules.getUserInfo;*/
 var setUserLoginInfo = routesModules.setUserLoginInfo;
 var getAllUsers = routesModules.getAllUsers;
-var writeSelfCareEntry = routesModules.writeSelfCareEntry;
+var writeSelfCareEntryWithToken = routesModules.writeSelfCareEntryWithToken;
+//var writeSelfCareEntry = routesModules.writeSelfCareEntry;
 var getSelfCareStats = routesModules.getSelfCareStats;
 var getPercentiles = routesModules.getPercentiles;
 var getTeamStats = routesModules.getTeamStats;
@@ -86,10 +88,12 @@ app.options('/writeFeedback', (req, res) => {
 
 app.use('/', indexRouter);
 
-app[getUserInfo.method](getUserInfo.path, getUserInfo.handler);
+app[getUserInfoWithToken.method](getUserInfoWithToken.path, getUserInfoWithToken.handler);
+/*app[getUserInfo.method](getUserInfo.path, getUserInfo.handler);*/
 app[setUserLoginInfo.method](setUserLoginInfo.path, setUserLoginInfo.handler);
 app[getAllUsers.method](getAllUsers.path, getAllUsers.handler);
-app[writeSelfCareEntry.method](writeSelfCareEntry.path, writeSelfCareEntry.handler);
+app[writeSelfCareEntryWithToken.method](writeSelfCareEntryWithToken.path, writeSelfCareEntryWithToken.handler);
+//app[writeSelfCareEntry.method](writeSelfCareEntry.path, writeSelfCareEntry.handler);
 app[getSelfCareStats.method](getSelfCareStats.path, getSelfCareStats.handler);
 app[getPercentiles.method](getPercentiles.path, getPercentiles.handler);
 app[getIndividualData.method](getIndividualData.path, getIndividualData.handler);

@@ -141,7 +141,7 @@
                 itemData.DateTime = editingEntry.DateTime;                
             }
             console.log(itemData)
-            const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(itemData));
+            const response = await fetch(getApiHost()+"/writeselfcarewithtoken/?item="+JSON.stringify(itemData)+"&token="+JSON.stringify(localStorage.getItem('usertoken')));
 
             if (!response.ok) {
                 console.log("Ugh");

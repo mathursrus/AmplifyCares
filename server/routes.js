@@ -1,5 +1,17 @@
 const handlers = require('./handlers');
 
+const getUserInfoWithToken = {
+    method: 'get',
+    path: '/getUserInfoWithToken',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const item = await req.query.token;        
+        const response = await handlers.getUserInfoWithToken(JSON.parse(item));
+        res.status(200).json(response);
+    }
+}
+
+/*
 const getUserInfo = {
     method: 'get',
     path: '/getUserInfo',
@@ -10,6 +22,7 @@ const getUserInfo = {
         res.status(200).json(response);
     }
 }
+*/
 
 const setUserLoginInfo = {
     method: 'get',
@@ -34,6 +47,19 @@ const getAllUsers = {
     }
 }
 
+const writeSelfCareEntryWithToken = {
+    method: 'get',
+    path: '/writeselfcarewithtoken',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const item = await req.query.item;        
+        const token = await req.query.token;
+        const response = await handlers.writeEntryWithToken(JSON.parse(item), JSON.parse(token));
+        res.status(200).json(response);
+    }
+}
+
+/*
 const writeSelfCareEntry = {
     method: 'get',
     path: '/writeselfcare',
@@ -44,6 +70,7 @@ const writeSelfCareEntry = {
         res.status(200).json(response);
     }
 }
+*/
 
 const getSelfCareStats = {
     method: 'get',
@@ -181,4 +208,4 @@ const sendInvite = {
     }
 }
 
-module.exports = { getUserInfo, setUserLoginInfo, getAllUsers, writeSelfCareEntry, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

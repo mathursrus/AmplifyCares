@@ -7,9 +7,12 @@ import { getApiUrl, isValidURL } from './utils/urlUtil';
 const RecommendationsPage = (props) => {
   const [showInputFields, setShowInputFields] = useState(false);
   const [newRecommendation, setNewRecommendation] = useState({ title: '', url: '' });
-
-  const recoType = props.type;
+  
+  const careType = props.type;
   const [recos, setRecos] = useState(null);
+
+  // State to track the selected recommendation type (DIY or DIT)
+  const [selfOrTogether, setSelfOrTogether] = useState(['DIY', 'DIT']);
 
   const headlines = [
     [1, "Taking care of your mental health is essential for overall well-being and happiness. It empowers you to manage stress, build resilience, maintain healthy relationships, and unlock your full potential in both personal and professional aspects of life."],
@@ -20,14 +23,14 @@ const RecommendationsPage = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-        const response = await fetch(getApiUrl("/getrecommendations/?item="+recoType));
+        const response = await fetch(getApiUrl("/getrecommendations/?item="+careType));
         const data = await response.json();
         const recos = JSON.parse(data);
         setRecos(recos);
         console.log("Recos is ", recos);
     }
     fetchData();
-  }, [props, recoType]);
+  }, [props, careType]);
   
   const handleChange = (e) => {
     setNewRecommendation({ ...newRecommendation, [e.target.name]: e.target.value });
@@ -41,7 +44,8 @@ const RecommendationsPage = (props) => {
       setNewRecommendation({ title: '', url: '' });
       const itemData = {
         title: newRecommendation.title,
-        type: recoType,
+        type: careType,
+        selfOrTogether: selfOrTogether,
         url: newRecommendation.url,
         contributor: newRecommendation.contributor,
       }
@@ -50,28 +54,68 @@ const RecommendationsPage = (props) => {
     }    
   };
 
+  const toggleSelfOrTogether = (type) => {
+    if (selfOrTogether.includes(type)) {
+      setSelfOrTogether(selfOrTogether.filter((item) => item !== type));
+    } else {
+      setSelfOrTogether([...selfOrTogether, type]);
+    }
+  };
 
+  const filteredRecos = recos ? recos.filter((recommendation) => recommendation.selfOrTogether === undefined || selfOrTogether.includes(recommendation.selfOrTogether)) : [];
+          
   return (
     <div className="recommendations-page">
-      <h5><i>{headlines.find(item => item[0] === recoType)[1]}</i></h5>
+      <h5><i>{headlines.find(item => item[0] === careType)[1]}</i></h5>
       <br></br>
-      <h6><center>Here are a few recommendations from your colleagues</center></h6>
+      <h6><center>Your colleagues recommend these DIY <i>(Do It Yourself - at your own time)</i> and DIT <i>(Do It Together - with team mates)</i> activities</center></h6>      
       {recos?
       (
-        <div className="emptydiv">
-        {recos.length>0? (
-          <div className="emptydiv">
-          {recos.map((recommendation, index) => (
-            <div className="recommendation-tile" key={index}>
-              <a className="URL" href={recommendation.url} target="_blank" rel="noopener noreferrer">
-                <h3 className="title">{recommendation.title}</h3>
-              </a>
-              <h4 className="contributor">Recommended by: {recommendation.contributor}</h4>
-            </div>
-          ))}
+        <div>
+          <div className="filter-section">
+            <label>
+              <input
+                type="checkbox"
+                name="recommendationType"
+                value="DIY"
+                checked={selfOrTogether.includes('DIY')}
+                onChange={() => toggleSelfOrTogether('DIY')}
+              />
+              <img src="DIY.jpg" alt="DIY" className="filter-icon" />
+              DIY
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="recommendationType"
+                value="DIT"
+                checked={selfOrTogether.includes('DIT')}
+                onChange={() => toggleSelfOrTogether('DIT')}
+              />
+              <img src="DIT.jpg" alt="DIT" className="filter-icon" />
+              DIT
+            </label>
           </div>
-        ) : (<div><br></br>Whoops ... looks like we do not have any peer recommendations yet. Be the first one to add a recommendation below.</div>)
-        }
+
+          <div className="emptydiv">
+
+          {filteredRecos.length>0? (
+            <div className="recommendation-container">
+              {filteredRecos.map((recommendation, index) => (
+              <div className="recommendation-tile" key={index}>
+                <div className="icon">
+                  <img src={(recommendation.selfOrTogether === 'DIY' ? 'DIY.jpg' : (recommendation.selfOrTogether === 'DIT' ? 'DIT.jpg' : null))} alt={recommendation.selfOrTogether} />
+                </div>
+                <a className="URL" href={recommendation.url} target="_blank" rel="noopener noreferrer">
+                  <h3 className="title">{recommendation.title}</h3>
+                </a>
+                <h4 className="contributor">(Recommended by: {recommendation.contributor})</h4>
+              </div>
+            ))}
+            </div>
+          ) : (<div><br></br>Whoops ... looks like we do not have any peer recommendations yet. Be the first one to add a recommendation below.</div>)
+          }
+          </div>
         </div>
       ) : (
         <p><center>Loading...</center></p>
@@ -85,9 +129,38 @@ const RecommendationsPage = (props) => {
 
         {showInputFields && (
             <>
+            <div className="radio-buttons">
+              
+                <input
+                  type="radio"
+                  name="selfOrTogether"
+                  value="DIY"
+                  checked={newRecommendation.selfOrTogether === 'DIY'}
+                  onChange={handleChange}
+                />
+                <div className="icon-container">
+                  <img src="DIY.jpg" alt="DIY" className="newreco-icon" />
+                  <span className="tooltip">Is this a DIY recommendation?</span>
+                </div>
+              
+              
+                <input
+                  type="radio"
+                  name="selfOrTogether"
+                  value="DIT"
+                  checked={newRecommendation.selfOrTogether === 'DIT'}
+                  onChange={handleChange}
+                />
+                <div className="icon-container">
+                  <img src="DIT.jpg" alt="DIT" className="newreco-icon" />
+                  <span className="tooltip">Is this a DIT recommendation?</span>
+                </div>              
+              
+            </div>
             <input
                 type="text"
                 name="title"
+                className="input-field"
                 placeholder="Enter Title"
                 value={newRecommendation.title}
                 onChange={handleChange}
@@ -95,12 +168,13 @@ const RecommendationsPage = (props) => {
             <input
                 type="text"
                 name="url"
+                className="input-field"
                 placeholder="Enter URL"
                 value={newRecommendation.url}
                 onChange={handleChange}
             />
-            <button onClick={handleAddRecommendation}>Save</button>
-            <button onClick={() => setShowInputFields(false)}>Cancel</button>
+            <button className="save-button" onClick={handleAddRecommendation}>Save</button>
+            <button className="cancel-button" onClick={() => setShowInputFields(false)}>Cancel</button>
             </>
         )}
     </div>

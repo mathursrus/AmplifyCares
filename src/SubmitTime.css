@@ -73,6 +73,7 @@
     animation-fill-mode: forwards;
     opacity: 0;
     transform: translateX(100%);
+    z-index: 9999;
   }
   
   @keyframes flyoutAnimation {

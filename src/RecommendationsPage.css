@@ -11,9 +11,61 @@
     flex: 0 0 0; /* flex-grow: 0; flex-shrink: 0; flex-basis: 0; */
   }
 
+/* Style the filter section */
+.filter-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Adjust the gap between filter options */
+  margin-bottom: 20px; /* Add spacing between filters and recommendation tiles */
+}
+
+/* Style the filter icons */
+.filter-icon {
+  width: 50px; /* Set the width of the filter icons */
+  height: 50px; 
+  margin-right: 5px; /* Add spacing between icon and label */
+}
+
+/* Style the radio labels for better UX */
+.filter-section label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Add this CSS to style the icon container */
+.icon {
+  flex: 1;
+  width: 20%; 
+  /*height: 100%;*/
+  margin-right: 10px; 
+  display: flex;
+  align-items: center;
+}
+
+/* Style the icon image within the container */
+.icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Adjust the object-fit property as needed */
+}
+
+/* Adjust the margin for spacing between the icon and the recommendation title */
+.title {
+  margin-left: 10px; /* Adjust the margin as needed */
+  margin-right: 20px;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.URL {
+  flex: 3;  
+}
+  
 .recommendation-tile {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     margin-bottom: 20px;
     padding: 10px;
@@ -29,19 +81,93 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 80px;
+    height: 60px;
     background-color: #fff;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     justify-content: center;
+    z-index: 9999;
 }
 
-.title {
-    font-size: 18px;
+
+.radio-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.radio-label {
+  margin-right: 10px;
+}
+
+.icon-container {
+  position: relative;
+}
+
+.tooltip {
+  visibility: hidden;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.icon-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.newreco-icon {
+  width: 30px; /* Set the width of the filter icons */
+  height: 30px; 
+  margin-right: 2px; /* Add spacing between icon and label */  
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.save-button, .cancel-button {
+  /*background-color: white;*/
+  color: black;
+  border-color: black;
+  /*padding: 2px;*/
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .radio-buttons {
+    flex-direction: column;
+  }
+
+  .radio-label {
+    margin-right: 0;
     margin-bottom: 5px;
+  }
+
+  .input-field {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
 
 .contributor {
+    flex: 2;
     font-size: 14px;
     margin-bottom: 5px;
 }

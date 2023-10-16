@@ -57,7 +57,7 @@ const CoPilot = ({endpoint, userprompts, systemprompts}) => {
   const getAnswerForQuestion = useCallback((question) => {
     let responseText = '';
     if (userprompts.includes(question)) {        
-        responseText = answers[userprompts.indexOf(question)];            
+        responseText = answers.length > 0 ? answers[userprompts.indexOf(question)] : "Sorry, I seem to have had a problem. Please submit feedback about this error";            
         console.log("Response is ", responseText);
     } else {
         responseText = 'Sorry, I can only answer one of the predefined questions.';

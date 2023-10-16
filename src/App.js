@@ -137,8 +137,9 @@ function AppPage() {
     //sendNotification(username);
   }, []);
 
-  const getAndSetUserInfo = useCallback(async (username) => {
-    const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));
+  const getAndSetUserInfo = useCallback(async (token) => {
+    //const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));
+    const response = await fetch(getApiHost() + "/getUserInfoWithToken?token="+JSON.stringify(token));
     const data = await response.json();
     const userInfo = JSON.parse(data);
     console.log("Got user info ", userInfo);
@@ -152,15 +153,17 @@ function AppPage() {
   const setUser = useCallback(async (response) => {
     console.log("Set user called with ", response);
     if (response) {
-      user.current = response[0];
-      localStorage.setItem('userName', response[0]);
-      localStorage.setItem('userDisplayName', response[1]);
+      user.current = response[1];
+      localStorage.setItem('usertoken', response[0]);          
+      localStorage.setItem('userName', response[1]);
+      localStorage.setItem('userDisplayName', response[2]);
       localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.AUTHENTICATED);
       await getAndSetUserInfo(response[0]); 
       setUserExists(true);             
     }
     else {
       user.current = null;
+      localStorage.setItem('usertoken', null);          
       localStorage.setItem('userName', null);
       localStorage.setItem('userDisplayName', null);
       localStorage.setItem('badges', null);
@@ -184,8 +187,9 @@ function AppPage() {
         if (authResult && authResult.account) {
           const account = authResult.account;
           console.log("Setting active account to ", account);
-          msalInstance.setActiveAccount(account);              
-          setUser([account.username, account.name]);
+          msalInstance.setActiveAccount(account);
+          console.log("Got MSALInstance token ", authResult.accessToken);
+          setUser([authResult.accessToken, account.username, account.name]);
         }
         else {
           setUser(null);
@@ -240,10 +244,10 @@ function AppPage() {
             console.log('Decoded Payload:', payload);
             
             if (payload.name) {
-              setUser([userName, payload.name]);             
+              setUser([token, userName, payload.name]);             
             } else {
               console.log('Graph API call did not return display name');
-              setUser([userName, userName]);     
+              setUser([token, userName, userName]);     
             }
           },
           failureCallback: function(error) { console.log("Error getting token: " + error); }
@@ -270,7 +274,8 @@ function AppPage() {
               account: account,
               scopes: ['user.read']
             });*/
-            setUser([account.username, account.name]);
+            const response = await msalInstance.acquireTokenSilent({account: account});                    
+            setUser([response.accessToken, account.username, account.name]);
             console.log('User already authenticated:', account.username);
           } else {
             login();

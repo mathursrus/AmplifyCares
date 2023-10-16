@@ -70,6 +70,26 @@ async function getInviteContainer() {
   return invite_container;
 }
 
+async function getUserInfoWithToken(token) {
+  try {
+      console.log("Success: ", token);
+      // Split the token into header, payload, and signature
+      const [headerB64, payloadB64] = token.split('.');
+
+      // Decode the base64-encoded header and payload
+      const header = JSON.parse(atob(headerB64));
+      const payload = JSON.parse(atob(payloadB64));
+
+      console.log('Decoded Header:', header);
+      console.log('Decoded Payload:', payload);
+      const user = payload.upn;
+      
+      return getUserInfo(user);
+  } catch (err) {
+      console.error('Error:', err);
+  }
+}
+
 async function getUserInfo(user) {
   try {
       console.log('Get UserInfo handler got user: ', user)
@@ -136,6 +156,24 @@ function lemmatizeActivities(activityArray) {
   }
   return resultArray;
 }*/
+
+async function writeEntryWithToken(item, token) {
+  try {
+      // Split the token into header, payload, and signature
+      const [headerB64, payloadB64] = token.split('.');
+
+      // Decode the base64-encoded header and payload
+      const header = JSON.parse(atob(headerB64));
+      const payload = JSON.parse(atob(payloadB64));
+
+      const user = payload.upn;
+      if (user !== item.name) throw Error("UPN is " + user + ", entry is for " + item.name);
+      
+      return writeEntry(item);
+  } catch (err) {
+      console.error('Error:', err);
+  }
+}
 
 async function writeEntry(item) {
   try {
@@ -664,23 +702,27 @@ async function getSelfCareInsights(username, startDay, endDay, questions) {
       // Remove _id and lastEdited fields from each object in allData
       const cleanedData = allData.map(({ _id, lastEdited, ...rest }) => rest);
 
-      // convert this into a GPT prompt
-      const promptBase = "Here is a set of self-care data. Process this data and then the user will ask you a question about it. \
-      Address the user like you are talking to them. \
-      Even if the user asks multiple questions, keep your answer brief with a maximum of 3 key points. \
-      Be helpful in your responses. Be specific and perform math on numbers from the provided data, if needed. \
-      The users name is " + username +". Their data over the last 60 days is: ";
+      try {          
+        // convert this into a GPT prompt
+        const promptBase = "Here is a set of self-care data. Process this data and then the user will ask you a question about it. \
+        Address the user like you are talking to them. \
+        Even if the user asks multiple questions, keep your answer brief with a maximum of 3 key points. \
+        Be helpful in your responses. Be specific and perform math on numbers from the provided data, if needed. \
+        The users name is " + username +". Their data over the last 60 days is: ";
 
-      const prompt = promptBase + JSON.stringify(cleanedData);
+        const prompt = promptBase + JSON.stringify(cleanedData);
 
-      questions.forEach((question) => {
-        const answerPromise = callOpenAICompletions(prompt, question);
-        promises.push(answerPromise);
-      });
+        questions.forEach((question) => {
+          const answerPromise = callOpenAICompletions(prompt, question);
+          promises.push(answerPromise);          
+        });
 
-      // Wait for all answer promises to resolve
-      const resolvedAnswers = await Promise.all(promises);
-      answers.push(...resolvedAnswers);
+        // Wait for all answer promises to resolve
+        const resolvedAnswers = await Promise.all(promises);
+        answers.push(...resolvedAnswers);
+      } catch (error) {
+        console.log("CallOpenAICompletions returned error: ");
+      }
     } else {
       questions.forEach((question) => {
         answers.push("Thank you for your interest in self care. I need at least 14 days of self care data over a 60 day time period to provide insights. Please add data in the Submit page of the app");
@@ -932,4 +974,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, setUserLoginInfo, getAllUsers, writeEntry, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
