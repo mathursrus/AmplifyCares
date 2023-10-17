@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
 import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
-import { getApiHost } from './utils/urlUtil';
+import { getApiHost, fetchWithToken } from './utils/urlUtil';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { features } from "./FirstRunExperience";
 import './App.css';
@@ -139,7 +139,7 @@ function AppPage() {
 
   const getAndSetUserInfo = useCallback(async (token) => {
     //const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));
-    const response = await fetch(getApiHost() + "/getUserInfoWithToken?token="+JSON.stringify(token));
+    const response = await fetchWithToken(getApiHost() + "/getUserInfoWithToken", token);
     const data = await response.json();
     const userInfo = JSON.parse(data);
     console.log("Got user info ", userInfo);

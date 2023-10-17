@@ -5,8 +5,8 @@ const getUserInfoWithToken = {
     path: '/getUserInfoWithToken',
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
-        const item = await req.query.token;        
-        const response = await handlers.getUserInfoWithToken(JSON.parse(item));
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.getUserInfoWithToken(token);
         res.status(200).json(response);
     }
 }
@@ -53,8 +53,8 @@ const writeSelfCareEntryWithToken = {
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
         const item = await req.query.item;        
-        const token = await req.query.token;
-        const response = await handlers.writeEntryWithToken(JSON.parse(item), JSON.parse(token));
+        const token = await req.headers.authorization.split(' ')[1];
+        const response = await handlers.writeEntryWithToken(JSON.parse(item), token);
         res.status(200).json(response);
     }
 }

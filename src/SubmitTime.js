@@ -4,7 +4,7 @@
     import RecommendationsPage from './RecommendationsPage';
     import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
     import { faInfoCircle, faTimes, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-    import { getApiHost, getApiUrl } from './utils/urlUtil';
+    import { fetchWithToken, getApiHost, getApiUrl } from './utils/urlUtil';
     import { useNavigate } from 'react-router-dom';
     import DatePicker from 'react-datepicker';
     import { evaluate } from 'mathjs';
@@ -141,7 +141,7 @@
                 itemData.DateTime = editingEntry.DateTime;                
             }
             console.log(itemData)
-            const response = await fetch(getApiHost()+"/writeselfcarewithtoken/?item="+JSON.stringify(itemData)+"&token="+JSON.stringify(localStorage.getItem('usertoken')));
+            const response = await fetchWithToken(getApiHost()+"/writeselfcarewithtoken/?item="+JSON.stringify(itemData), localStorage.getItem('usertoken'));
 
             if (!response.ok) {
                 console.log("Ugh");
