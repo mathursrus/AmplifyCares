@@ -104,7 +104,7 @@ const RecommendationsPage = (props) => {
               {filteredRecos.map((recommendation, index) => (
               <div className="recommendation-tile" key={index}>
                 <div className="icon">
-                  <img src={(recommendation.selfOrTogether === 'DIY' ? 'DIY.jpg' : (recommendation.selfOrTogether === 'DIT' ? 'DIT.jpg' : null))} alt={recommendation.selfOrTogether} />
+                  <img src={(recommendation.selfOrTogether === 'DIY' ? 'diy.jpg' : (recommendation.selfOrTogether === 'DIT' ? 'dit.jpg' : null))} alt={recommendation.selfOrTogether} />
                 </div>
                 <a className="URL" href={recommendation.url} target="_blank" rel="noopener noreferrer">
                   <h3 className="title">{recommendation.title}</h3>
