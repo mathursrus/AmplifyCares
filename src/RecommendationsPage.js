@@ -81,7 +81,7 @@ const RecommendationsPage = (props) => {
                 checked={selfOrTogether.includes('DIY')}
                 onChange={() => toggleSelfOrTogether('DIY')}
               />
-              <img src="DIY.jpg" alt="DIY" className="filter-icon" />
+              <img src="diy.jpg" alt="DIY" className="filter-icon" />
               DIY
             </label>
             <label>
@@ -92,7 +92,7 @@ const RecommendationsPage = (props) => {
                 checked={selfOrTogether.includes('DIT')}
                 onChange={() => toggleSelfOrTogether('DIT')}
               />
-              <img src="DIT.jpg" alt="DIT" className="filter-icon" />
+              <img src="dit.jpg" alt="DIT" className="filter-icon" />
               DIT
             </label>
           </div>
@@ -139,7 +139,7 @@ const RecommendationsPage = (props) => {
                   onChange={handleChange}
                 />
                 <div className="icon-container">
-                  <img src="DIY.jpg" alt="DIY" className="newreco-icon" />
+                  <img src="diy.jpg" alt="DIY" className="newreco-icon" />
                   <span className="tooltip">Is this a DIY recommendation?</span>
                 </div>
               
@@ -152,7 +152,7 @@ const RecommendationsPage = (props) => {
                   onChange={handleChange}
                 />
                 <div className="icon-container">
-                  <img src="DIT.jpg" alt="DIT" className="newreco-icon" />
+                  <img src="dit.jpg" alt="DIT" className="newreco-icon" />
                   <span className="tooltip">Is this a DIT recommendation?</span>
                 </div>              
               
