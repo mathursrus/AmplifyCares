@@ -893,9 +893,16 @@ async function writeRecommendation(item) {
   try {
       console.log('Handler got item: ', item)
       const ct = await getRecommendationsContainer();
-      const result = await ct.insertOne(item);
-      console.log('Item inserted now:', result.insertedId);
-      //return result.insertedId;
+      const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
+      if (existingItem) {
+        item._id = ObjectId(item._id);            
+        // Item exists, perform an update
+        await ct.updateOne({ _id: item._id }, { $set: item });
+        console.log('Recommendation updated:', item._id);        
+      } else {        
+        result = await ct.insertOne(item);
+        console.log('Recommendation inserted');
+      }            
     } catch (err) {
       console.error('Error:', err);
     }

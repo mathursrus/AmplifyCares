@@ -712,7 +712,7 @@ db.recommendations.updateMany(
   {},
   {
     $set: {
-      selfOrTogether: 'DIY'
+      participants: []
     }
   },
   { upsert: true }

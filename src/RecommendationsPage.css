@@ -76,6 +76,57 @@
     z-index: 1;
 }
 
+/* Add this to your CSS file */
+.participants-badge {
+  position: relative;
+  top: -30px; /* Adjust the top position as needed */
+  right: 10px; /* Adjust the right position as needed */
+  background-color: blueviolet; /* Red background color */
+  color: white; /* White text color */
+  padding: 2px 6px; /* Padding */
+  border-radius: 50%; /* Circle shape */
+  font-size: 10px; /* Font size */
+}
+
+/* Add this to your CSS file */
+.join-button {
+  background-color: #4caf50; /* Green background color */
+  border: none;
+  color: white; /* White text color */
+  padding: 5px 10px; /* Padding */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth color transition */
+}
+
+.join-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.leave-button {
+  background-color: rgb(164, 8, 8); /* Green background color */
+  border: none;
+  color: white; /* White text color */
+  padding: 5px 10px; /* Padding */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth color transition */
+}
+
+.leave-button:hover {
+  background-color: red; /* Darker green on hover */
+}
+
 .add-recommendation {
     position: fixed;
     bottom: 0;

@@ -36,6 +36,48 @@ const RecommendationsPage = (props) => {
     setNewRecommendation({ ...newRecommendation, [e.target.name]: e.target.value });
   };
 
+  function getParticipantsTooltip(recommendation) {
+    const participants = recommendation.participants;
+    if (participants.length === 0)  {
+      return "No one in the circle yet. Join and kick it off."
+    }
+    else{
+      return "Circle members: \n" + participants.join('\n');
+    }
+  }
+  
+  const handleJoinRecommendation = async (e, index) => {   
+    e.preventDefault(); 
+    const updatedRecos = [...filteredRecos];
+    const selectedRecommendation = updatedRecos[index];
+    selectedRecommendation.participants.push(localStorage.getItem('userName'));
+  
+    // Update the state with the modified recommendations
+    setRecos(updatedRecos);
+  
+    // write to server 
+    await writeRecommendationToServer(selectedRecommendation);
+  };
+
+  const handleLeaveRecommendation = async (e, index) => {
+    e.preventDefault();
+    const updatedRecos = [...filteredRecos];
+    const selectedRecommendation = updatedRecos[index];
+    const userName = localStorage.getItem('userName');
+    const participantIndex = selectedRecommendation.participants.indexOf(userName);
+
+    if (participantIndex !== -1) {
+      // Remove the user from the participants array
+      selectedRecommendation.participants.splice(participantIndex, 1);
+
+      // Update the state with the modified recommendations
+      setRecos(updatedRecos);
+  
+      // write to server 
+      await writeRecommendationToServer(selectedRecommendation);
+    }
+  };
+
   async function handleAddRecommendation(e)   {
     e.preventDefault();
     if (newRecommendation.title.trim() !== '' && newRecommendation.url.trim() !== '' && isValidURL(newRecommendation.url)) {
@@ -48,11 +90,16 @@ const RecommendationsPage = (props) => {
         selfOrTogether: selfOrTogether,
         url: newRecommendation.url,
         contributor: newRecommendation.contributor,
+        participants: [newRecommendation.contributor]
       }
-      await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
+      await writeRecommendationToServer(itemData)
       setShowInputFields(false);
     }    
   };
+
+  async function writeRecommendationToServer(itemData) {
+    await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
+  }
 
   const toggleSelfOrTogether = (type) => {
     if (selfOrTogether.includes(type)) {
@@ -105,11 +152,20 @@ const RecommendationsPage = (props) => {
               <div className="recommendation-tile" key={index}>
                 <div className="icon">
                   <img src={(recommendation.selfOrTogether === 'DIY' ? 'diy.jpg' : (recommendation.selfOrTogether === 'DIT' ? 'dit.jpg' : null))} alt={recommendation.selfOrTogether} />
+                  {recommendation.selfOrTogether === 'DIT' &&
+                    (<span className="participants-badge" title={getParticipantsTooltip(recommendation)}>{recommendation.participants.length}</span>)
+                  }
                 </div>
                 <a className="URL" href={recommendation.url} target="_blank" rel="noopener noreferrer">
                   <h3 className="title">{recommendation.title}</h3>
                 </a>
                 <h4 className="contributor">(Recommended by: {recommendation.contributor})</h4>
+                {recommendation.selfOrTogether === 'DIT' &&
+                  (recommendation.participants.includes(localStorage.getItem('userName')) ? (
+                    <button className="leave-button" onClick={(e) => handleLeaveRecommendation(e, index)}>Leave Circle</button>
+                  ) : (
+                    <button className="join-button" onClick={(e) => handleJoinRecommendation(e, index)}>Join Circle</button>
+                  ))}
               </div>
             ))}
             </div>
