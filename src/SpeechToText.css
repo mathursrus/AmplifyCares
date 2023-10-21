@@ -1,5 +1,6 @@
 /* Style for the mic icon container */
 .mic-icon {
+    width: 150px;
     cursor: pointer;
     margin-right: 10px; /* Adjust the margin as needed */
   }

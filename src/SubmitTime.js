@@ -13,6 +13,7 @@
     import UserBadges from './UserBadges';
     import { ReactTags } from 'react-tag-autocomplete';
     import SpeechRecognition from './SpeechToText';
+    import SelfCareCircles from './SelfCareCircles';
 
     const React = require('react');
     const { useState, useEffect, useCallback } = React;
@@ -113,6 +114,15 @@
             }
         }
 
+        const handleCircleCheckIn = (activity, time) => {
+            setPhysicalHealth({time:  time, tags: mapTagsWithValues([activity])});            
+        }
+
+        const writeSelfCareEntry = async (itemData) => {
+            const result = await fetchWithToken(getApiHost()+"/writeselfcarewithtoken/?item="+JSON.stringify(itemData), localStorage.getItem('usertoken'));
+            return result;
+        }
+
         const handleSubmit = async(e) => {             
             // Submit form data
             const itemData = {
@@ -141,7 +151,7 @@
                 itemData.DateTime = editingEntry.DateTime;                
             }
             console.log(itemData)
-            const response = await fetchWithToken(getApiHost()+"/writeselfcarewithtoken/?item="+JSON.stringify(itemData), localStorage.getItem('usertoken'));
+            const response = await writeSelfCareEntry(itemData);
 
             if (!response.ok) {
                 console.log("Ugh");
@@ -200,7 +210,7 @@
                 entry.physical_health_time = 0;
                 entry.spiritual_health_time = 0;
                 entry.societal_health_time = 0;
-                const response = await fetch(getApiHost()+"/writeselfcare/?item="+JSON.stringify(entry));
+                const response = await writeSelfCareEntry(entry);
                 if (response.ok) {
                     console.log("Successful delete");
                     clearFields();
@@ -258,10 +268,21 @@
 
         return (
             <Container className="p-3">    
-                <div>
-                    <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
-                </div>        
-                <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>
+                <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
+                <div className="flex-container">
+                    <div className="left-column">
+                        <SelfCareCircles
+                            circles={(JSON.parse(localStorage.getItem('userDetails'))).circles}
+                            onCheckInClick={handleCircleCheckIn}
+                        />
+                    </div>
+                    <div className="center-column">
+                        <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>
+                    </div>
+                    <div className="right-column">
+                        
+                    </div>
+                </div>                        
                 <form>
                     <center>
                         Select the date you're submitting time for  
@@ -271,7 +292,7 @@
                         dateFormat="MM/dd/yyyy"
                         className="date-picker"
                         />
-                    </center>
+                    </center>                    
                     <br></br>
                     {/* Display the entries in a table */}
                     {pastEntries.length > 0 && 

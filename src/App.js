@@ -143,6 +143,8 @@ function AppPage() {
     const data = await response.json();
     const userInfo = JSON.parse(data);
     console.log("Got user info ", userInfo);
+    localStorage.setItem('userDetails', JSON.stringify(userInfo[0]));
+    console.log("Reading from localstorgea user info ", JSON.parse(localStorage.getItem('userDetails')));
     const badges = userInfo.length>0 ? userInfo[0].badgesOnTrack : null;
     const lastLogin = userInfo.length>0 ? userInfo[0].lastLoginTime : null;
     await setUserBadges(badges);

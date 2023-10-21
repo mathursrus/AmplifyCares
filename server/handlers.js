@@ -94,7 +94,23 @@ async function getUserInfo(user) {
   try {
       console.log('Get UserInfo handler got user: ', user)
       const ct = await getUserContainer();
-      const result=await ct.find({username:user}).toArray();
+      // Lookup and join the user with recommendations where the user is a participant
+      const pipeline = [
+        {
+          $match: { username: user }, // Filter by user
+        },
+        {
+          $lookup: {
+            from: 'recommendations', // Replace with your actual collection name
+            localField: 'username',
+            foreignField: 'participants',
+            as: 'circles',
+          },
+        },
+      ];
+
+      const result = await ct.aggregate(pipeline).toArray();
+
       console.log(`Result is: ${result}`);
       const final = JSON.stringify(result);
       console.log(`Finale is ${final}`);

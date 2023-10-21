@@ -5,7 +5,29 @@
     /*background-color: rgb(104, 119, 119);*/
   }
 
+  .flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   
+  .left-column {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0px; /* Adjust the margin as needed */
+  }
+
+  .center-column {
+    flex: 3;
+    margin-right: 0px; /* Adjust the margin as needed */
+  }
+
+  .right-column {
+    flex: 1;
+    margin-right: 0px; /* Adjust the margin as needed */
+  }
+
   .formLabel {
     display: flex;
     justify-content: flex-start;

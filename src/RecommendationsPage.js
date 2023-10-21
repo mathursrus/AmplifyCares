@@ -115,7 +115,7 @@ const RecommendationsPage = (props) => {
     <div className="recommendations-page">
       <h5><i>{headlines.find(item => item[0] === careType)[1]}</i></h5>
       <br></br>
-      <h6><center>Your colleagues recommend these DIY <i>(Do It Yourself - at your own time)</i> and DIT <i>(Do It Together - with team mates)</i> activities</center></h6>      
+      <h6><center>Your colleagues have these recommendations. You can <li>DIY <i>(Do It Yourself - at your own time)</i> and/or </li><li>DIT <i>(Do It Together - join a circle with others)</i></li></center></h6>      
       {recos?
       (
         <div>
@@ -180,7 +180,7 @@ const RecommendationsPage = (props) => {
 
       <div className="add-recommendation">
         {!showInputFields && (
-            <button onClick={() => setShowInputFields(true)}>Have a Recommendation?</button>
+            <button onClick={() => setShowInputFields(true)}>Share your self care habit</button>
         )}
 
         {showInputFields && (
@@ -209,7 +209,7 @@ const RecommendationsPage = (props) => {
                 />
                 <div className="icon-container">
                   <img src="dit.jpg" alt="DIT" className="newreco-icon" />
-                  <span className="tooltip">Is this a DIT recommendation?</span>
+                  <span className="tooltip">Would you like others to join you and DIT?</span>
                 </div>              
               
             </div>
