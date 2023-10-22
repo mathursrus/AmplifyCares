@@ -6,7 +6,7 @@ import { getApiUrl, isValidURL } from './utils/urlUtil';
 
 const RecommendationsPage = (props) => {
   const [showInputFields, setShowInputFields] = useState(false);
-  const [newRecommendation, setNewRecommendation] = useState({ title: '', url: '' });
+  const [newRecommendation, setNewRecommendation] = useState({ title: '', url: '', selfOrTogether: ''});
   
   const careType = props.type;
   const [recos, setRecos] = useState(null);
@@ -82,17 +82,20 @@ const RecommendationsPage = (props) => {
     e.preventDefault();
     if (newRecommendation.title.trim() !== '' && newRecommendation.url.trim() !== '' && isValidURL(newRecommendation.url)) {
       newRecommendation.contributor = localStorage.getItem('userName');
+      newRecommendation.participants = [newRecommendation.contributor];
       recos.push(newRecommendation);
-      setNewRecommendation({ title: '', url: '' });
       const itemData = {
         title: newRecommendation.title,
         type: careType,
-        selfOrTogether: selfOrTogether,
+        selfOrTogether: newRecommendation.selfOrTogether,
         url: newRecommendation.url,
         contributor: newRecommendation.contributor,
-        participants: [newRecommendation.contributor]
+        participants: newRecommendation.participants
       }
+      
       await writeRecommendationToServer(itemData)
+
+      setNewRecommendation({ title: '', url: '' });    
       setShowInputFields(false);
     }    
   };

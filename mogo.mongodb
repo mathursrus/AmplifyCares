@@ -724,7 +724,7 @@ db.recommendations.find({type:1});
 
 // delete some recommendations 
 use('amplifycares-db-catita');
-db.recommendations.deleteMany({title: {$regex:"No*"}}, {contributor: {$regex:"sidm@*"}});
+db.recommendations.deleteMany({title: {$regex:"Dance and *"}}, {contributor: {$regex:"sidm@*"}});
 
 // show all databases
 show databases;

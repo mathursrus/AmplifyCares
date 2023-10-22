@@ -114,8 +114,21 @@
             }
         }
 
-        const handleCircleCheckIn = (activity, time) => {
-            setPhysicalHealth({time:  time, tags: mapTagsWithValues([activity])});            
+        const handleCircleCheckIn = (circle) => {
+            const time = '2';
+            const activity = circle.title;
+            if (circle.type === 1) {
+                setMentalHealth({time:  time, tags: mapTagsWithValues([activity])});            
+            }
+            else if (circle.type === 2) {
+                setPhysicalHealth({time:  time, tags: mapTagsWithValues([activity])});            
+            }
+            else if (circle.type === 3) {
+                setSpiritualHealth({time:  time, tags: mapTagsWithValues([activity])});            
+            }
+            else if (circle.type === 4) {
+                setSocialHealth({time:  time, tags: mapTagsWithValues([activity])});            
+            }
         }
 
         const writeSelfCareEntry = async (itemData) => {

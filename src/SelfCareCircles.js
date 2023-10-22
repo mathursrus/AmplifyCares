@@ -5,10 +5,10 @@ const SelfCareCircles = ({ circles, onCheckInClick }) => {
 
   console.log("Got circles ", circles);
     
-  const handleCheckInClick = (e) => {
+  const handleCheckInClick = (e, circle) => {
     // Call the onCheckInClick callback to populate the form
     e.preventDefault();
-    onCheckInClick('12@12', '2');
+    onCheckInClick(circle);
   };
 
   function getParticipantsTooltip(cirle) {
@@ -28,8 +28,8 @@ const SelfCareCircles = ({ circles, onCheckInClick }) => {
           <span className="badge" title={getParticipantsTooltip(circle)}>{circle.participants.length}</span>            
           <div className="circle-image">
             <img src="DIT.jpg" alt="DIT" />
-            <button onClick={handleCheckInClick} className="check-in-button">
-              Check-In
+            <button onClick={(e) => handleCheckInClick(e, circle)} className="check-in-button">
+                Check-In
             </button>
           </div>
           <a href={circle.url} target='_blank' rel="noreferrer">{circle.title}</a>
