@@ -5,7 +5,7 @@
     import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
     import { faInfoCircle, faTimes, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
     import { fetchWithToken, getApiHost, getApiUrl } from './utils/urlUtil';
-    import { useNavigate } from 'react-router-dom';
+    import { useNavigate, useLocation } from 'react-router-dom';
     import DatePicker from 'react-datepicker';
     import { evaluate } from 'mathjs';
     import 'react-datepicker/dist/react-datepicker.css';
@@ -42,7 +42,11 @@
         const [animation, setAnimation] = React.useState(null);
         //const clapSounds = [new Audio('/claps.wav'), new Audio('/yourock.mp3'), new Audio('/musicclip.mp3'), new Audio('/crowd.mp3')];
         const navigate = useNavigate();
+        const location = useLocation();
+            
         const [flyoutState, setFlyoutState] = useState(0);
+        const [habit, setHabit] = useState('');
+
         const [selectedDate, setSelectedDate] = useState(new Date());
         // for edit mode
         const [pastEntries, setPastEntries] = useState([]);
@@ -52,6 +56,15 @@
 
         const niceWorkAudio = new Audio('/GoodJob.mp3');
         const sorryAudio = new Audio('/Error.mp3');
+
+        useEffect(() => {
+            const searchParams = new URLSearchParams(location.search);
+            const showHabits = parseInt(searchParams.get('showHabits'));
+            const habit = searchParams.get('habit');    
+            setFlyoutState(isNaN(showHabits) ? 0 : showHabits);
+            setHabit(habit);
+            //console.log("Show habits is ", showHabits, ", habit is ", habit, ", flyout state is ", flyoutState);              
+        }, [location.search]);
 
         const clearFields = useCallback(() => {
             setMentalHealth({time: '', tags: []});
@@ -275,6 +288,10 @@
             console.log("Clicked close");        
         }        
         
+        const isValidFlyoutState = () => {
+            return (flyoutState >0 && flyoutState <5);
+        }
+
         useEffect(() => {
             console.log("Flyout state is ", flyoutState); 
         }, [flyoutState]); // Run the effect only when flyoutState changes
@@ -528,12 +545,12 @@
                             />                        
                         </div>
                     </div>
-                    {flyoutState > 0 && (
+                    {isValidFlyoutState() && (
                                 <div className="flyout show">
                                     <div className="flyout-header">
                                         <FontAwesomeIcon className="flyout-close" icon={faTimes} onClick={handleCloseFlyout} />
                                     </div>
-                                    <RecommendationsPage type={flyoutState}/>
+                                    <RecommendationsPage type={flyoutState} habit={habit}/>
                                 </div>
                     )}
                     <br></br>

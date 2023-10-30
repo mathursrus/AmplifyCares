@@ -44,6 +44,7 @@
     "react-native": "^0.72.4",
     "react-native-push-notification": "^8.1.1",
     "react-number-format": "^5.2.2",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.7.5",

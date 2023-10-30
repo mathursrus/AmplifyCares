@@ -1,0 +1,16 @@
+/* EditRecommendation.css */
+.edit-recommendation-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .editor-container {
+    flex: 1;
+    margin-bottom: 10px; /* Margin below the text editor */
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  

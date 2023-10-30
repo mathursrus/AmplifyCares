@@ -114,6 +114,18 @@ const getIndividualData = {
     }
 }
 
+const readActivities = {
+    method: 'get',
+    path: '/getselfcaredata',
+    handler: async (req, res) => {
+        console.log("Got individual data req: ", req.query);
+        const item = await req.query.item;
+        const date = await req.query.date;
+        const response = await handlers.readIndividualData(item, date);
+        res.status(200).json(response);
+    }
+}
+
 const getTeamList = {
     method: 'get',
     path: '/getteamlist',

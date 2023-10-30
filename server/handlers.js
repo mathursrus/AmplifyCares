@@ -579,6 +579,69 @@ async function readIndividualData(user, date) {
   return final;
 }
 
+async function readActivities(username, startDay, endDay) {
+  console.log(`Getting activities for user: ${username}`);
+
+  let startDate = new Date(startDay);
+  startDate.setUTCHours(0, 0, 0, 0);
+  let endDate = new Date(endDay);
+  endDate.setUTCHours(23, 59, 59, 999);
+
+  const ct = await getContainer();
+  const result = await ct.aggregate([
+    {
+      $match: {
+        name: username,
+        DateTime: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      },
+    },
+    {
+      $project: {
+        DateTime: 1,
+        activities: {
+          $concatArrays: [
+            {
+              $cond: [{ $ne: ["$mental_health_activity", null] }, ["$mental_health_activity", "$mental_health_time"], []],
+            },
+            {
+              $cond: [{ $ne: ["$physical_health_activity", null] }, ["$physical_health_activity", "$physical_health_time"], []],
+            },
+            {
+              $cond: [{ $ne: ["$spiritual_health_activity", null] }, ["$spiritual_health_activity", "$spiritual_health_time"], []],
+            },
+            {
+              $cond: [{ $ne: ["$societal_health_activity", null] }, ["$societal_health_activity", "$societal_health_time"], []],
+            },
+          ],
+        },
+      },
+    },
+    {
+      $unwind: "$activities",
+    },
+    {
+      $group: {
+        _id: {
+          date: { $dateToString: { format: "%Y-%m-%d", date: "$DateTime" } },
+          activity: "$activities[0]",
+        },
+        total_time: { $sum: "$activities[1]" },
+      },
+    },
+    {
+      $sort: { "_id.date": 1, "_id.activity": 1 },
+    },
+  ]).toArray();
+
+  console.log(`Result is: ${result}`);
+  const final = JSON.stringify(result);
+  console.log(`Finale is ${final}`);
+  return final;
+}
+
 async function readTeamList() {
   console.log(`Get team list got called`);
   const tct = await getTeamContainer();
@@ -997,4 +1060,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
