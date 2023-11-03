@@ -22,7 +22,7 @@ const SummaryPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("total");
   // Initialize the visibility state for each habit
   const [habitVisibility, setHabitVisibility] = useState('');
-  const [habitColors, setHabitColors] = useState({});
+  //const [habitColors, setHabitColors] = useState({});
   const userName = localStorage.getItem('userName');
   const currentDate = new Date(); // Get the current date
   const currentMonth = currentDate.getMonth(); // Get the current month
@@ -100,7 +100,7 @@ const SummaryPage = () => {
     return myData;
   }, []);
 
-  function restructureHabitData(inputData) {
+  const restructureHabitData = useCallback((inputData) => {
     // Create a Set to store all unique habit names
     const habitNamesSet = new Set();
   
@@ -119,7 +119,7 @@ const SummaryPage = () => {
       });
     });
   
-    setHabitColors(habitColors);
+    //setHabitColors(habitColors);
           
     // Create an array to store the restructured data
     const habitTimeArray = [];
@@ -147,7 +147,7 @@ const SummaryPage = () => {
     console.log("Habit Time Array is ", habitTimeArray);
   
     return habitTimeArray;
-  }
+  }, []);
   
   
   const processHabitsData = useCallback((selfCareData, start, end) => {
@@ -171,7 +171,7 @@ const SummaryPage = () => {
     }
       
     return restructureHabitData(myData);
-  }, []);
+  }, [restructureHabitData]);
 
   useEffect(() => {
     async function fetchData() {
