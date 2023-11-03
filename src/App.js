@@ -142,13 +142,17 @@ function AppPage() {
     const response = await fetchWithToken(getApiHost() + "/getUserInfoWithToken", token);
     const data = await response.json();
     const userInfo = JSON.parse(data);
+    let badges = null;
+    let lastLogin = null;
     console.log("Got user info ", userInfo);
-    localStorage.setItem('userDetails', JSON.stringify(userInfo[0]));
-    console.log("Reading from localstorgea user info ", JSON.parse(localStorage.getItem('userDetails')));
-    const badges = userInfo.length>0 ? userInfo[0].badgesOnTrack : null;
-    const lastLogin = userInfo.length>0 ? userInfo[0].lastLoginTime : null;
+    if (userInfo.length>0)  {
+      localStorage.setItem('userDetails', JSON.stringify(userInfo[0]));
+      console.log("Reading from localstorgea user info ", JSON.parse(localStorage.getItem('userDetails')));
+      badges = userInfo[0].badgesOnTrack;
+      lastLogin = userInfo[0].lastLoginTime;            
+    }     
     await setUserBadges(badges);
-    console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));       
+    console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));         
     updateUserLastLogin(lastLogin);
   }, [setUserBadges, updateUserLastLogin]);
 
