@@ -33,7 +33,7 @@ const SelfCareCircles = ({ circles, onCheckInClick }) => {
                 Check-In
             </button>
           </div>
-          <Link className="URL" to={`/?showHabits=${circle.type}&habit=${circle._id}`}>                
+          <Link className="URL" to={`/?showHabits=${circle.type}&habit=${circle._id}&rand=${Math.random(1000)}`}>                
             <h3 className="title">{circle.title}</h3>
           </Link>          
         </div>

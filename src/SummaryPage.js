@@ -15,14 +15,18 @@ const SummaryPage = () => {
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [activitiesData, setActivitiesData] = useState([]);
+  const [habitsData, setHabitsData] = useState([]);
   const [showSelf, setShowSelf] = useState(true);
   const [showMostOthers, setShowMostOthers] = useState(true);
   const [showTheBest, setShowTheBest] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("total");
+  // Initialize the visibility state for each habit
+  const [habitVisibility, setHabitVisibility] = useState('');
+  const [habitColors, setHabitColors] = useState({});
   const userName = localStorage.getItem('userName');
   const currentDate = new Date(); // Get the current date
   const currentMonth = currentDate.getMonth(); // Get the current month
-  const currentYear = currentDate.getFullYear(); // Get the current year
+  const currentYear = currentDate.getFullYear(); // Get the current year  
 
   // Set the endDay to the last day of the current month
   const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
@@ -49,7 +53,7 @@ const SummaryPage = () => {
     "In addition to what I am doing, what are some easy activities I can incorporate into my self-care routine? When should I do them?",
     "How is my social care? What can I do to improve social well being and gain joy from giving and interacting with others?"
   ]
-
+      
   const processChartData = useCallback((selfCareData, medianCareData, highCareData, start, end) => {
     const myData = [];
     console.log("Processing for dates ", start, " to ", end);
@@ -96,6 +100,79 @@ const SummaryPage = () => {
     return myData;
   }, []);
 
+  function restructureHabitData(inputData) {
+    // Create a Set to store all unique habit names
+    const habitNamesSet = new Set();
+  
+    const habitColors = {};
+          
+    // Iterate through the inputData to build the habitNamesSet
+    inputData.forEach((entry) => {
+      const { habits_data } = entry;
+      habits_data.forEach((habit) => {
+        const { text } = habit;
+        if (habitNamesSet.size === 0) setHabitVisibility(text); // make the first habit visible by default
+        if (!habitNamesSet.has(text)) {
+          habitNamesSet.add(text);
+          habitColors[text] = getRandomColor();           
+        }
+      });
+    });
+  
+    setHabitColors(habitColors);
+          
+    // Create an array to store the restructured data
+    const habitTimeArray = [];
+  
+    inputData.forEach((entry) => {
+      const { date, habits_data } = entry;
+  
+      // Initialize a date entry with all habits set to 0
+      const dateEntry = { date };
+      for (const habitName of habitNamesSet) {
+        dateEntry[habitName] = 0;
+      }
+  
+      habits_data.forEach((habit) => {
+        const { text, value } = habit;
+  
+        // Update the value for the corresponding habit in the date entry
+        dateEntry[text] = value;
+      });
+  
+      // Push the date entry to the array
+      habitTimeArray.push(dateEntry);
+    });
+  
+    console.log("Habit Time Array is ", habitTimeArray);
+  
+    return habitTimeArray;
+  }
+  
+  
+  const processHabitsData = useCallback((selfCareData, start, end) => {
+    const myData = [];
+    console.log("Processing habits for dates ", start, " to ", end);
+
+    for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateString = ""+year+"-"+month+"-"+day;
+
+      // populate data points per day
+      const habitsPoint = selfCareData.find(point => point._id === dateString);
+      console.log("Got habits Point ", habitsPoint);
+      const habitsData = habitsPoint? processActivityData([habitsPoint]):[];      
+      myData.push({
+        date: dateString,
+        habits_data: habitsData
+      });      
+    }
+      
+    return restructureHabitData(myData);
+  }, []);
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -109,13 +186,17 @@ const SummaryPage = () => {
       const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
       const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
 
+      //const habitData = await getAggregateStats(getApiUrl(`/getselfcareactivities/?item=${userName}&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}`))
+      //console.log("Habit data is ", habitData);
+
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
       setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));
+      setHabitsData(processHabitsData(selfCareData, startDay, utcEnd))
       setLoading(false);
     }
     console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
     fetchData();
-  }, [endDay, startDay, userName, selectedCategory, processChartData, processActivitiesData]);
+  }, [endDay, startDay, userName, selectedCategory, processChartData, processActivitiesData, processHabitsData]);
   
   async function getAggregateStats(url) {
     const response = await fetch(url);
@@ -124,6 +205,7 @@ const SummaryPage = () => {
   };  
 
   function processActivityData(data) {
+    console.log("Processing Activity Data ", data);
     const activityMap = new Map();
   
     data.forEach((entry) => {
@@ -133,7 +215,7 @@ const SummaryPage = () => {
         const [activityNames, activityValue] = activity;
         if (activityNames !== undefined && activityNames.length > 0) {          
           activityNames.forEach((activityName) => {
-            if (activityName !== null) {
+            if (activityName !== null) {              
               if (activityMap.has(activityName)) {
                 activityMap.set(activityName, activityMap.get(activityName) + activityValue);
               } else {
@@ -154,7 +236,7 @@ const SummaryPage = () => {
   
     return result;
   }
-  
+
   function launchCopilot() {
     setShowCopilot(true);
   }
@@ -176,8 +258,21 @@ const SummaryPage = () => {
   }
 
   const formatDate = (date) => {
-    return date.slice(6, 10);
+    return date.slice(5, 10);
   };
+
+  const habitNames = Array.from(
+    new Set(habitsData.flatMap((entry) => Object.keys(entry).filter((key) => key !== 'date')))
+  );
+
+  function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
   return (
     <Container>            
@@ -343,7 +438,47 @@ const SummaryPage = () => {
                     </div>
                     );
                   }}
-              />                            
+              />                
+              {habitsData && (
+                <div>
+                <br></br> 
+                <h2 className="subheader">Be consistent with your self care habits.</h2>  
+                <div className="legend">
+                    <select className="category" value={habitVisibility} onChange={(e) => setHabitVisibility(e.target.value)}>
+                      {habitNames.map((habitName) => (
+                        <option value={habitName} color='purple'>
+                          {habitName}
+                        </option>
+                      ))}
+                    </select>    
+                  </div>                         
+                <LineChart width={750} height={300} data={habitsData}>
+                  <XAxis stroke="black" tickFormatter={formatDate} dataKey="date"/>
+                  <YAxis stroke="black">
+                    <Label
+                      value="Your habit consistency"
+                      position="insideLeft"
+                      angle={-90}
+                      offset={10}
+                      style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
+                    />
+                  </YAxis>                  
+                  {habitNames.map((habitName) => (
+                    habitVisibility === habitName && (
+                      <Line
+                        key={habitName}
+                        type="monotone"
+                        dataKey={habitName}
+                        stroke="purple"
+                        strokeWidth={2}
+                        name={habitName}
+                      />
+                    )
+                  ))}
+                  <Tooltip contentStyle={{ backgroundColor: "transparent" }} />                                    
+                </LineChart>                
+                </div>                         
+              )}
             </div>
             ) : (
             <p>No Data</p>

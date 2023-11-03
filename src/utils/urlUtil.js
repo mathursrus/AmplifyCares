@@ -25,10 +25,24 @@ export const getApiHost = () => {
 
 export const fetchWithToken = async (endpoint, token) => {
     const requestOptions = {
-        method: 'GET', // Change the HTTP method if needed
+        method: 'GET', 
         headers: {
           'Authorization': `Bearer ${token}`
         }
       };
       return fetch(endpoint, requestOptions);
+}
+
+export const postWithToken = async (endpoint, object, token) => {     
+    const requestBody = {};
+    requestBody.item = object;
+    const requestOptions = {
+        method: "POST", 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      };
+      return fetch(getApiUrl(endpoint), requestOptions);
 }

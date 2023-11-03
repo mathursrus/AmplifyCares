@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './RecommendationsPage.css';
 import RecommendationTile from './RecommendationTile';
-import { getApiUrl, isValidURL } from './utils/urlUtil';
+import { getApiUrl, isValidURL, postWithToken } from './utils/urlUtil';
 
 
 
@@ -90,7 +90,8 @@ const RecommendationsPage = (props) => {
   };
 
   async function writeRecommendationToServer(itemData) {
-    await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
+    await postWithToken("/writerecommendation", itemData, localStorage.getItem('usertoken'));
+    //await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
   }
 
   const toggleSelfOrTogether = (type) => {
@@ -112,8 +113,7 @@ const RecommendationsPage = (props) => {
       {recos && filteredHabit.length>0? 
       (
         <div> 
-          <RecommendationTile recommendation={filteredHabit[0]} handleJoinRecommendation={handleJoinRecommendation} handleLeaveRecommendation={handleLeaveRecommendation} showDetails={1} onSave={writeRecommendationToServer}/>          
-          <br></br><br></br>
+          <RecommendationTile recommendation={filteredHabit[0]} handleJoinRecommendation={handleJoinRecommendation} handleLeaveRecommendation={handleLeaveRecommendation} showDetails={1} onSave={writeRecommendationToServer}/>                    
           <Link to={`/?showHabits=${careType}`}>Back to Recommendations</Link>
         </div>
       ) : (
@@ -168,7 +168,7 @@ const RecommendationsPage = (props) => {
 
         <div className="add-recommendation">
           {!showInputFields && (
-              <button onClick={() => setShowInputFields(true)}>Share your self care habit</button>
+              <button onClick={() => setShowInputFields(true)}>Care to help others?</button>
           )}
 
           {showInputFields && (

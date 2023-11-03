@@ -22,6 +22,7 @@ var getSelfCareStats = routesModules.getSelfCareStats;
 var getPercentiles = routesModules.getPercentiles;
 var getTeamStats = routesModules.getTeamStats;
 var getIndividualData = routesModules.getIndividualData;
+var getActivities = routesModules.getActivities;
 var getTeamList = routesModules.getTeamList;
 var getSelfCareInsights = routesModules.getSelfCareInsights;
 var getTimeInputFromSpeech = routesModules.getTimeInputFromSpeech;
@@ -54,7 +55,7 @@ async function startSignalRHub() {
 
 // Log requests and responses
 app.use((req, res, next) => {
-  console.log('Incoming request:', req.method, req.url);
+  console.log('Incoming request:', req.method, req.url, req.item);
   res.on('finish', () => {
     console.log('Outgoing response:', res.statusCode);
   });
@@ -97,6 +98,7 @@ app[writeSelfCareEntryWithToken.method](writeSelfCareEntryWithToken.path, writeS
 app[getSelfCareStats.method](getSelfCareStats.path, getSelfCareStats.handler);
 app[getPercentiles.method](getPercentiles.path, getPercentiles.handler);
 app[getIndividualData.method](getIndividualData.path, getIndividualData.handler);
+app[getActivities.method](getActivities.path, getActivities.handler);
 app[getTeamList.method](getTeamList.path, getTeamList.handler);
 app[getTeamStats.method](getTeamStats.path, getTeamStats.handler);
 app[getSelfCareInsights.method](getSelfCareInsights.path, getSelfCareInsights.handler);

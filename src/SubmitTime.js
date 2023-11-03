@@ -26,10 +26,10 @@
     };
 
     const wellKnownTags = {
-        MentalHealth: ['meditation', 'learning', 'brain games', /* Add more tags here */],
+        MentalHealth: ['meditation', 'learning', 'brain games', 'chanting', 'deep breathing', 'journaling', 'reading'/* Add more tags here */],
         PhysicalHealth: ['exercise', 'sports', 'doctor visit', 'yoga', 'dog walking' /* Add more tags here */],
         SpiritualHealth: ['prayers', 'religious activities', /* Add more tags here */],
-        SocialHealth: ['volunteering', 'team lunch', 'mentoring', 'family games', 'hanging with friends' /* Add more tags here */],
+        SocialHealth: ['volunteering', 'team lunch', 'mentoring', 'family games', 'time with friends' /* Add more tags here */],
     };
     
 
@@ -284,6 +284,7 @@
         }
 
         const handleCloseFlyout = () => {
+            setHabit('');
             setFlyoutState(0);
             console.log("Clicked close");        
         }        

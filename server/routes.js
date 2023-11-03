@@ -114,14 +114,15 @@ const getIndividualData = {
     }
 }
 
-const readActivities = {
+const getActivities = {
     method: 'get',
-    path: '/getselfcaredata',
+    path: '/getselfcareactivities',
     handler: async (req, res) => {
-        console.log("Got individual data req: ", req.query);
+        console.log("Got individual activities req: ", req.query);
         const item = await req.query.item;
-        const date = await req.query.date;
-        const response = await handlers.readIndividualData(item, date);
+        const startDay = await req.query.startDay;
+        const endDay = await req.query.endDay;
+        const response = await handlers.readActivities(item, startDay, endDay);
         res.status(200).json(response);
     }
 }
@@ -176,12 +177,11 @@ const getTimeInputFromSpeech = {
 }
 
 const writeRecommendation = {
-    method: 'get',
+    method: 'post',
     path: '/writerecommendation', 
     handler: async (req, res) => {
-        console.log("Writing Recommendation: ", req.query);
-        const item = await req.query.item;  // Don't decode item here      
-        const response = await handlers.writeRecommendation(JSON.parse(item)); // Decode the entire item
+        const item = req.body.item; 
+        const response = await handlers.writeRecommendation(item); 
         res.status(200).json(response);
     }
 }
@@ -220,4 +220,4 @@ const sendInvite = {
     }
 }
 
-module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};

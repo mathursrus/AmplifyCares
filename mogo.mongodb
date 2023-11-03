@@ -495,7 +495,52 @@ db.self_care_stats.aggregate([
   }  
 ]);
 
-
+/* Find all activities and time over time period */
+use('amplifycares-db-catita');
+let username="sidm@microsoft.com";
+let startDate = (new Date("2023-09-01T00:00:00.000Z"));
+startDate.setUTCHours(0,0,0,0);
+let endDate = new Date("2023-09-21T00:00:00.000Z");
+endDate.setHours(23,59,59,999);
+db.self_care_stats.aggregate([
+  {
+    $match: {
+      name: username,
+      DateTime: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    },
+  },
+  {
+    $project: {
+      DateTime: 1,
+      activities: {
+        $concatArrays: [
+          [["$mental_health_activity", "$mental_health_time"]],
+          [["$physical_health_activity", "$physical_health_time"]],
+          [["$spiritual_health_activity", "$spiritual_health_time"]],
+          [["$societal_health_activity", "$societal_health_time"]]          
+        ],
+      },
+    },
+  },
+  {
+    $unwind: "$activities",
+  },
+  {
+    $group: {
+      _id: {
+        date: { $dateToString: { format: "%Y-%m-%d", date: "$DateTime" } },
+        activity: "$activities[0][0]",
+      },
+      total_time: { $sum: "$activities[0][1]" },
+    },
+  },
+  /*{
+    $sort: { "_id.date": 1, "_id.activity": 1 },
+  }*/
+]);
 
 /* Find median of mental health time across teams */
 use('amplifycares-db-catita');
