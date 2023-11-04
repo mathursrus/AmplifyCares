@@ -298,16 +298,16 @@ function AppPage() {
     
     console.log("Current state is ", current_auth_state, ", deired state is ", desired_state, ", Window is ", window);
     
-    if (current_auth_state === null || current_auth_state === "" || current_auth_state !== desired_state) {
+    //if (current_auth_state === null || current_auth_state === "" || current_auth_state !== desired_state) {
       try {    
         console.log("Trying to initiatlize with location ", window, " and parent ", window.parent);           
         checkAuthentication();
       } catch (error) {
         console.log('Authentication failed:', error);          
       }
-    } else {
-      console.log("Ignoring auth since state is ", current_auth_state);
-    }
+    //} else {
+      //console.log("Ignoring auth since state is ", current_auth_state);
+    //}
   }, [AUTH_STATE_VALUES.AUTHENTICATING, AUTH_STATE_VALUES.LOGGING_OUT, login, msalInstance, setUser]);     
 
   const handleLogout = async (event) => {

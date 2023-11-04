@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import './SummaryPage.css';
 import { useState, useEffect } from 'react';
@@ -443,40 +444,46 @@ const SummaryPage = () => {
                 <div>
                 <br></br> 
                 <h2 className="subheader">Be consistent with your self care habits.</h2>  
-                <div className="legend">
-                    <select className="category" value={habitVisibility} onChange={(e) => setHabitVisibility(e.target.value)}>
-                      {habitNames.map((habitName) => (
-                        <option value={habitName} color='purple'>
-                          {habitName}
-                        </option>
-                      ))}
-                    </select>    
+                {(habitNames.length > 0) ? (
+                  <div>
+                  <div className="legend">
+                      <select className="category" value={habitVisibility} onChange={(e) => setHabitVisibility(e.target.value)}>
+                        {habitNames.map((habitName) => (
+                          <option value={habitName} color='purple'>
+                            {habitName}
+                          </option>
+                        ))}
+                      </select>    
                   </div>                         
-                <LineChart width={750} height={300} data={habitsData}>
-                  <XAxis stroke="black" tickFormatter={formatDate} dataKey="date"/>
-                  <YAxis stroke="black">
-                    <Label
-                      value="Your habit consistency"
-                      position="insideLeft"
-                      angle={-90}
-                      offset={10}
-                      style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
-                    />
-                  </YAxis>                  
-                  {habitNames.map((habitName) => (
-                    habitVisibility === habitName && (
-                      <Line
-                        key={habitName}
-                        type="monotone"
-                        dataKey={habitName}
-                        stroke="purple"
-                        strokeWidth={2}
-                        name={habitName}
+                  <LineChart width={750} height={300} data={habitsData}>
+                    <XAxis stroke="black" tickFormatter={formatDate} dataKey="date"/>
+                    <YAxis stroke="black">
+                      <Label
+                        value="Your habit consistency"
+                        position="insideLeft"
+                        angle={-90}
+                        offset={10}
+                        style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
                       />
-                    )
-                  ))}
-                  <Tooltip contentStyle={{ backgroundColor: "transparent" }} />                                    
-                </LineChart>                
+                    </YAxis>                  
+                    {habitNames.map((habitName) => (
+                      habitVisibility === habitName && (
+                        <Line
+                          key={habitName}
+                          type="monotone"
+                          dataKey={habitName}
+                          stroke="purple"
+                          strokeWidth={2}
+                          name={habitName}
+                        />
+                      )
+                    ))}
+                    <Tooltip contentStyle={{ backgroundColor: "transparent" }} />                                    
+                  </LineChart>
+                  </div>                
+                ) : (
+                  <i>No habits being tracked. Track your habits by entering time <Link to={`/?submit-time-page`}>here</Link></i> 
+                )}
                 </div>                         
               )}
             </div>
