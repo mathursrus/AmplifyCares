@@ -195,7 +195,7 @@ function AppPage() {
           console.log("Setting active account to ", account);
           msalInstance.setActiveAccount(account);
           console.log("Got MSALInstance token ", authResult.accessToken);
-          setUser([authResult.accessToken, account.username, account.name]);
+          setUser([authResult.idToken, account.username, account.name]);
         }
         else {
           setUser(null);
@@ -281,7 +281,7 @@ function AppPage() {
               scopes: ['user.read']
             });*/
             const response = await msalInstance.acquireTokenSilent({account: account});                    
-            setUser([response.accessToken, account.username, account.name]);
+            setUser([response.idToken, account.username, account.name]);
             console.log('User already authenticated:', account.username);
           } else {
             login();

@@ -82,7 +82,7 @@ async function getUserInfoWithToken(token) {
 
       console.log('Decoded Header:', header);
       console.log('Decoded Payload:', payload);
-      const user = payload.upn;
+      const user = payload.preferred_username;
       
       return getUserInfo(user);
   } catch (err) {
@@ -182,7 +182,7 @@ async function writeEntryWithToken(item, token) {
       const header = JSON.parse(atob(headerB64));
       const payload = JSON.parse(atob(payloadB64));
 
-      const user = payload.upn;
+      const user = payload.preferred_username;
       if (user !== item.name) throw Error("UPN is " + user + ", entry is for " + item.name);
       
       return writeEntry(item);
