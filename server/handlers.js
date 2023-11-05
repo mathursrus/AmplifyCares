@@ -779,11 +779,14 @@ async function getSelfCareInsights(username, startDay, endDay, questions) {
     });
     if (uniqueDays.size >= 14) {
       // Remove _id and lastEdited fields from each object in allData
-      const cleanedData = allData.map(({ _id, lastEdited, ...rest }) => rest);
+      const cleanedData = condenseSelfCareData(allData); 
 
       try {          
         // convert this into a GPT prompt
         const promptBase = "Here is a set of self-care data. Process this data and then the user will ask you a question about it. \
+        Data fields have the form <fieldName>:<value>. FieldNames are one of the following - mht means Mental Health Time, mha means Mental Health Activity, \
+        pht means Physical Health Time, pha means Physical Health Activity, sht means Spiritial Health Time, sha means Spiritual Health Activity, \
+        soht means Social Health Time, soha means Social Health Activity. As the names imply, these are the time spent by the user on self care activities on a given date. \
         Address the user like you are talking to them. \
         Even if the user asks multiple questions, keep your answer brief with a maximum of 3 key points. \
         Be helpful in your responses. Be specific and perform math on numbers from the provided data, if needed. \
@@ -815,6 +818,56 @@ async function getSelfCareInsights(username, startDay, endDay, questions) {
   return JSON.stringify(answers);
 }
 
+async function condenseSelfCareData(data) {
+  const updatedData = data.map(item => {
+    const newItem = { ...item };
+    if (newItem.hasOwnProperty('mental_health_time')) {
+      newItem.mht = newItem.mental_health_time;
+      delete newItem.mental_health_time; 
+    }
+    if (newItem.hasOwnProperty('mental_health_activity')) {
+      newItem.mha = newItem.mental_health_activity;
+      delete newItem.mental_health_activity; 
+    }
+    if (newItem.hasOwnProperty('physical_health_time')) {
+      newItem.pht = newItem.physical_health_time;
+      delete newItem.physical_health_time; 
+    }
+    if (newItem.hasOwnProperty('physical_health_activity')) {
+      newItem.pha = newItem.physical_health_activity;
+      delete newItem.physical_health_activity; 
+    }
+    if (newItem.hasOwnProperty('spiritual_health_time')) {
+      newItem.sht = newItem.spiritual_health_time;
+      delete newItem.spiritual_health_time; 
+    }
+    if (newItem.hasOwnProperty('spiritual_health_activity')) {
+      newItem.sha = newItem.spiritual_health_activity;
+      delete newItem.spiritual_health_activity; 
+    }
+    if (newItem.hasOwnProperty('societal_health_time')) {
+      newItem.soht = newItem.societal_health_time;
+      delete newItem.societal_health_time; 
+    }
+    if (newItem.hasOwnProperty('societal_health_activity')) {
+      newItem.soha = newItem.societal_health_activity;
+      delete newItem.societal_health_activity; 
+    }
+    if (newItem.hasOwnProperty('_id')) {
+      delete newItem._id; 
+    }
+    if (newItem.hasOwnProperty('lastEdited')) {
+      delete newItem.lastEdited; 
+    }
+    if (newItem.hasOwnProperty('name')) {
+      delete newItem.name; 
+    }
+    return newItem;
+  });
+
+  console.log("Condensed item is ", updatedData);
+  return updatedData;
+}
 
 async function getTimeInputFromSpeech(username, item, timezone) {
   const audioBuffer = Buffer.from(item, 'base64');

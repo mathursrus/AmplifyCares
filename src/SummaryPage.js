@@ -28,14 +28,16 @@ const SummaryPage = () => {
   const currentDate = new Date(); // Get the current date
   const currentMonth = currentDate.getMonth(); // Get the current month
   const currentYear = currentDate.getFullYear(); // Get the current year  
+  const lastMonth = (currentMonth === 0 ? 11:(currentMonth-1));
+  const lastMonthsYear = (currentMonth === 0? (currentYear-1) : currentYear);
 
   // Set the endDay to the last day of the current month
   const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
   const [endDay, setEndDay] = useState(lastDayOfMonth);
 
-  // Set the startDay to the first day of the current month
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-  const [startDay, setStartDay] = useState(firstDayOfMonth);
+  // Set the startDay to the first day of the previous month
+  const firstDayOfPreviousMonth = new Date(lastMonthsYear, lastMonth, 1);
+  const [startDay, setStartDay] = useState(firstDayOfPreviousMonth);
 
   // copilot
   const [showCopilot, setShowCopilot] = useState(false);
@@ -284,7 +286,7 @@ const SummaryPage = () => {
           endDay={endDay}
           setStartDay={setStartDay}
           setEndDay={setEndDay}
-          message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
+          message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })} - ${endDay.toLocaleString('en-US', { month: 'long' })} ${endDay.toLocaleString('en-US', { year: 'numeric' })}`}
           image={"Copilot.png"}
           imageTitle={"Your self-care copilot"}
           onImageClick={() => launchCopilot()}
