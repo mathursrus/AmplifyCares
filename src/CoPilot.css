@@ -3,12 +3,12 @@
   .rcw-conversation-container.active {
     background-color: white;
     position: fixed;
-    top: 0;
-    left: 15px;
-    right: 0;
-    bottom: 0;
-    margin: 10px;
-    z-index: 9999; /* Ensure it's on top of other elements */
+    top: 15px;
+    left: 5px;
+    right: 15px;
+    bottom: 5px;
+    margin: 0px;
+    z-index: 9000; /* Ensure it's on top of other elements */
   }
   
   .rcw-close-button {

@@ -116,7 +116,7 @@
   
   .flyout-header {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     padding: 10px;
   }
   

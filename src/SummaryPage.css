@@ -137,12 +137,13 @@
 
 .flyout-header {
   display: flex;
-  justify-content: flex-start;
-  padding: 10px;
+  justify-content: flex-end;
+  padding: 5px;  
 }
 
 .flyout-close {
   cursor: pointer;
+  z-index: 9999;
 }
 
 /* Add a media query to target screens with a maximum width of 768px (adjust as needed) */
