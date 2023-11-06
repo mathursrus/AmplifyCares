@@ -297,13 +297,15 @@
             console.log("Flyout state is ", flyoutState); 
         }, [flyoutState]); // Run the effect only when flyoutState changes
 
+        const user_circles = localStorage.getItem('userDetails') ? (JSON.parse(localStorage.getItem('userDetails'))).circles : [];
+
         return (
             <Container className="p-3">    
                 <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
                 <div className="flex-container">
                     <div className="left-column">
                         <SelfCareCircles
-                            circles={(JSON.parse(localStorage.getItem('userDetails'))).circles}
+                            circles={user_circles}
                             onCheckInClick={handleCircleCheckIn}
                         />
                     </div>
