@@ -650,7 +650,7 @@ db.self_care_stats.find({name: "sid@catita365.onmicrosoft.com"}).sort({DateTime:
 
 /* All user info */
 use('amplifycares-db-catita');
-db.userInfo.find({username: {$regex:"nikhi*"}});
+db.userInfo.find({username: {$regex:"sidm*"}});
 
 use('amplifycares-db-catita');
 db.userInfo.find().sort({_id:-1});
