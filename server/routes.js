@@ -190,9 +190,10 @@ const getRecommendations = {
     method: 'get',
     path: '/getRecommendations', 
     handler: async (req, res) => {
-        const item = parseInt(await req.query.item);  
-        console.log("Got reco item: ", item);      
-        const response = await handlers.getRecommendations(item);
+        const item = parseInt(await req.query.item); 
+        const user = await req.query.user; 
+        console.log("Got reco item: ", item, ", and user ", user);      
+        const response = await handlers.getRecommendations(item, user);
 
         res.status(200).json(response);
     }

@@ -1041,11 +1041,31 @@ async function writeRecommendation(item) {
 }
 
 
-async function getRecommendations(itemId) {
-  console.log(`Got called with id: ${itemId}`);
+async function getRecommendations(itemId, user) {
+  console.log(`Got called with id: ${itemId}, user ${user}`);
   const ct = await getRecommendationsContainer();
   console.log(`Got container: ${ct}`);
   const result=await ct.find({type:itemId}).toArray();
+
+  async function fetchAdditionalContent(recommendation) {    
+      try {
+        const endpoint = recommendation.customflow+`&user=${user}`
+        const response = await axios.get(endpoint); // Make an HTTP GET request
+        console.log("Called flow endpoint ", endpoint, "Got response ", response.data.displaystring);
+        return response.data.displaystring; // Return the response data
+      } catch (error) {
+        console.error(`Error fetching additional content: ${error}`);
+      }    
+  }
+  
+  // Loop through the recommendations and fetch additional content
+  for (const recommendation of result) {
+    if (recommendation.customflow) {
+      recommendation.additionalContentsForUser = await fetchAdditionalContent(recommendation);
+      recommendation.customflow = '';
+    }
+  }
+
   console.log(`Result is: ${result}`);
   const final = JSON.stringify(result);
   console.log(`Finale is ${final}`);

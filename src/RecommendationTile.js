@@ -88,7 +88,10 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                 {showDetails === 1 && (
                     <div className="recommendation-details">
                         {!isEditing && (
-                            <div dangerouslySetInnerHTML={{ __html: recommendation.details }} />
+                            <div>
+                                <div dangerouslySetInnerHTML={{ __html: recommendation.details }} />
+                                {recommendation.additionalContentsForUser && (<div className="personalized-details" dangerouslySetInnerHTML={{ __html: recommendation.additionalContentsForUser }} />)}
+                            </div>
                         )}
                         {isEditing && (
                             <EditRecommendation recommendation={recommendation} onSave={handleSave} onCancel={handleCancel}/>

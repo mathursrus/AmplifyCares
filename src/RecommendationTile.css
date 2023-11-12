@@ -130,5 +130,18 @@
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add a box shadow */
         z-index: 1;
       }
+
+      .personalized-details {
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: cyan;
+        /*width: 80%;*/
+        border: 1px solid #ccc;
+        outline: 1px solid #000; /* Add an outline */
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add a box shadow */
+        z-index: 1;
+      }
     
  

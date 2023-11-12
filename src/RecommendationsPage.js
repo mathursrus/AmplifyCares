@@ -26,7 +26,7 @@ const RecommendationsPage = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-        const response = await fetch(getApiUrl("/getrecommendations/?item="+careType));
+        const response = await fetch(getApiUrl("/getrecommendations/?item="+careType+"&user="+localStorage.getItem('userName')));
         const data = await response.json();
         const recos = JSON.parse(data);
         setRecos(recos);
