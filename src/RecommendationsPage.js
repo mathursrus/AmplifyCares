@@ -114,7 +114,7 @@ const RecommendationsPage = (props) => {
       (
         <div> 
           <RecommendationTile recommendation={filteredHabit[0]} handleJoinRecommendation={handleJoinRecommendation} handleLeaveRecommendation={handleLeaveRecommendation} showDetails={1} onSave={writeRecommendationToServer}/>                    
-          <Link to={`/?showHabits=${careType}`}>Back to Recommendations</Link>
+          <Link className="back-to-recommendations" to={`/?showHabits=${careType}`}>Back to Recommendations</Link>
         </div>
       ) : (
       <div>

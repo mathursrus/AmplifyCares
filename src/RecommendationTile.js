@@ -56,7 +56,7 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
     }
 
     return (
-        <div>
+        <div className="recommendation-tile-page">
         {recommendation && (
             <div>
                 <div className="recommendation-tile">

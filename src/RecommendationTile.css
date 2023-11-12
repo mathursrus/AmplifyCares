@@ -3,13 +3,15 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    padding: 10px;
+    margin-bottom: 10px;
+    height: 90%;
+    width: 100%;
+    padding: 0px;
     /*width: 80%;*/
     border: 1px solid #ccc;
     outline: 1px solid #000; /* Add an outline */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add a box shadow */
-    z-index: 1;
+    z-index: 1;        
   }
   
   /* Add this CSS to style the icon container */
@@ -32,19 +34,20 @@
   /* Add this to your CSS file */
 .participants-badge {
     position: relative;
-    top: -10px;
+    top: 0px;
+    right: 0px;
     background-color: blueviolet; /* Red background color */
     color: white; /* White text color */
-    padding: 2px 6px; /* Padding */
+    padding: 2px 5px; /* Padding */
     border-radius: 50%; /* Circle shape */
-    font-size: 10px; /* Font size */
+    font-size: 8px; /* Font size */
   }
   
   /* Style the share button */
 .share-button {
     position: relative;
     align-self: flex-end;
-    right: 18px;
+    right: 15px;
     bottom: -5px;
     padding: 5px; /* Add padding for better appearance */
     background-color: blue; /* Blue background color */
@@ -52,8 +55,8 @@
     border: none; /* Remove border */
     border-radius: 50%; /* Make it a circle */
     cursor: pointer;
-    font-size: 10px; /* Adjust font size */
-    line-height: 1; /* Center the content vertically */
+    font-size: 6px; /* Adjust font size */
+    line-height: 0; /* Center the content vertically */
   }
   
 
@@ -64,7 +67,7 @@
     justify-content: center;
     margin-left: 20px; /* Adjust the margin as needed */
     margin-right: 20px;
-    font-size: 20px;
+    font-size: 15px;
     margin-bottom: 5px;
   }
   
@@ -73,7 +76,7 @@
     flex: 2;
     align-content: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 12px;
     margin-bottom: 5px;
   }
     
@@ -122,9 +125,9 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        margin-bottom: 20px;
-        padding: 10px;
-        /*width: 80%;*/
+        margin-bottom: 5px;
+        padding: 5px;
+        width: 100%;
         border: 1px solid #ccc;
         outline: 1px solid #000; /* Add an outline */
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add a box shadow */
@@ -134,10 +137,10 @@
       .personalized-details {
         align-items: center;
         justify-content: center;
-        margin-bottom: 20px;
-        padding: 10px;
+        margin-bottom: 5px;
+        padding: 5px;
         background-color: cyan;
-        /*width: 80%;*/
+        width: 100%;
         border: 1px solid #ccc;
         outline: 1px solid #000; /* Add an outline */
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add a box shadow */
