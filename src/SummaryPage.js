@@ -181,7 +181,7 @@ const SummaryPage = () => {
   const updateChartWidth = () => {
     if (summaryChartRef.current) {
       const parentWidth = summaryChartRef.current.clientWidth;
-      setSummaryChartWidth(parentWidth-10);
+      setSummaryChartWidth(parentWidth-20);
     }
   }
 

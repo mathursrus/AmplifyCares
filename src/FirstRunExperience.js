@@ -5,6 +5,11 @@ import './FirstRunExperience.css';
 
 export const features = [
   {
+    date: "11/12/2023",
+    title:"Join Circles and collaborative on self care",
+    description: "Click on the <img src='./info_icon.png' width=20px></img> icon on the Submit Time page and join your colleagues in their self care activities",
+  },
+  {
     date: "9/27/2023",
     title:"Personalized Self Care Insights (Beta)",
     description: "Powered by GPT and your personal self care data, you can get insights into your self care routine, ideas on what you can do with other team members, and a lot more! Simply click on the copilot icon on the summary page. Happy self care!",
