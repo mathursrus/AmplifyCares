@@ -6,7 +6,7 @@ import './FirstRunExperience.css';
 export const features = [
   {
     date: "11/12/2023",
-    title:"Join Circles and collaborative on self care",
+    title:"Join Circles and collaborate on self care",
     description: "Click on the <img src='./info_icon.png' width=20px></img> icon on the Submit Time page and join your colleagues in their self care activities",
   },
   {
