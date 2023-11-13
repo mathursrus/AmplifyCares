@@ -90,6 +90,7 @@ const RecommendationsPage = (props) => {
   };
 
   async function writeRecommendationToServer(itemData) {
+    itemData.additionalContentsForUser="";
     await postWithToken("/writerecommendation", itemData, localStorage.getItem('usertoken'));
     //await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
   }

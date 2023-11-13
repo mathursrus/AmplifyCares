@@ -70,11 +70,13 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                     <h3 className="title">{recommendation.title}</h3>
                     <h4 className="contributor">(Recommended by: {recommendation.contributor})</h4>
                     {
-                    (recommendation.participants.includes(localStorage.getItem('userName')) ? (
-                        <button className="leave-button" onClick={(e) => handleLeaveRecommendation(e, recommendation)}>{recommendation.selfOrTogether === 'DIT'? 'Leave Circle':'Drop Habit'}</button>
-                    ) : (
-                        <button className="join-button" onClick={(e) => handleJoinRecommendation(e, recommendation)}>{recommendation.selfOrTogether === 'DIT'? 'Join Circle':'Make Habit'}</button>
-                    ))
+                      (recommendation.circlestate === undefined || recommendation.circlestate !== "no changes") ? (
+                        (recommendation.participants.includes(localStorage.getItem('userName')) ? (
+                            <button className="leave-button" onClick={(e) => handleLeaveRecommendation(e, recommendation)}>{recommendation.selfOrTogether === 'DIT'? 'Leave Circle':'Drop Habit'}</button>
+                        ) : (
+                            <button className="join-button" onClick={(e) => handleJoinRecommendation(e, recommendation)}>{recommendation.selfOrTogether === 'DIT'? 'Join Circle':'Make Habit'}</button>
+                        ))
+                      ) : (<div></div>)
                     }        
                     {recommendation.contributor === localStorage.getItem('userName') && showDetails === 1 && (
                         <button
