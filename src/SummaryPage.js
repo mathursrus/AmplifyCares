@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
 import './SummaryPage.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
 import { getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
@@ -41,6 +40,9 @@ const SummaryPage = () => {
 
   // copilot
   const [showCopilot, setShowCopilot] = useState(false);
+
+  const summaryChartRef = useRef(null);
+  const [summaryChartWidth, setSummaryChartWidth] =useState(0);
 
   // prompts with insights
   const userPrompts = [
@@ -176,6 +178,13 @@ const SummaryPage = () => {
     return restructureHabitData(myData);
   }, [restructureHabitData]);
 
+  const updateChartWidth = () => {
+    if (summaryChartRef.current) {
+      const parentWidth = summaryChartRef.current.clientWidth;
+      setSummaryChartWidth(parentWidth-10);
+    }
+  }
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -199,6 +208,16 @@ const SummaryPage = () => {
     }
     console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
     fetchData();
+    // Attach a resize event listener to update the chart width on window resize
+    window.addEventListener('resize', updateChartWidth);
+
+    // Initial call to set the chart width
+    updateChartWidth();
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', updateChartWidth);
+    };    
   }, [endDay, startDay, userName, selectedCategory, processChartData, processActivitiesData, processHabitsData]);
   
   async function getAggregateStats(url) {
@@ -278,9 +297,9 @@ const SummaryPage = () => {
   }
 
   return (
-    <Container>            
+    <div>            
     <div className="legend-container"> 
-      <div className="summary-container">
+      <div ref={summaryChartRef} className="summary-container">
         <DateRange
           startDay={startDay}
           endDay={endDay}
@@ -312,7 +331,7 @@ const SummaryPage = () => {
            {chartData.length > 0 && activitiesData.length > 0 ?
            (
             <div class="summary-chart">
-              <LineChart width={750} height={300} data={chartData}>
+              <LineChart width={summaryChartWidth} height={Math.min(300,summaryChartWidth/2)} data={chartData}>
                 <XAxis 
                 stroke="black" 
                   tickFormatter={formatDate} 
@@ -457,7 +476,7 @@ const SummaryPage = () => {
                         ))}
                       </select>    
                   </div>                         
-                  <LineChart width={750} height={300} data={habitsData}>
+                  <LineChart width={summaryChartWidth} height={Math.min(300,summaryChartWidth/2)} data={habitsData}>
                     <XAxis stroke="black" tickFormatter={formatDate} dataKey="date"/>
                     <YAxis stroke="black">
                       <Label
@@ -509,7 +528,7 @@ const SummaryPage = () => {
               </div>                      
           </div>
       )}
-    </Container>
+    </div>
   );
 };
 
