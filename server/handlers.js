@@ -1023,7 +1023,11 @@ async function convertOpenAIToTimeEntries(username, inputString) {
 
 async function writeRecommendation(item) {
   try {
-      console.log('Handler got item: ', item)
+      console.log('Handler got item: ', item);
+      // make sure to strip out the additionalcomments 
+      if (item.additionalContentsForUser) {
+        delete item.additionalContentsForUser;
+      }
       const ct = await getRecommendationsContainer();
       const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
       if (existingItem) {
@@ -1062,7 +1066,7 @@ async function getRecommendations(itemId, user) {
   for (const recommendation of result) {
     if (recommendation.customflow) {
       recommendation.additionalContentsForUser = await fetchAdditionalContent(recommendation);
-      recommendation.customflow = '';
+      //recommendation.customflow = '';
     }
   }
 

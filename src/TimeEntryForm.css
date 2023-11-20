@@ -1,0 +1,15 @@
+.enter-time-input-container {
+    display: flex;
+    align-items: center; /* Vertically align items */
+    justify-content: center;
+  }
+  
+  /* Style the time input */
+  .enter-time-text-field.time-input {
+    margin-left: 0px;
+    border: 1px solid black;
+    border-radius: 5px;  
+    font-size: 20px;  
+    width: 80%;
+    text-align: center;
+  }

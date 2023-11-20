@@ -1,7 +1,7 @@
 /* CSS */
 .message-container {
     display: flex;
-    align-items: center; /* Vertically center the content */
+    align-items: center; /* Vertically center the content */    
 }
   
 .stats-image {

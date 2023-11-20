@@ -14,6 +14,7 @@
     import { ReactTags } from 'react-tag-autocomplete';
     import SpeechRecognition from './SpeechToText';
     import SelfCareCircles from './SelfCareCircles';
+    
 
     const React = require('react');
     const { useState, useEffect, useCallback } = React;
@@ -51,9 +52,8 @@
         // for edit mode
         const [pastEntries, setPastEntries] = useState([]);
         const [editingEntry, setEditingEntry] = useState(null);
-        const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
-        // to get past activity tags
-
+        const [isEditMode, setIsEditMode] = useState(false); 
+                
         const niceWorkAudio = new Audio('/GoodJob.mp3');
         const sorryAudio = new Audio('/Error.mp3');
 
@@ -114,38 +114,20 @@
                 const year = parseInt(dateString.substring(0, 4));
                 const month = parseInt(dateString.substring(5, 7)) - 1; // Months are zero-based
                 const day = parseInt(dateString.substring(8, 10));
-                const returnedDate = new Date(year, month, day);
-                console.log("setting selected date to ", returnedDate);
-                await setSelectedDate(returnedDate);            
+                const returnedDate = new Date(year, month, day);                            
                 // play sound clip celebrating
                 niceWorkAudio.play();
-                celebrate();
+                celebrate(returnedDate);
             }
             else {
                 // play sound clip saying error happened
                 sorryAudio.play();
             }
-        }
-
-        const handleCircleCheckIn = (circle) => {
-            const time = '2';
-            const activity = circle.title;
-            if (circle.type === 1) {
-                setMentalHealth({time:  time, tags: mapTagsWithValues([activity])});            
-            }
-            else if (circle.type === 2) {
-                setPhysicalHealth({time:  time, tags: mapTagsWithValues([activity])});            
-            }
-            else if (circle.type === 3) {
-                setSpiritualHealth({time:  time, tags: mapTagsWithValues([activity])});            
-            }
-            else if (circle.type === 4) {
-                setSocialHealth({time:  time, tags: mapTagsWithValues([activity])});            
-            }
-        }
+        }        
 
         const writeSelfCareEntry = async (itemData) => {
-            const result = await fetchWithToken(getApiHost()+"/writeselfcarewithtoken/?item="+JSON.stringify(itemData), localStorage.getItem('usertoken'));
+            console.log("Write Self Care Entry called with ", itemData);
+            const result = await fetchWithToken(getApiHost()+"/writeselfcarewithtoken/?item="+JSON.stringify(itemData), localStorage.getItem('usertoken'));                  
             return result;
         }
 
@@ -176,23 +158,30 @@
                 itemData._id = editingEntry._id;
                 itemData.DateTime = editingEntry.DateTime;                
             }
-            console.log(itemData)
-            const response = await writeSelfCareEntry(itemData);
+            console.log(itemData);
+            writeSelfCareItem(itemData);
+        };
 
+        const writeSelfCareItem = async (itemData) => {
+            const response = await writeSelfCareEntry(itemData);  
             if (!response.ok) {
                 console.log("Ugh");
             }
             else {
-                await clearFields();            
-                celebrate();
-            }            
+                celebrate(new Date(itemData.DateTime));
+            }
+            return response;
         };
 
-        const celebrate = () => {
-            console.log("Celebrating");
+        const celebrate = async (date) => {                                
+            console.log("Celebrating after setting selected date to ", date);
+            setSelectedDate(date);
+            
             // Set the state variable to the random number
             const rand = getRandomNumber();
-            setAnimation(rand);                    
+            console.log("Animation set to ", rand);
+            setAnimation(rand);
+            
             setTimeout(() => {
                 setAnimation(null);
                 navigate('/summary-page');
@@ -301,32 +290,30 @@
 
         return (
             <Container className="p-3">    
-                <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />
-                <div className="flex-container">
-                    <div className="left-column">
-                        <SelfCareCircles
-                            circles={user_circles}
-                            onCheckInClick={handleCircleCheckIn}
-                        />
-                    </div>
-                    <div className="center-column">
-                        <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>
-                    </div>
-                    <div className="right-column">
-                        
-                    </div>
-                </div>                        
-                <form>
+                <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />                
+                <form className='time-entry-form'>
+                    <div className="talk-to-enter">
+                        <center>
+                            <h3>Talk to Amplify Cares</h3>
+                            Simply click the mic and tell Amplify cares when and how you took care of yourself. Click the mic again when done to record your self care
+                        </center>
+                        <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>                                    
+                    </div>   
+
+                    <SelfCareCircles
+                        circles={user_circles}
+                        onCheckIn={writeSelfCareItem}
+                    />                    
+
                     <center>
-                        Select the date you're submitting time for  
+                        <h5>Select the date you're submitting time for  </h5>
                         <DatePicker
                         selected={selectedDate}
                         onChange={(date) => {console.log("Selected date ", date); setSelectedDate(date)}}
                         dateFormat="MM/dd/yyyy"
                         className="date-picker"
                         />
-                    </center>                    
-                    <br></br>
+                    </center>                                                         
                     {/* Display the entries in a table */}
                     {pastEntries.length > 0 && 
                     <div style={{ fontSize: 'smaller' }}>
@@ -368,7 +355,7 @@
                         </center>
                     </div>                
                     }
-
+                    
                     <div className='row'>
                         <label className='formLabel'>
                             <b>Mental Care</b>                    
@@ -560,6 +547,7 @@
                     <br></br>
                     <div className='row'>
                         <Button onClick={handleSubmit}><b>{isEditMode ? 'Update ' : 'Submit '}Your Self-Care Time</b></Button>
+                        {console.log("Animatin is ", animation)}
                         {animation === 1 && <Confetti/>}
                         {animation === 2 && <Confetti/>}
                         {animation === 3 && <Confetti/>}

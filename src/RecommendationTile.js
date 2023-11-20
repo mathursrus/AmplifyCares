@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import EditRecommendation from './EditRecommendation';
 import './RecommendationTile.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShare, faEdit } from '@fortawesome/free-solid-svg-icons';
-
+import { faShare, faEdit, faUserFriends } from '@fortawesome/free-solid-svg-icons';
+import {getAlias} from './utils/userUtil';
+import {howLongAgo} from './utils/timeUtil';
 
 const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLeaveRecommendation, showDetails, onSave}) => {
 
     //console.log("Got called with recommendation ", recommendation.participants, "functions ", handleJoinRecommendation, handleLeaveRecommendation, getParticipantsTooltip);
     const [isEditing, setIsEditing] = useState(false);
+    const [comments, setComments] = useState(recommendation.comments?recommendation.comments:[]);
+    const [newComment, setNewComment] = useState('');
 
     const createSharingLink = (e) => {
         e.preventDefault();
@@ -40,6 +43,27 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
         }
     }
     
+    const handleAddComment = (e) => {
+        e.preventDefault();
+        if (newComment.trim() !== '') {
+            // Create a new comment object
+            const comment = {
+                user: localStorage.getItem('userName'),
+                text: newComment,
+                date: Date.now()
+            };
+
+            recommendation.comments = [...comments, comment];
+            // Add the comment to the comments array
+            setComments(recommendation.comments);
+            
+            onSave(recommendation);
+            
+            // Clear the input field
+            setNewComment('');
+        }
+    };
+    
     function handleEditRecommendation(e) {
         e.preventDefault();
         setIsEditing(true);
@@ -61,8 +85,10 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
             <div>
                 <div className="recommendation-tile">
                     <div className="icon">                  
-                        <img src={(recommendation.selfOrTogether === 'DIY' ? 'diy.jpg' : (recommendation.selfOrTogether === 'DIT' ? 'dit.jpg' : null))} alt={recommendation.selfOrTogether} />
-                        <span className="participants-badge" title={getParticipantsTooltip(recommendation)}>{recommendation.participants.length}</span>                                                      
+                        <div className="recommendation-participants-info" title={getParticipantsTooltip(recommendation)}>
+                            <FontAwesomeIcon className="badge" icon={faUserFriends} /> {recommendation.participants.length}
+                        </div>
+                        <img src={(recommendation.selfOrTogether === 'DIY' ? 'diy.jpg' : (recommendation.selfOrTogether === 'DIT' ? 'dit.jpg' : null))} alt={recommendation.selfOrTogether} />                        
                         <button className="share-button" title="Share this habit with others" onClick={(e) => createSharingLink(e)}>
                             <FontAwesomeIcon icon={faShare} />
                         </button>
@@ -92,12 +118,42 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                         {!isEditing && (
                             <div>
                                 <div dangerouslySetInnerHTML={{ __html: recommendation.details }} />
-                                {recommendation.additionalContentsForUser && (<div className="personalized-details" dangerouslySetInnerHTML={{ __html: recommendation.additionalContentsForUser }} />)}
+                                {recommendation.additionalContentsForUser && (<div className="personalized-details" dangerouslySetInnerHTML={{ __html: recommendation.additionalContentsForUser }} />)}                                
                             </div>
                         )}
                         {isEditing && (
                             <EditRecommendation recommendation={recommendation} onSave={handleSave} onCancel={handleCancel}/>
-                        )}
+                        )}                        
+                    </div>
+                )}
+                {showDetails === 1 && !isEditing && (
+                    <div className="comments-section">
+                        <h4>Circle members be like ...</h4><br></br>
+                        {comments.length>0? (
+                            <div className="comments-block">
+                                {comments.map((comment, index) => (
+                                <div key={index} className={`comment ${comment.user === localStorage.getItem('userName') ? 'own-comment' : ''}`}>
+                                    {comment.text}                                            
+                                    <span className='username'>
+                                        <i>{getAlias(comment.user)}, </i>
+                                        <i>{howLongAgo(comment.date)}</i>
+                                    </span>
+                                </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <center>This is a quiet circle. Say something</center>
+                        )}                        
+                        <div className="new-comment">
+                            <input
+                                type="text"
+                                placeholder="Add a comment..."
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                onKeyDown={(e) => {if (e.key==='Enter') handleAddComment(e)}}                                
+                            />
+                            <button onClick={(e) => handleAddComment(e)}>Post</button>
+                        </div>
                     </div>
                 )}
             </div>            

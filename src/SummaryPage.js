@@ -101,7 +101,7 @@ const SummaryPage = () => {
       max_time_on_activity: max,
       min_time_on_activity: min
     });
-    console.log("Activity data is ", myData);
+    //console.log("Activity data is ", myData);
     return myData;
   }, []);
 
@@ -167,7 +167,7 @@ const SummaryPage = () => {
 
       // populate data points per day
       const habitsPoint = selfCareData.find(point => point._id === dateString);
-      console.log("Got habits Point ", habitsPoint);
+      //console.log("Got habits Point ", habitsPoint);
       const habitsData = habitsPoint? processActivityData([habitsPoint]):[];      
       myData.push({
         date: dateString,
@@ -206,7 +206,7 @@ const SummaryPage = () => {
       setHabitsData(processHabitsData(selfCareData, startDay, utcEnd))
       setLoading(false);
     }
-    console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
+    //console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
     fetchData();
     // Attach a resize event listener to update the chart width on window resize
     window.addEventListener('resize', updateChartWidth);
@@ -227,7 +227,7 @@ const SummaryPage = () => {
   };  
 
   function processActivityData(data) {
-    console.log("Processing Activity Data ", data);
+    //console.log("Processing Activity Data ", data);
     const activityMap = new Map();
   
     data.forEach((entry) => {
