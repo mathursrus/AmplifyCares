@@ -11,6 +11,33 @@
     padding: 20px;
   }
 
+  .time-entry-form .side-by-side{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+  }
+
+  .talk-to-enter {
+    flex: 1;
+    border: 1px solid black;
+    border-radius: 20px;
+    margin: 5px;
+    padding: 10px;
+    background-color: white;
+    justify-content: center;
+  }
+
+  .self-care-circles-canvas {
+    flex: 1;
+    padding: 10px;
+    justify-content: center;
+    background-color: white;
+    border-radius: 20px;
+    border: 1px solid black;
+    margin: 5px;
+    /*flex-wrap: wrap;*/
+  }
+
   .formLabel {
     display: flex;
     justify-content: flex-start;
@@ -46,16 +73,6 @@
   /* CSS for non-bold table headings */
   .non-bold {
     font-weight: normal;
-  }
-
-  .talk-to-enter {
-    border: 1px solid black;
-    border-radius: 20px;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    background-color: white;
-    justify-content: center;
   }
 
   /* CSS for table borders */
@@ -120,12 +137,14 @@
   /* Add this CSS to your stylesheet */
 .input-container {
   display: flex;
+  width: 100%;
   align-items: flex-start; /* Vertically align items */
 }
 
 /* Style the time input */
 .text-field.time-input {
   flex: 1; /* Occupy 33% width */
+  position: relative;
   margin-left: 0px;
 }
 

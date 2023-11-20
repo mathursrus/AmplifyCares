@@ -19,17 +19,17 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
     setCheckingInCircle(circle);
   };
   
-  const completeCheckIn = (itemData) => {
-    writeCircleComment();    
+  const completeCheckIn = (itemData, comment) => {
+    writeCircleComment(comment);    
     setCheckingInCircle(null);
     onCheckIn(itemData)
   }
 
-  async function writeCircleComment() {
+  async function writeCircleComment(commentString) {
     const user=localStorage.getItem('userName');
     const comment = {
       user: user,
-      text: 'Spent time on this activity. Loved it!',
+      text: commentString,
       date: Date.now()
     };
 
@@ -55,7 +55,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
   }
 
   return (
-    <div className="circle-canvas">
+    <div className="self-care-circles-canvas">
       <center>
       <h3>Self Care Circles</h3>
       Join a self care circle, easily track time & share insights with your team members. Click any of the<FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} /> icons below to start
@@ -88,7 +88,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
                   <TimeEntryForm 
                     activity={checkingInCircle.title}  
                     activityType={checkingInCircle.type}
-                    onSubmit= {completeCheckIn}
+                    onSubmit= {completeCheckIn}                    
                   />
               </div>
           )

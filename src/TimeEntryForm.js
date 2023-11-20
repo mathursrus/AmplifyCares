@@ -10,7 +10,9 @@ const { useState } = React;
 const TimeEntryForm = ({activity, activityType, onSubmit}) => {
     
     const [activityTime, setActivityTime] = useState('');
-    const [selectedDate, setSelectedDate] = useState(new Date());         
+    const [comment, setComment] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const placeholderCommentString = `Enjoyed spending ${activityTime} mins on ${activity}.`
     
     console.log("TimeEntryForm called with activity ", activity, "activityType ", activityType);
 
@@ -43,8 +45,13 @@ const TimeEntryForm = ({activity, activityType, onSubmit}) => {
             itemData.societal_health_time = parseInt(activityTime);
             itemData.societal_health_activity = [activity];
         }        
-        console.log(itemData)
-        onSubmit(itemData);
+        console.log(itemData);
+        let finalComment = comment;
+        if (comment === '') {
+            finalComment = placeholderCommentString;
+        }
+        console.log("Comment is ", finalComment);
+        onSubmit(itemData, finalComment);
     };
 
     
@@ -62,10 +69,13 @@ const TimeEntryForm = ({activity, activityType, onSubmit}) => {
                 </center>                                                         
                 
                 <div className='row'>                    
-                    <div className="enter-time-input-container">
+                    <div className="time-entry-input-container">
+                        <label className='formLabel'>
+                            <b>Time</b>                                                
+                        </label>
                         <input
                             type="text"
-                            className="enter-time-text-field time-input"
+                            className="input"
                             value={activityTime}
                             onChange={(e) => {
                                 const input = e.target.value;
@@ -80,7 +90,21 @@ const TimeEntryForm = ({activity, activityType, onSubmit}) => {
                                 }
                             }}
                             placeholder={`Minutes dedicated`}
-                        />                                               
+                        />  
+                    </div> 
+                    <div className="time-entry-input-container">
+                        <label className='formLabel' title="This will be seen in the comments section of the self-care circle">
+                            <b>Comment</b>                                                
+                        </label>
+                        <input
+                            type="text"
+                            className="input"
+                            value={comment}
+                            onChange={(e) => {
+                                setComment(e.target.value);                                
+                            }}
+                            placeholder={`${placeholderCommentString}`}
+                        />                                            
                     </div>
                 </div>                    
                 <br></br>

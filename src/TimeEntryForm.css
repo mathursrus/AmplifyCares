@@ -1,15 +1,26 @@
-.enter-time-input-container {
+.time-entry-input-container {
     display: flex;
+    flex-direction: column;
     align-items: center; /* Vertically align items */
-    justify-content: center;
+    justify-content: left;
   }
   
+  .time-entry-input-container .formLabel {
+    margin: 0px;
+    font-size: 16px;  
+    width: 80%;
+    text-align: left;
+  }
+
+
   /* Style the time input */
-  .enter-time-text-field.time-input {
-    margin-left: 0px;
+  .time-entry-input-container .input {
+    margin: 2px;
     border: 1px solid black;
     border-radius: 5px;  
     font-size: 20px;  
     width: 80%;
-    text-align: center;
+    text-align: left;
   }
+
+  

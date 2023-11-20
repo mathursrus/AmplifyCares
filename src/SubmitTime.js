@@ -292,18 +292,22 @@
             <Container className="p-3">    
                 <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />                
                 <form className='time-entry-form'>
-                    <div className="talk-to-enter">
-                        <center>
-                            <h3>Talk to Amplify Cares</h3>
-                            Simply click the mic and tell Amplify cares when and how you took care of yourself. Click the mic again when done to record your self care
-                        </center>
-                        <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>                                    
-                    </div>   
+                    <div className="side-by-side">
+                        <div className="talk-to-enter">
+                            <center>
+                                <h3>Talk to Amplify Cares</h3>
+                                Simply click the mic and tell Amplify cares when and how you took care of yourself. 
+                                Click the mic again when done and your self care data will be saved. It works like magic. 
+                                (eg) Yesterday, I ran for 2 hours
+                            </center>
+                            <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>                                    
+                        </div>   
 
-                    <SelfCareCircles
-                        circles={user_circles}
-                        onCheckIn={writeSelfCareItem}
-                    />                    
+                        <SelfCareCircles
+                            circles={user_circles}
+                            onCheckIn={writeSelfCareItem}
+                        />                    
+                    </div>
 
                     <center>
                         <h5>Select the date you're submitting time for  </h5>
@@ -547,7 +551,6 @@
                     <br></br>
                     <div className='row'>
                         <Button onClick={handleSubmit}><b>{isEditMode ? 'Update ' : 'Submit '}Your Self-Care Time</b></Button>
-                        {console.log("Animatin is ", animation)}
                         {animation === 1 && <Confetti/>}
                         {animation === 2 && <Confetti/>}
                         {animation === 3 && <Confetti/>}
