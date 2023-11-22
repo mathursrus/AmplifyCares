@@ -201,11 +201,35 @@
   margin-left:auto;
   background-color: cyan;  
   text-align: left;
+  position: relative;  
 }
 
 .own-comment .username {  
   display: block; /* This makes the username appear on a new line, aligned to the right */
   text-align: right;
+}
+
+.comment-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+.comment:hover .comment-actions {
+  opacity: 1;
+  visibility: visible;
+}
+
+.edit-icon,
+.delete-icon {
+  cursor: pointer;
+  margin-right: 5px;
 }
 
 .new-comment {  

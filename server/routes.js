@@ -199,6 +199,28 @@ const getRecommendations = {
     }
 }
 
+const writeRecommendationComment = {
+    method: 'post',
+    path: '/writerecommendationcomment', 
+    handler: async (req, res) => {
+        const item = req.body.item; 
+        const response = await handlers.writeRecommendationComment(item); 
+        res.status(200).json(response);
+    }
+}
+
+const getRecommendationComments = {
+    method: 'get',
+    path: '/getRecommendationComments', 
+    handler: async (req, res) => {
+        const item = await req.query.item; 
+        console.log("Got reco item: ", item);      
+        const response = await handlers.getRecommendationComments(item);
+
+        res.status(200).json(response);
+    }
+}
+
 const writeFeedback = {
     method: 'post',
     path: '/writeFeedback', 
@@ -221,4 +243,4 @@ const sendInvite = {
     }
 }
 
-module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeFeedback, sendInvite};

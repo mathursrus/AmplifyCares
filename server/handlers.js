@@ -5,6 +5,7 @@ const databaseId = process.env.MONGODB_DATABASE_ID;
 const containerId = process.env.MONGODB_CONTAINER_ID;
 const teamId = "team_info";
 const recoId = "recommendations";
+const recoCommentsId = "recommendation_comments";
 const userId = "userInfo";
 const inviteId = "invite_info";
 const ObjectId = require('mongodb').ObjectId;
@@ -14,6 +15,7 @@ const axios  = require('axios');
 let dbClient = null;
 let team_container = null;
 let recos_container = null;
+let comments_container = null;
 let container = null;
 let user_container = null;
 let invite_container = null;
@@ -50,6 +52,14 @@ async function getRecommendationsContainer() {
     recos_container = await cl.collection(recoId);
   }
   return recos_container;
+}
+
+async function getRecommendationCommentsContainer() {
+  if (!comments_container) {
+    var cl = await getMongoDbClient();
+    comments_container = await cl.collection(recoCommentsId);
+  }
+  return comments_container;
 }
 
 async function getUserContainer() {
@@ -1076,6 +1086,55 @@ async function getRecommendations(itemId, user) {
   return final;
 }
 
+async function getRecommendationComments(recommendationId) {
+  console.log(`Getting recommendations for ID: ${recommendationId}`);
+  const ct = await getRecommendationCommentsContainer();
+  const result=await ct.find({recommendation_id:recommendationId}).sort({date:-1}).toArray();  
+  console.log(`Result is: ${result}`);
+  const final = JSON.stringify(result);
+  console.log(`Finale is ${final}`);
+  return final;
+}
+
+async function writeRecommendationComment(item) {
+  console.log('Adding comment: ', item);
+  try {
+      const ct = await getRecommendationCommentsContainer();
+
+      // Check if the item with the same ID already exists in the database
+      const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
+      const isEmptyItem = (item.text === null) || (item.text === '');
+      var result = item;
+      if (existingItem) {
+          item._id = ObjectId(item._id);            
+          if (isEmptyItem) {
+            // if empty, then delete
+            ct.deleteOne({ _id: item._id });
+            console.log('Item deleted:', item._id);
+          }
+          else {
+            // Item exists, perform an update
+            await ct.updateOne({ _id: item._id }, { $set: item });
+            console.log('Item updated:', item._id);
+          }
+      } else {
+        if (!isEmptyItem) {
+            // Item does not exist, perform an insert
+            result = await ct.insertOne(item);
+            console.log('Item inserted:', result.insertedId);
+        }
+        else {
+          // nothing done since its a new empty item
+          result = null;
+        }
+      }
+      return result;
+  } catch (err) {
+      console.error('Error:', err);
+  }
+}
+
+
 async function writeFeedback(feedback) {
   const connectionString = process.env.AZURE_BLOB_CONNECTION_STRING;
   const containerName = 'mp4';
@@ -1137,4 +1196,4 @@ async function sendmail() {
     console.log(`Deleted item with id: ${deletedItem.id}`);
   }
   
-module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeFeedback, sendInvite};
+module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeFeedback, sendInvite};

@@ -771,6 +771,22 @@ db.recommendations.find({type:1});
 use('amplifycares-db-catita');
 db.recommendations.deleteMany({title: {$regex:"Dance and *"}}, {contributor: {$regex:"sidm@*"}});
 
+use('amplifycares-db-catita');
+db.recommendation_comments.createIndex({ "date": -1 });
+
+// get all recommendation comments
+use('amplifycares-db-catita');
+db.recommendation_comments.find().sort({date:1});
+
+// add recommendations
+use('amplifycares-db-catita');
+db.recommendation_comments.insertOne({
+  user: "yangpan@microsoft.com",
+  text: "Spent time on this activity. Loved it! ",
+  date: 1700523158802,
+  recommendation_id: "6534854ae5237b35b40d7742" 
+  });
+
 // show all databases
 show databases;
 

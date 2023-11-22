@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import EditRecommendation from './EditRecommendation';
 import './RecommendationTile.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShare, faEdit, faUserFriends } from '@fortawesome/free-solid-svg-icons';
+import { faShare, faEdit, faUserFriends, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {getAlias} from './utils/userUtil';
 import {howLongAgo} from './utils/timeUtil';
+import { addCommentToRecommendation, getRecommendationComments, writeRecommendationComment } from './utils/recommendationUtil';
 
 const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLeaveRecommendation, showDetails, onSave}) => {
 
     //console.log("Got called with recommendation ", recommendation.participants, "functions ", handleJoinRecommendation, handleLeaveRecommendation, getParticipantsTooltip);
     const [isEditing, setIsEditing] = useState(false);
-    const [comments, setComments] = useState(recommendation.comments?recommendation.comments:[]);
+    const [comments, setComments] = useState(null);
     const [newComment, setNewComment] = useState('');
+    const [editingComment, setEditingComment] = useState(null);
+    const [editedText, setEditedText] = useState('');  
 
+    const refreshComments = useCallback (async () => {
+        const result = await getRecommendationComments(recommendation._id);
+        setComments(result);
+    }, [recommendation._id]);
+
+    useEffect(() => {
+        async function fetchData() {
+            if (showDetails) {
+                refreshComments();
+            }
+        }
+        fetchData();
+    }, [refreshComments, showDetails]);
+        
     const createSharingLink = (e) => {
         e.preventDefault();
 
@@ -46,24 +63,35 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
     const handleAddComment = (e) => {
         e.preventDefault();
         if (newComment.trim() !== '') {
-            // Create a new comment object
-            const comment = {
-                user: localStorage.getItem('userName'),
-                text: newComment,
-                date: Date.now()
-            };
-
-            recommendation.comments = [...comments, comment];
-            // Add the comment to the comments array
-            setComments(recommendation.comments);
-            
-            onSave(recommendation);
-            
+            addCommentToRecommendation(recommendation._id, newComment);
+            // Refresh comments            
+            refreshComments();                    
             // Clear the input field
             setNewComment('');
         }
     };
     
+    const handleEditComment = (comment) => {
+        console.log("Called edit comment with comment ", comment.text);
+        setEditingComment(comment);
+        setEditedText(comment.text);
+    }
+
+    const handleSaveEdit = async (e, comment) => {
+        e.preventDefault();
+        comment.text = editedText;
+        setEditingComment(null);
+        await writeRecommendationComment(comment);
+        refreshComments();        
+    };
+
+    const handleDeleteComment = async (comment) => {
+        console.log("Called delete comment with comment ", comment.text);
+        comment.text = '';
+        await writeRecommendationComment(comment);
+        refreshComments();
+    }
+
     function handleEditRecommendation(e) {
         e.preventDefault();
         setIsEditing(true);
@@ -129,21 +157,47 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                 {showDetails === 1 && !isEditing && (
                     <div className="comments-section">
                         <h4>Circle members be like ...</h4><br></br>
-                        {comments.length>0? (
+                        {comments? (
+                            (comments.length>0? (
                             <div className="comments-block">
                                 {comments.map((comment, index) => (
-                                <div key={index} className={`comment ${comment.user === localStorage.getItem('userName') ? 'own-comment' : ''}`}>
-                                    {comment.text}                                            
-                                    <span className='username'>
-                                        <i>{getAlias(comment.user)}, </i>
-                                        <i>{howLongAgo(comment.date)}</i>
-                                    </span>
+                                <div key={index} className={`comment ${comment.user === localStorage.getItem('userName') ? 'own-comment' : ''}`}>                                    
+                                    {editingComment === comment ? (
+                                        // Render an input field for editing when in edit mode
+                                        <div>
+                                            <input
+                                                type="text"
+                                                value={editedText}
+                                                onChange={(e) => setEditedText(e.target.value)}
+                                            />
+                                            <button onClick={(e) => handleSaveEdit(e, comment)}>Save</button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {comment.user === localStorage.getItem('userName') && (
+                                                <div className='comment-actions'>
+                                                    <i className='edit-icon' onClick={() => handleEditComment(comment)}>
+                                                    <FontAwesomeIcon icon={faEdit} />
+                                                    </i>
+                                                    <i className='delete-icon' onClick={() => handleDeleteComment(comment)}>
+                                                    <FontAwesomeIcon icon={faTrashAlt} />
+                                                    </i>
+                                                </div>
+                                            )}    
+                                            {comment.text}                                        
+                                            <span className='username'>
+                                                <i>{getAlias(comment.user)}, </i>
+                                                <i>{howLongAgo(comment.date)}</i>                                        
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                                 ))}
                             </div>
-                        ) : (
-                            <center>This is a quiet circle. Say something</center>
-                        )}                        
+                            ) : (
+                                <center>This is a quiet circle. Say something</center>
+                            ))                            
+                        ) : ( <center> Loading ... </center> )}                        
                         <div className="new-comment">
                             <input
                                 type="text"

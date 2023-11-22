@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserFriends, faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import TimeEntryForm from './TimeEntryForm';
 import './SelfCareCircles.css';
-import { postWithToken } from './utils/urlUtil';
+import { addCommentToRecommendation } from './utils/recommendationUtil';
 
 const React = require('react');
 const { useState } = React;
@@ -26,22 +26,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
   }
 
   async function writeCircleComment(commentString) {
-    const user=localStorage.getItem('userName');
-    const comment = {
-      user: user,
-      text: commentString,
-      date: Date.now()
-    };
-
-    if (checkingInCircle.comments) {
-      checkingInCircle.comments = [...checkingInCircle.comments, comment];
-    }
-    else {
-      checkingInCircle.comments = [comment];
-    }
-    
-    await postWithToken("/writerecommendation", checkingInCircle, user);
-    //await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
+    addCommentToRecommendation(checkingInCircle._id, commentString);        
   }
 
   function getParticipantsTooltip(circle) {

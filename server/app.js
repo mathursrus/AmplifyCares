@@ -28,6 +28,8 @@ var getSelfCareInsights = routesModules.getSelfCareInsights;
 var getTimeInputFromSpeech = routesModules.getTimeInputFromSpeech;
 var writeRecommendation = routesModules.writeRecommendation;
 var readRecommendations = routesModules.getRecommendations;
+var writeRecommendationComment = routesModules.writeRecommendationComment;
+var readRecommendationComments = routesModules.getRecommendationComments;
 var writeFeedback = routesModules.writeFeedback;
 var sendInvite = routesModules.sendInvite;
 
@@ -105,6 +107,8 @@ app[getSelfCareInsights.method](getSelfCareInsights.path, getSelfCareInsights.ha
 app[getTimeInputFromSpeech.method](getTimeInputFromSpeech.path, getTimeInputFromSpeech.handler);
 app[writeRecommendation.method](writeRecommendation.path, writeRecommendation.handler);
 app[readRecommendations.method](readRecommendations.path, readRecommendations.handler);
+app[writeRecommendationComment.method](writeRecommendationComment.path, writeRecommendationComment.handler);
+app[readRecommendationComments.method](readRecommendationComments.path, readRecommendationComments.handler);
 app[writeFeedback.method](writeFeedback.path, writeFeedback.handler);
 app[sendInvite.method](sendInvite.path, sendInvite.handler);
 
