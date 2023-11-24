@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import './FirstRunExperience.css'; 
 
 export const features = [
@@ -67,6 +67,11 @@ function FirstRunExperience({ screen, onClose }) {
   // Function to handle closing the modal
   const handleCloseModal = () => {
     onClose();
+  };
+
+  const handleScreenChange = (screen) => {
+    console.log("Changing screen to ", screen);
+    setCurrentScreen(screen);
   };
 
   useEffect(() => {
@@ -170,6 +175,22 @@ function FirstRunExperience({ screen, onClose }) {
         <span className="close-button" onClick={handleCloseModal}>
           &times;
         </span>
+        {currentScreen > 1 && (
+        <FontAwesomeIcon
+          icon={faChevronLeft}
+          className="scroll-indicator"
+          onClick={(e) => handleScreenChange(currentScreen-1)}
+          style={{ left: 0 }}
+        />
+        )}
+        {currentScreen < screens.length && (
+        <FontAwesomeIcon
+          icon={faChevronRight}
+          className="scroll-indicator"
+          onClick={() => handleScreenChange(currentScreen + 1)}
+          style={{ right: 0 }}
+        />
+        )}
         <div className="screen-container">
           <h4>{currentScreenContent.title}</h4>
           {currentScreenContent.content}
