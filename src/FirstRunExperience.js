@@ -5,6 +5,11 @@ import './FirstRunExperience.css';
 
 export const features = [
   {
+    date: "11/26/2023",
+    title:"Daily 2 minute self care challenges",
+    description: "Make self care a habit by taking the 2 minute self care challenge. Just join the <a href='?showHabits=5&habit=6562f3469555c41088f0b93c'>self care circle</a>, click on + every day and make self care a habit.",
+  },
+  {
     date: "11/12/2023",
     title:"Join Circles and collaborate on self care",
     description: "Click on the <img src='./info_icon.png' width=20px></img> icon on the Submit Time page and join your colleagues in their self care activities",
