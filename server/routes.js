@@ -243,4 +243,15 @@ const sendInvite = {
     }
 }
 
-module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeFeedback, sendInvite};
+const getDailyChallenges = {
+    method: 'get',
+    path: '/getDailyChallenges', 
+    handler: async (req, res) => {
+        const item = req.query.date;  
+        const response = await handlers.getDailyChallenges(item);
+
+        res.status(200).json(response);
+    }
+}
+
+module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeFeedback, sendInvite, getDailyChallenges};

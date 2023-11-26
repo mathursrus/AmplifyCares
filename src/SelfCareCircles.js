@@ -4,6 +4,7 @@ import { faUserFriends, faInfoCircle, faTimes } from '@fortawesome/free-solid-sv
 import TimeEntryForm from './TimeEntryForm';
 import './SelfCareCircles.css';
 import { addCommentToRecommendation } from './utils/recommendationUtil';
+import DailySelfCareChallenge from './DailySelfCareChallenge';
 
 const React = require('react');
 const { useState } = React;
@@ -16,6 +17,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
   
   const handleCheckInClick = (e, circle) => {
     e.preventDefault();
+    console.log("Setting checking in circle to ", circle);
     setCheckingInCircle(circle);
   };
   
@@ -65,7 +67,15 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
           </div>     
         ))}
         {
-          checkingInCircle && (
+          checkingInCircle && checkingInCircle.type === 5 && (                                
+            <DailySelfCareChallenge 
+              onClose={() => setCheckingInCircle(null)}
+              onSubmit= {completeCheckIn}                    
+            />              
+          )
+        }
+        {
+          checkingInCircle && checkingInCircle.type < 5 && (
               <div className="modal-time-entry">
                   <div className="modal-time-entry-header">
                     <FontAwesomeIcon className="modal-time-entry-close" icon={faTimes} onClick={() => setCheckingInCircle(null)} />
@@ -77,7 +87,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
                   />
               </div>
           )
-        }
+        }        
       </div>
     </div>
   );

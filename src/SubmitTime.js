@@ -279,7 +279,7 @@
         }        
         
         const isValidFlyoutState = () => {
-            return (flyoutState >0 && flyoutState <5);
+            return (flyoutState >0 && flyoutState <6);
         }
 
         useEffect(() => {
@@ -306,7 +306,8 @@
                         <SelfCareCircles
                             circles={user_circles}
                             onCheckIn={writeSelfCareItem}
-                        />                    
+                        />                               
+
                     </div>
 
                     <center>

@@ -21,7 +21,8 @@ const RecommendationsPage = (props) => {
     [1, "Taking care of your mental health is essential for overall well-being and happiness. It empowers you to manage stress, build resilience, maintain healthy relationships, and unlock your full potential in both personal and professional aspects of life."],
     [2, "Prioritizing physical health is crucial for a fulfilling and vibrant life. It enables you to maintain energy levels, prevent illness and chronic conditions, improve cognitive function, enhance productivity, and enjoy a higher quality of life."],
     [3, "Nurturing spiritual health brings purpose, inner peace, and interconnectedness to your life. It cultivates resilience, joy, and a deeper understanding of life's purpose."],
-    [4, "Investing in social health fosters meaningful connections and strengthens communities. By helping others, you will contribute to positive change, experience fulfillment, and create a ripple effect of kindness and compassion."]
+    [4, "Investing in social health fosters meaningful connections and strengthens communities. By helping others, you will contribute to positive change, experience fulfillment, and create a ripple effect of kindness and compassion."],
+    [5, "A healthy mix of mental, physical, spiritual, social health gives you holistic self care."],
   ];
 
   useEffect(() => {

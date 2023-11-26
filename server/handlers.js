@@ -8,6 +8,7 @@ const recoId = "recommendations";
 const recoCommentsId = "recommendation_comments";
 const userId = "userInfo";
 const inviteId = "invite_info";
+const challengeId = "dailychallenge_info";
 const ObjectId = require('mongodb').ObjectId;
 const axios  = require('axios');
 //const nlp = require('compromise');
@@ -19,6 +20,7 @@ let comments_container = null;
 let container = null;
 let user_container = null;
 let invite_container = null;
+let challenge_container = null;
 
 async function getMongoDbClient() {
   if (!dbClient) {
@@ -78,6 +80,15 @@ async function getInviteContainer() {
     console.log(invite_container);
   }
   return invite_container;
+}
+
+async function getDailyChallengeContainer() {
+  if (!challenge_container) {
+    var cl = await getMongoDbClient();
+    challenge_container = await cl.collection(challengeId);
+    console.log(challenge_container);
+  }
+  return challenge_container;
 }
 
 async function getUserInfoWithToken(token) {
@@ -241,7 +252,7 @@ async function writeEntry(item) {
       } else {
         if (!isEmptyItem) {
             // Item does not exist, perform an insert
-            await ct.insertOne(item);
+            result = await ct.insertOne(item);
             console.log('Item inserted:', result.insertedId);
         }
         else {
@@ -1059,7 +1070,12 @@ async function getRecommendations(itemId, user) {
   console.log(`Got called with id: ${itemId}, user ${user}`);
   const ct = await getRecommendationsContainer();
   console.log(`Got container: ${ct}`);
-  const result=await ct.find({type:itemId}).toArray();
+  const result=await ct.find({
+                $or: [
+                  { type: itemId },
+                  { type: 5 }
+                ]
+              }).toArray();
 
   async function fetchAdditionalContent(recommendation) {    
       try {
@@ -1190,10 +1206,58 @@ async function sendmail() {
   sgMail.send(msg);
 }
   
-  async function deleteItem(itemId) {
-    const ct = await getContainer();
-    const { resource: deletedItem } = await ct.item(itemId, itemId).delete();
-    console.log(`Deleted item with id: ${deletedItem.id}`);
-  }
   
-module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeFeedback, sendInvite};
+async function getDailyChallenges(date) {  
+  console.log("Getting challenge for date ", date);
+    
+  const today = new Date(date);
+
+  const ct = await getDailyChallengeContainer();
+  let challenges = await ct.find({Date:today}).toArray();
+
+  if (challenges.length === 0) {
+    const prompt = "You are a self care coach. Your job is to give a new 2-minute self challenge every day. \
+    The self care challenge should fall in the category of mental care, physcial care, social care or spiritual care. \
+    The challenge should be difficult enough to be competitive, but not so difficult that no one can do it. \
+    Every challenge should be different from the previous ones. \
+    Challenges should be specific, self contained and not leave anything up to choice of the user. \
+    Mental care challenges can include mind bending puzzles or calming techniques.\
+    Spiritual care challenges can include saying a short prayer or reading passages about faith. \
+    Social care challenges can include connecting, praising or giving to others. \
+    Physical care challenges can include aggressive or moderate exercises. \
+    Do not say anything other than the 2-minute challenge itself. \
+    Here is an example: \
+    Input: Physical Care\
+    Output: Physical Care - Do 2 minutes of push-ups. Tell others how many you did."
+    try {
+      const mentalcarechallenge = await callOpenAICompletions(prompt, "Mental Care");
+      const item = {
+        Date: today,
+        challenge: mentalcarechallenge,
+        activityType : 1
+      }
+      await ct.insertOne(item);      
+      challenges = await ct.find({Date:today}).toArray();
+    }
+    catch (error) {
+      if (error.response) {
+        // The request was made, but the server responded with an error status code
+        console.error('OpenAI Error:', error.response.data.error.message);
+      } else if (error.request) {
+        // The request was made, but no response was received
+        console.error('No response received from OpenAI');
+      } else {
+        // Something else happened while setting up the request
+        console.error('Got Error:', error);
+      }
+    }
+  }
+
+  console.log(`Challenge is: ${challenges}`);
+  const final = JSON.stringify(challenges[0]);
+  console.log(`Finale is ${final}`);
+
+  return final;
+}
+
+module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeFeedback, sendInvite, getDailyChallenges};
