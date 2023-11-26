@@ -42,6 +42,14 @@ db.invite_info.find();
 use('amplifycares-db-catita');
 db.dailychallenge_info.find();
 
+// populate many daily challenges
+use('amplifycares-db-catita');
+db.dailychallenge_info.insertOne({
+  Date: new Date("2023-12-05"),
+  challenge: "Spiritual Care -  Take 2 minutes to ponder the wisdom in this quote and how it relates to your own spiritual journey - The soul usually knows what to do to heal itself. The challenge is to silence the mind.",
+  activityType: 3
+  });
+
 // delete some invites
 use('amplifycares-db-catita');
 db.dailychallenge_info.deleteMany({Date: {$gt: new Date('2023-11-24')}});

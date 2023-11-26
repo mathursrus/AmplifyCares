@@ -289,7 +289,7 @@
         const user_circles = (localStorage.getItem('userDetails') !== undefined && localStorage.getItem('userDetails') !== null) ? (JSON.parse(localStorage.getItem('userDetails'))).circles : [];
 
         return (
-            <Container className="p-3">    
+            <Container className="submit-time-container">    
                 <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />                
                 <form className='time-entry-form'>
                     <div className="side-by-side">
