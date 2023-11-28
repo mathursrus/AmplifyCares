@@ -293,13 +293,11 @@
                 <UserBadges badges={JSON.parse(localStorage.getItem('badges'))} />                
                 <form className='time-entry-form'>
                     <div className="side-by-side">
-                        <div className="talk-to-enter">
-                            <center>
+                        <div className="talk-to-enter">                            
                                 <h3>Talk to Amplify Cares</h3>
                                 Simply click the mic and tell Amplify cares when and how you took care of yourself. 
                                 Click the mic again when done and your self care data will be saved. It works like magic. 
-                                (eg) Yesterday, I ran for 2 hours
-                            </center>
+                                (eg) Yesterday, I ran for 2 hours                            
                             <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>                                    
                         </div>   
 

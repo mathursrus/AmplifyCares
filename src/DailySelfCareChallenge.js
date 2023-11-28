@@ -71,9 +71,7 @@ function DailySelfCareChallenge({ onSubmit, onClose }) {
           </span>
           <div className="screen-container">
             {challenge.challenge}
-          </div>
-          <br /><br /><br />
-          <br />
+          </div>          
           <div className='row'>
             <Button className="challenge-complete" onClick={dailyChallengeComplete}>
               <FontAwesomeIcon icon={faTrophy} className="icon" /> {/* Trophy icon */}              

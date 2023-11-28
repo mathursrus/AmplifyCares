@@ -43,10 +43,8 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
 
   return (
     <div className="self-care-circles-canvas">
-      <center>
       <h3>Self Care Circles</h3>
-      Join a self care circle, easily track time & share insights with your team members. Click any of the<FontAwesomeIcon icon={faInfoCircle} style={{ color: '#306DC8', marginLeft: '5px' }} /> icons below to start
-      </center>
+      Join a self care circle, easily track time & share insights with your team members. 
       <div className="circle-container">      
         {circles.map((circle, index) => (
           <div>
