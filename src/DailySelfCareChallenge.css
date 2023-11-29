@@ -44,6 +44,7 @@
   .daily-challenge-content .screen-container {
     margin: 10px;
     font-size: 14px;    
+    position: static;
   }
 
   .close-button {
