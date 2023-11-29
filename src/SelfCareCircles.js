@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faTimes } from '@fortawesome/free-solid-svg-icons';
 import TimeEntryForm from './TimeEntryForm';
 import './SelfCareCircles.css';
 import { addCommentToRecommendation } from './utils/recommendationUtil';
