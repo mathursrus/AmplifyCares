@@ -67,14 +67,25 @@
     font-size: 12px;
   }
 
+  .modal-container {
+    /* Position the container at the center of the viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
   .modal-time-entry {
-    position: absolute;
     background-color: rgb(139, 219, 193); /* Semi-transparent background */
     border: 2px solid #007bff; /* Border color and width */
     border-radius: 10px; /* Rounded corners */
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    z-index: 9999; /* Set a high z-index to bring the modal on top of other elements */
+    padding: 20px;   
   }
 
   .modal-time-entry-header {

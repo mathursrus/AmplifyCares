@@ -44,6 +44,26 @@
   .daily-challenge-content .screen-container {
     margin: 10px;
     font-size: 14px;    
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .daily-challenge-content .dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 1);
+    padding: 20px;
+    z-index: 2;
+    display: flex;
+    justify-items: center;
+    align-content: center;
   }
 
   .close-button {

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
+import ReactCountdownClock from 'react-countdown-clock';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faTrophy, faSmile, faRocket, faBolt } from '@fortawesome/free-solid-svg-icons'; // Import icons
 import { getApiUrl } from './utils/urlUtil';
 import './DailySelfCareChallenge.css';
+import { Link } from 'react-router-dom';
 
 function DailySelfCareChallenge({ onSubmit, onClose }) {
   const [challenge, setChallenge] = useState(null);
+  const [countingDown, setCountingDown] = useState(false);
+  const alarm = new Audio('/alarm.mp3');
 
   // Function to handle closing the modal
   const handleCloseModal = () => {
@@ -57,6 +61,17 @@ function DailySelfCareChallenge({ onSubmit, onClose }) {
     onSubmit(itemData, comment);
   };
 
+  const startCountDown = () => {
+    setCountingDown(true);
+  }
+
+  const stopCountDown = () => {
+    alarm.play();
+    setTimeout(() => {
+      setCountingDown(false); 
+    }, 5000); 
+  }
+
   return (
     <div className="daily-challenge-container">
       {challenge ? (
@@ -71,7 +86,23 @@ function DailySelfCareChallenge({ onSubmit, onClose }) {
           </span>
           <div className="screen-container">
             {challenge.challenge}
-          </div>          
+            <br></br>  <br></br>       
+            {!countingDown ? (
+              <div>
+                <i>
+                Do not spend more than 2 minutes on this activity. Time yourself by clicking
+                <Link to="." onClick={startCountDown}> here</Link>
+                </i>
+              </div>
+            ) : (
+              <ReactCountdownClock seconds={10}
+                    color="green"
+                    alpha={0.8}
+                    size={100}
+                    fontsize={12}
+                    onComplete={stopCountDown} />                        
+            )}
+          </div>
           <div className='row'>
             <Button className="challenge-complete" onClick={dailyChallengeComplete}>
               <FontAwesomeIcon icon={faTrophy} className="icon" /> {/* Trophy icon */}              

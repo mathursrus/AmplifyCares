@@ -1,3 +1,7 @@
+.enter-time-form .activity {
+  text-wrap: nowrap;
+}
+
 .time-entry-input-container {
     display: flex;
     flex-direction: column;
@@ -12,15 +16,25 @@
     text-align: left;
   }
 
+  .time-entry-input-container .text-field.time-input {
+    margin: 2px;
+    border: 1px solid black;
+    border-radius: 5px;  
+    font-size: 14px;  
+    width: 100%;
+    text-align: left;
+    padding: 7px;
+  }
 
   /* Style the time input */
   .time-entry-input-container .input {
     margin: 2px;
     border: 1px solid black;
     border-radius: 5px;  
-    font-size: 20px;  
-    width: 80%;
+    font-size: 14px;  
+    width: 100%;
     text-align: left;
+    padding: 5px;
   }
 
   

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUserFriends, faTimes } from '@fortawesome/free-solid-svg-icons';
 import TimeEntryForm from './TimeEntryForm';
 import './SelfCareCircles.css';
 import { addCommentToRecommendation } from './utils/recommendationUtil';
@@ -74,6 +74,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
         }
         {
           checkingInCircle && checkingInCircle.type < 5 && (
+            <div className="modal-container">
               <div className="modal-time-entry">
                   <div className="modal-time-entry-header">
                     <FontAwesomeIcon className="modal-time-entry-close" icon={faTimes} onClick={() => setCheckingInCircle(null)} />
@@ -84,6 +85,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
                     onSubmit= {completeCheckIn}                    
                   />
               </div>
+            </div>
           )
         }        
       </div>

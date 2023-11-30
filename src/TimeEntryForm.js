@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import DatePicker from 'react-datepicker';
-import { evaluate } from 'mathjs';
+import TimerInputField from './TimerInputField';
 import 'react-datepicker/dist/react-datepicker.css';
 import './TimeEntryForm.css';
 
@@ -59,7 +59,7 @@ const TimeEntryForm = ({activity, activityType, onSubmit}) => {
         <div>                            
             <form className='enter-time-form'>                
                 <center>
-                    <h5>Enter the date and time you spent on {activity}</h5>
+                    <h5 className="activity">Enter the date and time you spent on {activity}</h5>
                     <DatePicker
                     selected={selectedDate}
                     onChange={(date) => {console.log("Selected date ", date); setSelectedDate(date)}}
@@ -73,7 +73,13 @@ const TimeEntryForm = ({activity, activityType, onSubmit}) => {
                         <label className='formLabel'>
                             <b>Time</b>                                                
                         </label>
-                        <input
+                        <TimerInputField 
+                            value={activityTime}
+                            placeholder="Minutes dedicated"
+                            setValue={(time) => {
+                                setActivityTime(time);
+                            }}/>
+                        {/*<input
                             type="text"
                             className="input"
                             value={activityTime}
@@ -90,7 +96,7 @@ const TimeEntryForm = ({activity, activityType, onSubmit}) => {
                                 }
                             }}
                             placeholder={`Minutes dedicated`}
-                        />  
+                        />*/}  
                     </div> 
                     <div className="time-entry-input-container">
                         <label className='formLabel' title="This will be seen in the comments section of the self-care circle">

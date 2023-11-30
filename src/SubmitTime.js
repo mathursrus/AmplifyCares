@@ -7,23 +7,23 @@
     import { fetchWithToken, getApiHost, getApiUrl } from './utils/urlUtil';
     import { useNavigate, useLocation } from 'react-router-dom';
     import DatePicker from 'react-datepicker';
-    import { evaluate } from 'mathjs';
     import 'react-datepicker/dist/react-datepicker.css';
     import './SubmitTime.css';
     import UserBadges from './UserBadges';
     import { ReactTags } from 'react-tag-autocomplete';
     import SpeechRecognition from './SpeechToText';
     import SelfCareCircles from './SelfCareCircles';
+    import TimerInputField from './TimerInputField';
     
 
     const React = require('react');
     const { useState, useEffect, useCallback } = React;
 
     const placeholderStrings = {
-        MentalHealth: 'Minutes you dedicated to mental health.',
-        PhysicalHealth: 'Minutes you dedicated to physical health.',
-        SpiritualHealth: 'Minutes you dedicated to spirtual health.',
-        SocialHealth: 'Minutes you dedicated to social health.'
+        MentalHealth: 'Minutes on mental health.',
+        PhysicalHealth: 'Minutes on physical health.',
+        SpiritualHealth: 'Minutes on spirtual health.',
+        SocialHealth: 'Minutes on social health.'
     };
 
     const wellKnownTags = {
@@ -235,7 +235,7 @@
                 }
             }
         }
-
+        
         // Helper function to map tags with 'value' based on 'wellKnownTags'
         const mapTagsWithValues = (tags) => {
             if (tags !== undefined && tags !== null)  {
@@ -367,6 +367,8 @@
                             </a>                        
                         </label>
                         <div className="input-container">
+                            <div className="time-input-container">
+                            {/*<div className="input-with-button">
                             <input
                                 type="text"
                                 className="text-field time-input"
@@ -385,6 +387,20 @@
                                 }}
                                 placeholder={placeholderStrings.MentalHealth}
                             />
+                            <button
+                                className={`timer-control ${isRunning ? 'stop' : 'start'}`}                                
+                                title={`Click to ${isRunning ? 'Stop' : 'Start'} timer`}
+                                onClick={isRunning ? stopTimer : startTimer}>                                
+                            </button>                            
+                            </div>*/}
+                            <TimerInputField 
+                                value={MentalHealth.time}
+                                placeholder={placeholderStrings.MentalHealth}
+                                setValue={(time) => {
+                                    setMentalHealth((prev) => ({ ...prev, time }))
+                                }}/>
+                            </div>
+                            
                             <ReactTags
                                 selected={MentalHealth.tags}
                                 suggestions={wellKnownTags.MentalHealth.map((name, index) => ({ value: name, label: name }))}
@@ -412,7 +428,8 @@
                             </a>
                         </label>
                         <div className="input-container">
-                            <input
+                        <div className="time-input-container">
+                            {/**<input
                                 type="text"
                                 className="text-field time-input"
                                 value={PhysicalHealth.time}
@@ -429,7 +446,14 @@
                                     }
                                 }}
                                 placeholder={placeholderStrings.PhysicalHealth}
-                            />
+                            />**/}
+                            <TimerInputField 
+                                value={PhysicalHealth.time}
+                                placeholder={placeholderStrings.PhysicalHealth}
+                                setValue={(time) => {
+                                    setPhysicalHealth((prev) => ({ ...prev, time }))
+                                }}/>
+                        </div>
                             <ReactTags
                                 selected={PhysicalHealth.tags}
                                 suggestions={wellKnownTags.PhysicalHealth.map((name, index) => ({ value: name, label: name }))}
@@ -457,24 +481,14 @@
                             </a>
                         </label>
                         <div className="input-container">
-                            <input
-                                type="text"
-                                className="text-field time-input"
-                                value={SpiritualHealth.time}
-                                onChange={(e) => {
-                                    const input = e.target.value;
-                                    try {
-                                        const result = evaluate(input);
-                                        const time = result.toString();
-                                        console.log("Time is ", time);
-                                        setSpiritualHealth((prev) => ({ ...prev, time }));
-                                    } catch (error) {
-                                        const time = '';
-                                        setSpiritualHealth((prev) => ({ ...prev, time }));
-                                    }
-                                }}
-                                placeholder={placeholderStrings.SpiritualHealth}
-                            />
+                            <div className="time-input-container">                    
+                                <TimerInputField 
+                                    value={SpiritualHealth.time}
+                                    placeholder={placeholderStrings.SpiritualHealth}
+                                    setValue={(time) => {
+                                        setSpiritualHealth((prev) => ({ ...prev, time }))
+                                    }}/>
+                            </div>
                             <ReactTags
                                 selected={SpiritualHealth.tags}
                                 suggestions={wellKnownTags.SpiritualHealth.map((name, index) => ({ value: name, label: name }))}
@@ -502,24 +516,14 @@
                             </a>
                         </label>
                         <div className="input-container">
-                            <input
-                                type="text"
-                                className="text-field time-input"
-                                value={SocialHealth.time}
-                                onChange={(e) => {
-                                    const input = e.target.value;
-                                    try {
-                                        const result = evaluate(input);
-                                        const time = result.toString();
-                                        console.log("Time is ", time);
-                                        setSocialHealth((prev) => ({ ...prev, time }));
-                                    } catch (error) {
-                                        const time = '';
-                                        setSocialHealth((prev) => ({ ...prev, time }));
-                                    }
-                                }}
-                                placeholder={placeholderStrings.SocialHealth}
-                            />
+                            <div className="time-input-container">                    
+                                <TimerInputField 
+                                    value={SocialHealth.time}
+                                    placeholder={placeholderStrings.SocialHealth}
+                                    setValue={(time) => {
+                                        setSocialHealth((prev) => ({ ...prev, time }))
+                                    }}/>
+                            </div>
                             <ReactTags
                                 selected={SocialHealth.tags}
                                 suggestions={wellKnownTags.SocialHealth.map((name, index) => ({ value: name, label: name }))}
@@ -550,10 +554,9 @@
                     <br></br>
                     <div className='row'>
                         <Button onClick={handleSubmit}><b>{isEditMode ? 'Update ' : 'Submit '}Your Self-Care Time</b></Button>
-                        {animation === 1 && <Confetti/>}
-                        {animation === 2 && <Confetti/>}
-                        {animation === 3 && <Confetti/>}
-                        {animation === 4 && <Confetti/>}                    
+                        {animation > 0  && 
+                            <Confetti gravity={0.2} width={window.width} height={window.height}/>
+                        }                                            
                     </div>
                 </form>
             </Container>
