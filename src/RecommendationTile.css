@@ -181,7 +181,7 @@
 /* Style individual comments */
 .comment {
   padding: 5px;
-  margin: 5px;
+  margin-bottom: 30px;
   min-width: 30%;
   max-width: 75%;
   width:fit-content;
@@ -189,6 +189,7 @@
   border: 1px solid black;
   border-radius: 5px;
   text-align: left; 
+  position: relative;
 }
 
 .comment .username {  
@@ -209,15 +210,17 @@
   text-align: right;
 }
 
-.comment-actions {
+.comment-actions {  
   position: absolute;
-  top: 0;
+  top: -5px;
   right: 0;
+  margin: 0;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   opacity: 0;
-  visibility: hidden;
+  visibility: hidcen;
   transition: opacity 0.5s, visibility 0.5s;
 }
 
@@ -230,6 +233,32 @@
 .delete-icon {
   cursor: pointer;
   margin-right: 5px;
+}
+
+.comment-reactions {  
+  position: absolute;
+  font-size: 20px;
+  bottom: -25px; 
+  right: -10px; 
+  z-index: 5;
+}
+
+.comment-reaction {
+  background-color: white;
+  border-radius: 20px;
+  border: 1px solid gray;
+  padding-left:10px;
+  padding-right:10px;  
+  margin-right: 3px;
+}
+
+.comment-reaction .emoji {
+  font-size: 20px; /* Adjust the font size for the emoji */
+  margin: 0px;
+}
+
+.comment-reaction .count {
+  font-size: 14px; /* Adjust the font size for the count */  
 }
 
 .new-comment {  

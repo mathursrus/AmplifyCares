@@ -6,6 +6,7 @@ const containerId = process.env.MONGODB_CONTAINER_ID;
 const teamId = "team_info";
 const recoId = "recommendations";
 const recoCommentsId = "recommendation_comments";
+const reactionsId = "reactions_info";
 const userId = "userInfo";
 const inviteId = "invite_info";
 const challengeId = "dailychallenge_info";
@@ -17,6 +18,7 @@ let dbClient = null;
 let team_container = null;
 let recos_container = null;
 let comments_container = null;
+let reactions_container = null;
 let container = null;
 let user_container = null;
 let invite_container = null;
@@ -62,6 +64,14 @@ async function getRecommendationCommentsContainer() {
     comments_container = await cl.collection(recoCommentsId);
   }
   return comments_container;
+}
+
+async function getReactionsContainer() {
+  if (!reactions_container) {
+    var cl = await getMongoDbClient();
+    reactions_container = await cl.collection(reactionsId);
+  }
+  return reactions_container;
 }
 
 async function getUserContainer() {
@@ -1105,7 +1115,31 @@ async function getRecommendations(itemId, user) {
 async function getRecommendationComments(recommendationId) {
   console.log(`Getting recommendations for ID: ${recommendationId}`);
   const ct = await getRecommendationCommentsContainer();
-  const result=await ct.find({recommendation_id:recommendationId}).sort({date:-1}).toArray();  
+  const result=await ct.aggregate([
+    {
+      $match: { recommendation_id: recommendationId } // Match documents with the specified recommendation_id
+    },
+    {
+      $project: {
+        comment_id_string: { $toString: '$_id' }, // Cast _id to string and rename it
+        user: 1,
+        text: 1,
+        date: 1,
+        recommendation_id: 1,
+      }
+    },
+    {
+      $lookup: {
+        from: 'reactions_info', // The name of the reactions collection
+        localField: 'comment_id_string', // The field from the comments collection to match
+        foreignField: 'comment_id', // The field from the reactions collection to match
+        as: 'reactions' // The name of the field to store the reactions
+      }
+    },
+    {
+      $sort: { date: -1 } // Sort the comments by date in descending order
+    }
+  ]).toArray();
   console.log(`Result is: ${result}`);
   const final = JSON.stringify(result);
   console.log(`Finale is ${final}`);
@@ -1114,6 +1148,10 @@ async function getRecommendationComments(recommendationId) {
 
 async function writeRecommendationComment(item) {
   console.log('Adding comment: ', item);
+  // remove reactions before saving
+  delete item.reactions;
+  console.log('After removing reactions ', item);
+
   try {
       const ct = await getRecommendationCommentsContainer();
 
@@ -1150,6 +1188,35 @@ async function writeRecommendationComment(item) {
   }
 }
 
+async function writeReactionToComment(item) {
+  console.log('Adding reaction: ', item);
+  try {
+      const ct = await getReactionsContainer();
+
+      // Check if the item with the same ID already exists in the database
+      const existingItem = await ct.findOne({ comment_id: item.comment_id }, { user: item.user});
+      var result = item;
+      if (existingItem) {
+          if (item.emoji === existingItem.emoji) {
+            // if same, then delete
+            ct.deleteOne({ _id: existingItem._id });
+            console.log('Reaction deleted:', existingItem._id);
+          }
+          else {
+            // Item exists, perform an update
+            await ct.updateOne({ _id: existingItem._id }, { $set: item });
+            console.log('Reaction updated:', existingItem._id);
+          }
+      } else {        
+          // Item does not exist, perform an insert
+          result = await ct.insertOne(item);
+          console.log('Reaction inserted:', result.insertedId);
+      }      
+      return result;
+  } catch (err) {
+      console.error('Error:', err);
+  }
+}
 
 async function writeFeedback(feedback) {
   const connectionString = process.env.AZURE_BLOB_CONNECTION_STRING;
@@ -1260,4 +1327,4 @@ async function getDailyChallenges(date) {
   return final;
 }
 
-module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeFeedback, sendInvite, getDailyChallenges};
+module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges};

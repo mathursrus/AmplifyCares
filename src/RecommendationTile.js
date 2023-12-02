@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShare, faEdit, faUserFriends, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {getAlias} from './utils/userUtil';
 import {howLongAgo} from './utils/timeUtil';
-import { addCommentToRecommendation, getRecommendationComments, writeRecommendationComment } from './utils/recommendationUtil';
+import { addCommentToRecommendation, getRecommendationComments, writeRecommendationComment, writeReactionToComment } from './utils/recommendationUtil';
+import EmojiPicker from './EmojiPicker';
 
 const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLeaveRecommendation, showDetails, onSave}) => {
 
@@ -14,12 +15,44 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
     const [comments, setComments] = useState(null);
     const [newComment, setNewComment] = useState('');
     const [editingComment, setEditingComment] = useState(null);
-    const [editedText, setEditedText] = useState('');  
+    const [editedText, setEditedText] = useState(''); 
+    const [commentReactions, setCommentReactions] = useState({}); 
+
+    const buildReactionsMap = useCallback (async (comments) => {
+        const initialCommentReactions = {};
+        // Iterate through the comments and extract reaction data
+        comments.forEach((comment) => {
+        const commentId = comment._id;
+
+        // Initialize an object to store reactions for this comment
+        const commentReactionsData = {};
+
+        // Iterate through reactions for the comment and build the data
+        comment.reactions.forEach((reaction) => {
+            const { emoji, user } = reaction;
+
+            // Initialize an array for the emoji if it doesn't exist
+            if (!commentReactionsData[emoji]) {
+                commentReactionsData[emoji] = [];
+            }
+
+            // Add the user to the emoji's list
+            commentReactionsData[emoji].push(user);
+            console.log("Added reaction ", reaction);
+        });
+
+        // Store the comment reactions data in the map
+        initialCommentReactions[commentId] = commentReactionsData;
+        });    
+        console.log("Build map ", initialCommentReactions);
+        setCommentReactions(initialCommentReactions);
+    }, []);
 
     const refreshComments = useCallback (async () => {
         const result = await getRecommendationComments(recommendation._id);
-        setComments(result);
-    }, [recommendation._id]);
+        buildReactionsMap(result);
+        setComments(result);        
+    }, [recommendation._id, buildReactionsMap]);
 
     useEffect(() => {
         async function fetchData() {
@@ -92,6 +125,12 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
         refreshComments();
     }
 
+    const handleAddReactionToComment = async (reaction, comment) => {
+        console.log("Adding reaction to comment ", reaction, comment.text);
+        await writeReactionToComment(reaction, comment._id);
+        refreshComments();
+    }
+
     function handleEditRecommendation(e) {
         e.preventDefault();
         setIsEditing(true);
@@ -161,6 +200,7 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                             (comments.length>0? (
                             <div className="comments-block">
                                 {comments.map((comment, index) => (
+                                <div>
                                 <div key={index} className={`comment ${comment.user === localStorage.getItem('userName') ? 'own-comment' : ''}`}>                                    
                                     {editingComment === comment ? (
                                         // Render an input field for editing when in edit mode
@@ -174,23 +214,54 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                                         </div>
                                     ) : (
                                         <div>
-                                            {comment.user === localStorage.getItem('userName') && (
-                                                <div className='comment-actions'>
-                                                    <i className='edit-icon' onClick={() => handleEditComment(comment)}>
-                                                    <FontAwesomeIcon icon={faEdit} />
-                                                    </i>
-                                                    <i className='delete-icon' onClick={() => handleDeleteComment(comment)}>
-                                                    <FontAwesomeIcon icon={faTrashAlt} />
-                                                    </i>
-                                                </div>
-                                            )}    
+                                            <div className='comment-actions'>
+                                                {comment.user === localStorage.getItem('userName') && (
+                                                    <div>                                                
+                                                        <i className='edit-icon' onClick={() => handleEditComment(comment)}>
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                        </i>
+                                                        <i className='delete-icon' onClick={() => handleDeleteComment(comment)}>
+                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                        </i>
+                                                    </div>
+                                                )}  
+                                                <EmojiPicker onEmojiSelect={(e) => handleAddReactionToComment(e, comment)} />                                                
+                                            </div>  
                                             {comment.text}                                        
                                             <span className='username'>
                                                 <i>{getAlias(comment.user)}, </i>
                                                 <i>{howLongAgo(comment.date)}</i>                                        
                                             </span>
+                                            {/**
+                                            <div className="comment-reactions">   
+                                                <span className="comment-reaction">
+                                                    <span onClick={()=>handleAddReactionToComment('😂', comment)} className="emoji">😂</span>
+                                                    <span className="count">1</span>
+                                                </span>                                         
+                                                <span className="comment-reaction">
+                                                    <span onClick={()=>handleAddReactionToComment('❤️', comment)} className="emoji">❤️</span>
+                                                    <span className="count">2</span>
+                                                </span>                                         
+                                            </div>
+                                             */}
+                                             <div className='comment-reactions'>
+                                                {console.log(Object.entries(commentReactions[comment._id]))}
+                                                {Object.entries(commentReactions[comment._id] || {}).map(([emoji, users]) => (
+                                                    <span key={emoji} className="comment-reaction">
+                                                    <span
+                                                        onClick={() => handleAddReactionToComment(emoji, comment)}
+                                                        className="emoji"
+                                                        title={`Users: ${users.join(', ')}`} // Tooltip with user names
+                                                    >
+                                                        {emoji}
+                                                    </span>
+                                                    <span className="count">{users.length}</span>
+                                                    </span>
+                                                ))}
+                                                </div>
                                         </div>
-                                    )}
+                                    )}                                    
+                                </div>                                
                                 </div>
                                 ))}
                             </div>

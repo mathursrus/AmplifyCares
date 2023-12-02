@@ -221,6 +221,16 @@ const getRecommendationComments = {
     }
 }
 
+const writeReactionToComment = {
+    method: 'post',
+    path: '/writereactiontocomment', 
+    handler: async (req, res) => {
+        const item = req.body.item; 
+        const response = await handlers.writeReactionToComment(item); 
+        res.status(200).json(response);
+    }
+}
+
 const writeFeedback = {
     method: 'post',
     path: '/writeFeedback', 
@@ -254,4 +264,4 @@ const getDailyChallenges = {
     }
 }
 
-module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeFeedback, sendInvite, getDailyChallenges};
+module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges};

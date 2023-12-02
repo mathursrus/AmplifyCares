@@ -95,7 +95,7 @@ function DailySelfCareChallenge({ onSubmit, onClose }) {
                 </i>
               </div>
             ) : (
-              <ReactCountdownClock seconds={10}
+              <ReactCountdownClock seconds={120}
                     color="green"
                     alpha={0.8}
                     size={100}

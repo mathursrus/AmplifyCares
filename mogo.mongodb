@@ -803,6 +803,42 @@ db.recommendation_comments.insertOne({
   recommendation_id: "6534854ae5237b35b40d7742" 
   });
 
+// find all reactions for a comment
+use('amplifycares-db-catita');
+db.recommendation_comments.aggregate([
+  {
+    $match: { recommendation_id: '6534854ae5237b35b40d7742' } // Match documents with the specified recommendation_id
+  },
+  {
+    $project: {
+      comment_id_string: { $toString: '$_id' }, // Cast _id to string and rename it
+      user: 1,
+      text: 1,
+      date: 1,
+      recommendation_id: 1,
+    }
+  },
+  {
+    $lookup: {
+      from: 'reactions_info', // The name of the reactions collection
+      localField: 'comment_id_string', // The field from the comments collection to match
+      foreignField: 'comment_id', // The field from the reactions collection to match
+      as: 'reactions' // The name of the field to store the reactions
+    }
+  },
+  {
+    $sort: { date: -1 } // Sort the comments by date in descending order
+  }
+])
+
+use('amplifycares-db-catita');
+db.recommendation_comments.findOne({}, { _id: 1 })
+db.reactions_info.findOne({}, { comment_id: 1 })
+
+ // show reactions
+ use('amplifycares-db-catita');
+ db.reactions_info.find({comment_id:"6568bbd1e0d260102472800d"});
+
 // show all databases
 show databases;
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { evaluate } from 'mathjs';
 import ReactCountdownClock from 'react-countdown-clock';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons'; // Import icons
+import { faTimes, faHourglassStart } from '@fortawesome/free-solid-svg-icons'; // Import icons
 
 import './TimerInputField.css';
 
@@ -47,7 +47,9 @@ const TimerInputField = ({value, placeholder, setValue}) => {
         />        
         {!showDialog && (
             <div className="timer-tooltip-content">
-                <button onClick={handleStartCountdownClick}>Start Countdown</button>
+                <button onClick={handleStartCountdownClick}>
+                    <FontAwesomeIcon icon={faHourglassStart} />
+                </button>
             </div>        
         )}
 
@@ -58,9 +60,9 @@ const TimerInputField = ({value, placeholder, setValue}) => {
                 </span>                        
                 <ReactCountdownClock seconds={timerValue}
                      color="green"
-                     alpha={0.8}
+                     alpha={1}
                      size={100}
-                     fontsize={12}
+                     fontsize={20}
                      onComplete={handleStop} />                
             </div>
         )}

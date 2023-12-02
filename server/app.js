@@ -30,6 +30,7 @@ var writeRecommendation = routesModules.writeRecommendation;
 var readRecommendations = routesModules.getRecommendations;
 var writeRecommendationComment = routesModules.writeRecommendationComment;
 var readRecommendationComments = routesModules.getRecommendationComments;
+var writeReactionToComment = routesModules.writeReactionToComment;
 var writeFeedback = routesModules.writeFeedback;
 var sendInvite = routesModules.sendInvite;
 var getDailyChallenges = routesModules.getDailyChallenges;
@@ -110,6 +111,7 @@ app[writeRecommendation.method](writeRecommendation.path, writeRecommendation.ha
 app[readRecommendations.method](readRecommendations.path, readRecommendations.handler);
 app[writeRecommendationComment.method](writeRecommendationComment.path, writeRecommendationComment.handler);
 app[readRecommendationComments.method](readRecommendationComments.path, readRecommendationComments.handler);
+app[writeReactionToComment.method](writeReactionToComment.path, writeReactionToComment.handler);
 app[writeFeedback.method](writeFeedback.path, writeFeedback.handler);
 app[sendInvite.method](sendInvite.path, sendInvite.handler);
 app[getDailyChallenges.method](getDailyChallenges.path, getDailyChallenges.handler);
