@@ -133,7 +133,7 @@
 
     .recommendation-details {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         justify-content: center;        
         margin-bottom: 10px;

@@ -14,6 +14,7 @@
     import SpeechRecognition from './SpeechToText';
     import SelfCareCircles from './SelfCareCircles';
     import TimerInputField from './TimerInputField';
+import { refreshUserInfo } from './utils/userUtil';
     
 
     const React = require('react');
@@ -54,6 +55,8 @@
         const [editingEntry, setEditingEntry] = useState(null);
         const [isEditMode, setIsEditMode] = useState(false); 
                 
+        const [selfCareCircles, setSelfCareCircles] = useState(null);
+
         const niceWorkAudio = new Audio('/GoodJob.mp3');
         const sorryAudio = new Audio('/Error.mp3');
 
@@ -63,6 +66,7 @@
             const habit = searchParams.get('habit');    
             setFlyoutState(isNaN(showHabits) ? 0 : showHabits);
             setHabit(habit);
+            refreshUserCircles();
             //console.log("Show habits is ", showHabits, ", habit is ", habit, ", flyout state is ", flyoutState);              
         }, [location.search]);
 
@@ -275,8 +279,15 @@
         const handleCloseFlyout = () => {
             setHabit('');
             setFlyoutState(0);
+            refreshUserCircles();
             console.log("Clicked close");        
-        }        
+        } 
+        
+        const refreshUserCircles = async () => {
+            const result = await refreshUserInfo();
+            console.log("Got user info ", result);
+            setSelfCareCircles(result.circles);                   
+        }
         
         const isValidFlyoutState = () => {
             return (flyoutState >0 && flyoutState <6);
@@ -286,7 +297,7 @@
             console.log("Flyout state is ", flyoutState); 
         }, [flyoutState]); // Run the effect only when flyoutState changes
 
-        const user_circles = (localStorage.getItem('userDetails') !== undefined && localStorage.getItem('userDetails') !== null) ? (JSON.parse(localStorage.getItem('userDetails'))).circles : [];
+        //const user_circles = (localStorage.getItem('userDetails') !== undefined && localStorage.getItem('userDetails') !== null) ? (JSON.parse(localStorage.getItem('userDetails'))).circles : [];
 
         return (
             <Container className="submit-time-container">    
@@ -300,12 +311,12 @@
                                 (eg) Yesterday, I ran for 2 hours                            
                             <SpeechRecognition endpoint={"gettimeinput"} onResults={showData} onHover={"Talk to Amplify Cares (eg) Yesterday, I ran for 2 hours"}/>                                    
                         </div>   
-
-                        <SelfCareCircles
-                            circles={user_circles}
-                            onCheckIn={writeSelfCareItem}
-                        />                               
-
+                        {selfCareCircles && (
+                            <SelfCareCircles
+                                circles={selfCareCircles}
+                                onCheckIn={writeSelfCareItem}
+                            />                               
+                        )}
                     </div>
 
                     <center>

@@ -781,11 +781,11 @@ db.recommendations.updateMany(
 
 // get all recommendations of specific type
 use('amplifycares-db-catita');
-db.recommendations.find({type:1});
+db.recommendations.find({type:4});
 
 // delete some recommendations 
 use('amplifycares-db-catita');
-db.recommendations.deleteMany({title: {$regex:"Dance and *"}}, {contributor: {$regex:"sidm@*"}});
+db.recommendations.deleteMany({title: ""}, {selfOrTogether: ""}, {contributor: {$regex:"sidm@*"}});
 
 use('amplifycares-db-catita');
 db.recommendation_comments.createIndex({ "date": -1 });

@@ -8,7 +8,7 @@ import {howLongAgo} from './utils/timeUtil';
 import { addCommentToRecommendation, getRecommendationComments, writeRecommendationComment, writeReactionToComment } from './utils/recommendationUtil';
 import EmojiPicker from './EmojiPicker';
 
-const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLeaveRecommendation, showDetails, onSave}) => {
+const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLeaveRecommendation, showDetails, onSave, onDelete}) => {
 
     //console.log("Got called with recommendation ", recommendation.participants, "functions ", handleJoinRecommendation, handleLeaveRecommendation, getParticipantsTooltip);
     const [isEditing, setIsEditing] = useState(false);
@@ -44,7 +44,6 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
         // Store the comment reactions data in the map
         initialCommentReactions[commentId] = commentReactionsData;
         });    
-        console.log("Build map ", initialCommentReactions);
         setCommentReactions(initialCommentReactions);
     }, []);
 
@@ -120,9 +119,12 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
 
     const handleDeleteComment = async (comment) => {
         console.log("Called delete comment with comment ", comment.text);
-        comment.text = '';
-        await writeRecommendationComment(comment);
-        refreshComments();
+        const shouldDelete = window.confirm("Are you sure you want to delete this comment?");
+        if (shouldDelete) {
+            comment.text = '';
+            await writeRecommendationComment(comment);
+            refreshComments();
+        }
     }
 
     const handleAddReactionToComment = async (reaction, comment) => {
@@ -134,6 +136,15 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
     function handleEditRecommendation(e) {
         e.preventDefault();
         setIsEditing(true);
+    }
+
+    function handleDeleteRecommendation(e)  {
+        e.preventDefault();
+        const shouldDelete = window.confirm("Are you sure you want to delete this self care circle?");
+        if (shouldDelete) {
+            setIsEditing(false);
+            onDelete(recommendation);
+        }
     }
 
     function handleCancel() {
@@ -172,24 +183,39 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                       ) : (<div></div>)
                     }        
                     {recommendation.contributor === localStorage.getItem('userName') && showDetails === 1 && (
+                        <div>
                         <button
                         className="edit-button"
                         onClick={(e) => handleEditRecommendation(e)}
                         >
                             <FontAwesomeIcon icon={faEdit} />
                         </button>
+                        <button
+                        className="delete-button"
+                        onClick={(e) => handleDeleteRecommendation(e)}
+                        >
+                            <FontAwesomeIcon icon={faTrashAlt} />
+                        </button>
+                        </div>
                     )}        
                 </div>
                 {showDetails === 1 && (
                     <div className="recommendation-details">
+                        <center><h4>Circle Details ...</h4></center><br></br>
                         {!isEditing && (
                             <div>
-                                <div dangerouslySetInnerHTML={{ __html: recommendation.details }} />
+                                {(recommendation.details && recommendation.details !== '')? (
+                                    <div dangerouslySetInnerHTML={{ __html: recommendation.details }} />
+                                ):(<center>{recommendation.contributor} has not added any description. Tell them to hit the edit button and tell you about their circle</center>)
+                                }
                                 {recommendation.additionalContentsForUser && (<div className="personalized-details" dangerouslySetInnerHTML={{ __html: recommendation.additionalContentsForUser }} />)}                                
                             </div>
                         )}
                         {isEditing && (
-                            <EditRecommendation recommendation={recommendation} onSave={handleSave} onCancel={handleCancel}/>
+                            <div>
+                                <center><i>Make your circle description interesting for others to join</i></center><br></br>
+                                <EditRecommendation recommendation={recommendation} onSave={handleSave} onCancel={handleCancel}/>
+                            </div>
                         )}                        
                     </div>
                 )}
@@ -245,7 +271,6 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                                             </div>
                                              */}
                                              <div className='comment-reactions'>
-                                                {console.log(Object.entries(commentReactions[comment._id]))}
                                                 {Object.entries(commentReactions[comment._id] || {}).map(([emoji, users]) => (
                                                     <span key={emoji} className="comment-reaction">
                                                     <span

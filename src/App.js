@@ -9,10 +9,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
 import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
-import { getApiHost, fetchWithToken } from './utils/urlUtil';
+import { getApiHost } from './utils/urlUtil';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { features } from "./FirstRunExperience";
 import './App.css';
+import { refreshUserInfo } from "./utils/userUtil";
 
 const config = {
   auth: {
@@ -138,19 +139,13 @@ function AppPage() {
   }, []);
 
   const getAndSetUserInfo = useCallback(async (token) => {
-    //const response = await fetch(getApiHost() + "/getUserInfo?user="+JSON.stringify(username));
-    const response = await fetchWithToken(getApiHost() + "/getUserInfoWithToken", token);
-    const data = await response.json();
-    const userInfo = JSON.parse(data);
+    const userInfo = await refreshUserInfo();
     let badges = null;
     let lastLogin = null;
     console.log("Got user info ", userInfo);
-    if (userInfo.length>0)  {
-      localStorage.setItem('userDetails', JSON.stringify(userInfo[0]));
-      console.log("Reading from localstorgea user info ", JSON.parse(localStorage.getItem('userDetails')));
-      badges = userInfo[0].badgesOnTrack;
-      lastLogin = userInfo[0].lastLoginTime;            
-    }     
+    console.log("Reading from localstorgea user info ", JSON.parse(localStorage.getItem('userDetails')));
+    badges = userInfo.badgesOnTrack;
+    lastLogin = userInfo.lastLoginTime;            
     await setUserBadges(badges);
     console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));         
     updateUserLastLogin(lastLogin);

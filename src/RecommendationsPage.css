@@ -70,7 +70,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 30px;
+    height: 50px;
     background-color: #fff;
     padding: 2px;
     display: flex;
@@ -115,14 +115,24 @@
 }
 
 .newreco-icon {
-  width: 30px; /* Set the width of the filter icons */
-  height: 30px; 
+  width: 50px; /* Set the width of the filter icons */
+  height: 50px; 
   margin-right: 2px; /* Add spacing between icon and label */  
 }
 
-.input-field {
-  width: 100%;
-  padding: 2px;
+.add-recommendation .title-field {
+  width: 175%;
+  padding: 5px;
+  margin-left: 5px;
+  margin-bottom: 2px;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.add-recommendation .type-field {
+  width: 40%;
+  padding: 5px;
+  margin-left: 5px;
   margin-bottom: 2px;
   border: 1px solid black;
   border-radius: 4px;

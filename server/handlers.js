@@ -1061,17 +1061,34 @@ async function writeRecommendation(item) {
       }
       const ct = await getRecommendationsContainer();
       const existingItem = await ct.findOne({ _id: ObjectId(item._id) });
+      const isEmptyItem = (item.title === '' && item.contributor === '');
+      var result = item._id;
       if (existingItem) {
-        item._id = ObjectId(item._id);            
-        // Item exists, perform an update
-        await ct.updateOne({ _id: item._id }, { $set: item });
-        console.log('Recommendation updated:', item._id);        
-      } else {        
-        result = await ct.insertOne(item);
-        console.log('Recommendation inserted');
-      }            
+        item._id = ObjectId(item._id);  
+        if (isEmptyItem) {
+          // if all entries are 0, then delete
+          ct.deleteOne({ _id: item._id });
+          console.log('Recommendation deleted:', item._id);
+        }    
+        else {      
+          // Item exists, perform an update
+          result = await ct.updateOne({ _id: item._id }, { $set: item });
+          console.log('Recommendation updated:', item._id);        
+        }
+      } else {
+        if (isEmptyItem) {
+          result = null;
+        }
+        else {
+          const newItem = await ct.insertOne(item);
+          result = newItem.insertedId;
+          console.log('Recommendation inserted');
+        }
+      } 
+      return result;           
     } catch (err) {
       console.error('Error:', err);
+      return null;
     }
 }
 

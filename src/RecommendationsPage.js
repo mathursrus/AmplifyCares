@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './RecommendationsPage.css';
 import RecommendationTile from './RecommendationTile';
-import { getApiUrl, isValidURL, postWithToken } from './utils/urlUtil';
+import { getApiUrl, postWithToken } from './utils/urlUtil';
 
 
 
 const RecommendationsPage = (props) => {
-  const [showInputFields, setShowInputFields] = useState(false);
-  const [newRecommendation, setNewRecommendation] = useState({ title: '', url: '', selfOrTogether: ''});
-  
   const careType = props.type;
   const habit = props.habit;
+  
+  const [showInputFields, setShowInputFields] = useState(false);
+  const [newRecommendation, setNewRecommendation] = useState({ title: '', type: careType, selfOrTogether: ''});
   const [recos, setRecos] = useState(null);
 
   // State to track the selected recommendation type (DIY or DIT)
   const [selfOrTogether, setSelfOrTogether] = useState(['DIY', 'DIT']);
 
+  const navigate = useNavigate();
+
   const headlines = [
-    [1, "Taking care of your mental health is essential for overall well-being and happiness. It empowers you to manage stress, build resilience, maintain healthy relationships, and unlock your full potential in both personal and professional aspects of life."],
-    [2, "Prioritizing physical health is crucial for a fulfilling and vibrant life. It enables you to maintain energy levels, prevent illness and chronic conditions, improve cognitive function, enhance productivity, and enjoy a higher quality of life."],
-    [3, "Nurturing spiritual health brings purpose, inner peace, and interconnectedness to your life. It cultivates resilience, joy, and a deeper understanding of life's purpose."],
-    [4, "Investing in social health fosters meaningful connections and strengthens communities. By helping others, you will contribute to positive change, experience fulfillment, and create a ripple effect of kindness and compassion."],
-    [5, "A healthy mix of mental, physical, spiritual, social health gives you holistic self care."],
+    [1, "Taking care of your mental health is essential for overall well-being and happiness. It empowers you to manage stress, build resilience, maintain healthy relationships, and unlock your full potential in both personal and professional aspects of life.", "Mental Care"],
+    [2, "Prioritizing physical health is crucial for a fulfilling and vibrant life. It enables you to maintain energy levels, prevent illness and chronic conditions, improve cognitive function, enhance productivity, and enjoy a higher quality of life.", "Physical Care"],
+    [3, "Nurturing spiritual health brings purpose, inner peace, and interconnectedness to your life. It cultivates resilience, joy, and a deeper understanding of life's purpose.", "Spiritual Care"],
+    [4, "Investing in social health fosters meaningful connections and strengthens communities. By helping others, you will contribute to positive change, experience fulfillment, and create a ripple effect of kindness and compassion.", "Social Care"],
+    [5, "A healthy mix of mental, physical, spiritual, social health gives you holistic self care.", "Select category ..."],
   ];
 
   useEffect(() => {
@@ -70,28 +72,50 @@ const RecommendationsPage = (props) => {
 
   async function handleAddRecommendation(e)   {
     e.preventDefault();
-    if (newRecommendation.title.trim() !== '' && newRecommendation.url.trim() !== '' && isValidURL(newRecommendation.url)) {
-      newRecommendation.contributor = localStorage.getItem('userName');
-      newRecommendation.participants = [newRecommendation.contributor];
-      recos.push(newRecommendation);
-      const itemData = {
-        title: newRecommendation.title,
-        type: careType,
-        selfOrTogether: newRecommendation.selfOrTogether,
-        url: newRecommendation.url,
-        contributor: newRecommendation.contributor,
-        participants: newRecommendation.participants
-      }
-      
-      await writeRecommendationToServer(itemData)
-
-      setNewRecommendation({ title: '', url: '' });    
-      setShowInputFields(false);
+    if (newRecommendation.title === '') {
+      alert('A title is needed to create a recommendation');
+      return;
+    }
+    if (newRecommendation.type < 0 || newRecommendation.type > 4) {
+      alert('Select a category for your recommendation');
+      return;
+    }
+    if (newRecommendation.selfOrTogether === '') {
+      alert('Is this a DIY or DIT recommendation?');
+      return;
     }    
+    newRecommendation.contributor = localStorage.getItem('userName');
+    newRecommendation.participants = [newRecommendation.contributor];
+    recos.push(newRecommendation);
+    const itemData = {
+      title: newRecommendation.title,
+      type: careType,
+      selfOrTogether: newRecommendation.selfOrTogether,
+      contributor: newRecommendation.contributor,
+      participants: newRecommendation.participants
+    }
+      
+    const result = await writeRecommendationToServer(itemData);
+
+    setNewRecommendation({ title: '', type: careType, selfOrTogether: '' });    
+    setShowInputFields(false);    
+    console.log("Wrote ", itemData, " with result ", result);
+    // take the user to the details page so they can add more info
+    navigate(`/?showHabits=${itemData.type}&habit=${result}`);
   };
 
+  async function handleDeleteRecommendation(itemData) {
+    itemData.title='';
+    itemData.contributor='';
+    writeRecommendationToServer(itemData);
+    navigate(`/?showHabits=${itemData.type}`);
+  }
+
   async function writeRecommendationToServer(itemData) {
-    await postWithToken("/writerecommendation", itemData, localStorage.getItem('usertoken'));
+    const result = await postWithToken("/writerecommendation", itemData, localStorage.getItem('usertoken'));
+    const recommendation = await result.json();
+    console.log("Added recommendation ", recommendation);
+    return recommendation;
     //await fetch(getApiUrl("/writerecommendation?item="+encodeURIComponent(JSON.stringify(itemData))));
   }
 
@@ -114,7 +138,14 @@ const RecommendationsPage = (props) => {
       {recos && filteredHabit.length>0? 
       (
         <div> 
-          <RecommendationTile recommendation={filteredHabit[0]} handleJoinRecommendation={handleJoinRecommendation} handleLeaveRecommendation={handleLeaveRecommendation} showDetails={1} onSave={writeRecommendationToServer}/>                    
+          <RecommendationTile 
+            recommendation={filteredHabit[0]} 
+            handleJoinRecommendation={handleJoinRecommendation} 
+            handleLeaveRecommendation={handleLeaveRecommendation} 
+            showDetails={1} 
+            onSave={writeRecommendationToServer}
+            onDelete={handleDeleteRecommendation}
+          />                    
           <Link className="back-to-recommendations" to={`/?showHabits=${careType}`}>Back to Recommendations</Link>
         </div>
       ) : (
@@ -154,7 +185,11 @@ const RecommendationsPage = (props) => {
               <div className="recommendation-container">
                 {filteredRecos.map((recommendation, index) => (
                   <Link className="URL" to={`/?showHabits=${recommendation.type}&habit=${recommendation._id}`}>                                  
-                    <RecommendationTile recommendation={recommendation} handleJoinRecommendation={handleJoinRecommendation} handleLeaveRecommendation={handleLeaveRecommendation} showDetails={0}/>
+                    <RecommendationTile 
+                      recommendation={recommendation} 
+                      handleJoinRecommendation={handleJoinRecommendation} 
+                      handleLeaveRecommendation={handleLeaveRecommendation} 
+                      showDetails={0}/>
                   </Link>                                 
                 ))}
               </div>
@@ -205,19 +240,23 @@ const RecommendationsPage = (props) => {
               <input
                   type="text"
                   name="title"
-                  className="input-field"
+                  className="title-field"
                   placeholder="Enter Title"
                   value={newRecommendation.title}
                   onChange={handleChange}
               />
-              <input
-                  type="text"
-                  name="url"
-                  className="input-field"
-                  placeholder="Enter URL"
-                  value={newRecommendation.url}
+              <select
+                  name="type"
+                  className="type-field"
+                  value={newRecommendation.type}
                   onChange={handleChange}
-              />
+                >
+                  {headlines.slice(0, 5).map(([type, description, label]) => (
+                    <option key={type} value={type}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
               <button className="save-button" onClick={handleAddRecommendation}>Save</button>
               <button className="cancel-button" onClick={() => setShowInputFields(false)}>Cancel</button>
               </>

@@ -44,8 +44,9 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
   return (
     <div className="self-care-circles-canvas">
       <h3>Self Care Circles</h3>
-      Join a self care circle, easily track time & share insights with your team members. 
-      <div className="circle-container">      
+      Join a self care circle, easily track time & share insights with your team members. Explore and create self care circles here -  
+      <Link to="/?showHabits=1"> Mental Care</Link>, <Link to="/?showHabits=2">Physical Care</Link>, <Link to="/?showHabits=3">Spiritual Care</Link>, <Link to="/?showHabits=4">Social Care</Link>.
+      <div className="circle-container">              
         {circles.map((circle, index) => (
           <div>
             <div className="circle" key={index}>        
