@@ -106,7 +106,7 @@ function DailySelfCareChallenge({ onSubmit, onClose }) {
           <div className='row'>
             <Button className="challenge-complete" onClick={dailyChallengeComplete}>
               <FontAwesomeIcon icon={faTrophy} className="icon" /> {/* Trophy icon */}              
-              <b>Challenge Completed !!</b>
+              <b>Complete Challenge</b>
               <FontAwesomeIcon icon={faSmile} className="icon" /> {/* Smile icon */}              
             </Button>
           </div>
