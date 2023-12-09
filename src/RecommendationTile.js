@@ -50,6 +50,7 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
     const refreshComments = useCallback (async () => {
         const result = await getRecommendationComments(recommendation._id);
         buildReactionsMap(result);
+        setComments(null);
         setComments(result);        
     }, [recommendation._id, buildReactionsMap]);
 

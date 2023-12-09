@@ -269,6 +269,7 @@
   align-items: flex-end;
   justify-content: center;
   display: flex;
+  font-size: 14px;
 }
 
 .new-comment input {

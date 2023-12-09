@@ -55,15 +55,19 @@ const TimerInputField = ({value, placeholder, setValue}) => {
 
         {showDialog && (
             <div className="dialog">
-                <span className="close-button" onClick={handleClose}>
-                    <FontAwesomeIcon icon={faTimes} /> 
-                </span>                        
-                <ReactCountdownClock seconds={timerValue}
-                     color="green"
-                     alpha={1}
-                     size={100}
-                     fontsize={20}
-                     onComplete={handleStop} />                
+                <div className="dialog-content">
+                    <span className="close-button" onClick={handleClose}>
+                        <FontAwesomeIcon icon={faTimes} />
+                    </span>
+                    <ReactCountdownClock
+                        seconds={timerValue}
+                        color="green"
+                        alpha={0.8}
+                        size={100}
+                        fontsize={12}
+                        onComplete={handleStop}
+                    />
+                </div>
             </div>
         )}
     </div>
