@@ -79,15 +79,16 @@
   .feedback-button {
     color: #fff;
     padding: 0px 0px;
-    border-radius: 20px;
     cursor: pointer;
     border: none;    
     /*z-index: 5000;*/
   }
   
   .feedback-button .feedback-icon {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 30px;    
+    border: 1px solid black;
+    border-radius: 20px;
   }
 
   .sign-out-button {

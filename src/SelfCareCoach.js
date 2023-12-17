@@ -71,7 +71,7 @@ const SelfCareCoach = () => {
       {label: 'Have I been consistent in my self care routine?', value: 'Have I been consistent in my self care routine?'},
       {label: 'How does my physical care compare to the best of my peers?', value: 'How does my physical care compare to the best of my peers?'},
       {label: 'What social care circles can i join with my peers?', value: 'What social care circles can i join with my peers?'},
-      {label: 'What spiritial care circles do my peers participate in?', value: 'What spiritial care circles do my peers participate in?'}
+      {label: 'What spiritual care circles do my peers participate in?', value: 'What spiritual care circles do my peers participate in?'}
     ]);
 
     return () => {

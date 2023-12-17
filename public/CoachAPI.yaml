@@ -1,0 +1,13 @@
+openapi: '3.0.2'
+info:
+  title: Selp Help Coach API
+  version: '1.0'
+servers:
+  - url: https://amplifycaresserver.azurewebsites.net
+    description: Azure server
+paths:
+  /seekCoaching:
+    post:
+      responses:
+        '200':
+          description: OK
