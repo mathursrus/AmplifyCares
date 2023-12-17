@@ -15,7 +15,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;        
+    margin-top: 0px;        
   }
   
   .self-care-coach-container .rcw-conversation-container {
@@ -70,6 +70,7 @@
 
   .self-care-coach-container .quick-buttons-container {
     width: 100%;    
+    white-space: break-spaces;
   }
 
   .self-care-coach-container .quick-buttons-container .quick-buttons {
