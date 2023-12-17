@@ -60,7 +60,7 @@ function TeamList() {
 
   
   return (
-    <div>
+    <div className="team-list-container">
       <div style={{marginTop: '5rem'}}/>
       <div style={{marginTop: '1rem'}}/>
       <center>

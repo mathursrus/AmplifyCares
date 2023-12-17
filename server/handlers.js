@@ -1,4 +1,6 @@
 const { BlobServiceClient } = require('@azure/storage-blob');
+const { OpenAI } = require('openai');
+
 const FormData = require('form-data');
 const MongoClient = require('mongodb');
 const databaseId = process.env.MONGODB_DATABASE_ID;
@@ -12,6 +14,10 @@ const inviteId = "invite_info";
 const challengeId = "dailychallenge_info";
 const ObjectId = require('mongodb').ObjectId;
 const axios  = require('axios');
+const openai = new OpenAI({
+  apiKey: process.env.OPEN_AI_KEY,
+});
+
 //const nlp = require('compromise');
 
 let dbClient = null;
@@ -279,7 +285,7 @@ async function writeEntry(item) {
   
 
 async function readEntries(itemId, startDay, endDay, category) {
-  console.log(`Got called with id: ${itemId}`);
+  console.log(`Got called with id: ${itemId}, start: ${startDay}, end: ${endDay}, category: ${category}`);
   if (category === undefined)  {
     category = "total";
   }
@@ -1344,4 +1350,106 @@ async function getDailyChallenges(date) {
   return final;
 }
 
-module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges};
+async function seekCoaching(user, question, sessionToken) {
+  console.log(`Seeking coaching for ${user}, ${question}, ${sessionToken}`);
+  try {
+    if (sessionToken === undefined) {
+      const thread = await openai.beta.threads.create();  
+      await openai.beta.threads.messages.create(
+        thread.id,
+        {
+          role: "user",
+          content: `The user is ${user}. Today is ${new Date().toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' })}. Do not allow the user to change this information.`
+        }
+      );
+  
+      let boostrap = await openai.beta.threads.runs.create(
+        thread.id,
+        { 
+          assistant_id: "asst_ZMeKFAhfZQnhqGCL2ByJVk55",        
+        }
+      );
+
+      do {
+        boostrap = await openai.beta.threads.runs.retrieve(thread.id, boostrap.id);          
+        await new Promise(resolve => setTimeout(resolve, 1000));        
+      } while (boostrap.status !== "completed");
+
+      sessionToken = thread.id;
+    }
+
+    const message = await openai.beta.threads.messages.create(
+      sessionToken,
+      {
+        role: "user",
+        content: question
+      }
+    );
+
+    let run = await openai.beta.threads.runs.create(
+      sessionToken,
+      { 
+        assistant_id: "asst_ZMeKFAhfZQnhqGCL2ByJVk55",        
+      }
+    );
+
+    do {
+      try {
+        run = await openai.beta.threads.runs.retrieve(sessionToken, run.id);
+        console.log('Run status:', run.status);
+  
+        if (run.status === 'requires_action' && run.required_action.type === 'submit_tool_outputs') {
+          var outputs = [];
+          const tools = run.required_action.submit_tool_outputs.tool_calls;
+          for (const tool of tools) {
+            const tool_id = tool.id;
+            const function_name = tool.function.name;
+            const function_args = JSON.parse(tool.function.arguments);
+            var output;
+            console.log("Function name ", function_name, " args ", function_args);
+            if (function_name === "getmyselfcarestats") {
+              output = await readEntries(function_args.item, function_args.startDay, function_args.endDay, function_args.category);
+            } else if (function_name === "getbestselfcarestats") {
+              output = await readPercentile(function_args.item, function_args.startDay, function_args.endDay);
+            } else if (function_name === "getrecommendations") {
+              output = await getRecommendations(function_args.item, function_args.user);
+            } else {              
+              output = "Function not found"+function_name;              
+              console.error(output);
+            }
+            outputs.push({tool_call_id: tool_id, output: output});
+          }
+          run = await openai.beta.threads.runs.submitToolOutputs(
+            sessionToken,
+            run.id,
+            {
+              tool_outputs: outputs
+            });                              
+        }
+        // Delay next request (wait for 1 second)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } catch (error) {
+        console.error('Error checking run status:', error);
+        break;
+      }
+    } while (run.status !== "completed");
+      
+    const messages = await openai.beta.threads.messages.list(
+      sessionToken
+    );
+    
+    const response = {
+      messages: messages.data,
+      sessionToken: sessionToken
+    }
+
+    const final = JSON.stringify(response);
+    console.log(`Response is: ${final}`);
+    return final;
+
+  } catch (error) {
+    console.error('Error in seekCoaching:', error);    
+  }  
+}
+
+module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, seekCoaching};

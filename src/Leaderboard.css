@@ -1,11 +1,11 @@
 .leaderboard-container {
-    width: 60%;
+    width: 90%;
     margin: auto;
     margin-top: 50px;
     border: 1px solid black;
-    background-color: lightcyan;
     border-radius: 5px;
     overflow: hidden;
+    z-index: 10;
   }
   
   .medal-podium {
@@ -191,20 +191,22 @@
   }
 
   .challenge-creation-container {
-    width: 60%;
+    width: 90%;
     margin: auto;
     margin-top: 20px;
     border-radius: 5px;
     overflow: hidden;
+    z-index: 10;
   }
 
   .challenge-results-container {
-    width: 60%;
+    width: 90%;
     margin: auto;
     margin-top: 20px;
     border: 1px solid black;
     background-color: lightcyan;
     border-radius: 5px;
     overflow: hidden;
+    z-index: 10;
   }
   

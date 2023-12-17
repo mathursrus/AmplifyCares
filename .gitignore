@@ -102,3 +102,10 @@ AmplifyCaresTeamsApp/templates/azure/provision/identity.bicep
 src/utils/urlUtil.js
 src/utils/urlUtil.js
 src/.env
+auth/createmessage.http
+auth/createrun.http
+auth/createthread.http
+auth/getassistant.http
+auth/getrun.http
+auth/getthread.http
+auth/seekcoaching.http

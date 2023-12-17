@@ -14,6 +14,7 @@ import * as microsoftTeams from "@microsoft/teams-js";
 import { features } from "./FirstRunExperience";
 import './App.css';
 import { refreshUserInfo } from "./utils/userUtil";
+import SelfCareCoach from "./SelfCareCoach";
 
 const config = {
   auth: {
@@ -334,13 +335,14 @@ function AppPage() {
               <Route path="submit-time-page" element={<SubmitTimePage />} />
               <Route path="leaderboard" element={<Leaderboard />} />
               <Route path="team-list" element={<TeamList />} />
+              <Route path="self-care-coach" element={<SelfCareCoach />} />
             </Route>
           </Routes>
           <FeedbackWidget />
           {!(inTeams) && (
             <div>
               <button className="sign-out-button" onClick={handleLogout}>
-                Sign Out
+                <img className="signout-icon" src='signout.png' alt='Sign Out' title='Sign Out' />            
               </button>
             </div>
           )}

@@ -96,6 +96,13 @@ function Layout() {
               >
                 Team List
               </Nav.Link>
+              <Nav.Link
+                as={Link}
+                to="/self-care-coach"
+                className={location.pathname === '/self-care-coach' ? 'active' : ''}
+              >
+                Your Self Care Coach
+              </Nav.Link>
             </Nav>
             <Nav className="justify-content-end">
               <Nav.Link onClick={handleAboutAmplifyCares}>

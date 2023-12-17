@@ -1,10 +1,18 @@
 .feedback-widget {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 10px;
+    right: 10px;
+    /*z-index: 5000;*/
+  }
+
+  .feedback-widget:hover {
     z-index: 5000;
   }
   
+  .feedback-widget:active {
+    z-index: 5000;
+  } 
+
   .feedback-widget.open .feedback-button {
     display: none;
   }
@@ -69,44 +77,46 @@
   }
   
   .feedback-button {
-    background-color: rgb(38, 128, 212);
     color: #fff;
-    padding: 10px 20px;
+    padding: 0px 0px;
     border-radius: 20px;
     cursor: pointer;
-    border: none;
+    border: none;    
+    /*z-index: 5000;*/
   }
   
-  .feedback-button:hover {
-    background-color: #354fe5;
+  .feedback-button .feedback-icon {
+    width: 50px;
+    height: 50px;
   }
-  
-  .feedback-button:active {
-    background-color: #322fd3;
-  }
-  
+
   .sign-out-button {
     /* Update the styles to match the feedback widget */
-    background-color: rgb(38, 128, 212);
+    background-color:transparent;
     color: #fff;
-    padding: 10px 20px;
+    padding: 0px 0px;
     border-radius: 20px;
     cursor: pointer;
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 5000;
+    bottom: 10px;
+    left: 10px;
+    /*z-index: 5000;*/
     border: none;
   }
   
+  .sign-out-button .signout-icon {
+    width: 40px;
+    height: 40px;
+  }
+
   .sign-out-button:hover {
     /* Update the styles as needed */
-    background-color: #354fe5;
+    z-index: 5000;
   }
   
   .sign-out-button:active {
     /* Update the styles as needed */
-    background-color: #322fd3;
+    z-index: 5000;
   }
 
   .video-title {

@@ -331,7 +331,7 @@ const FeedbackWidget = () => {
         )
       ) : (
         <div className="feedback-button" onClick={handleOpen}>
-          Feedback
+          <img className="feedback-icon" src='feedback.png' alt='Feedback' title='Feedback' />            
         </div>
       )}
     </div>

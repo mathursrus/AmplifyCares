@@ -46,3 +46,15 @@ export const postWithToken = async (endpoint, object, token) => {
       };
       return fetch(getApiUrl(endpoint), requestOptions);
 }
+
+export const postWithBodyAndToken = async (endpoint, body, token) => {         
+    const requestOptions = {
+        method: "POST", 
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      };
+      return fetch(getApiUrl(endpoint), requestOptions);
+}

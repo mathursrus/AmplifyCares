@@ -1,7 +1,9 @@
 .submit-time-container.container {
     position: relative;
-    width: 100%;
+    width: 90%;
+    max-width: 90%;
     height: 100%;
+    z-index: 10;
     /*background-color: rgb(104, 119, 119);*/
   }
 
@@ -17,6 +19,11 @@
     justify-content: center;
     width: 100%;
     margin-bottom: 10px;
+  }
+
+  .time-entry-form .submit-time {
+    width: 100%;
+    border-radius: 20px;
   }
 
   .talk-to-enter {
@@ -196,7 +203,7 @@
   width:100%;
   height: 100%;
   margin-left: 5px;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 10px;
   background: #ffffff;
   display:flex;

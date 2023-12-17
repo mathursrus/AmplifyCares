@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Widget, addResponseMessage, addUserMessage, deleteMessages, setQuickButtons, toggleWidget } from 'react-chat-widget';
 import { getApiHost } from './utils/urlUtil';
 import 'react-chat-widget/lib/styles.css';
-import './CoPilot.css'; // Import a CSS file for styling
+//import './CoPilot.css'; // Import a CSS file for styling
 
 const CoPilot = ({endpoint, userprompts, systemprompts}) => {
   const [selectedOption, setSelectedOption] = useState(null);  

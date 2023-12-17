@@ -564,10 +564,13 @@ import { refreshUserInfo } from './utils/userUtil';
                     <br></br>
                     <br></br>
                     <div className='row'>
-                        <Button onClick={handleSubmit}><b>{isEditMode ? 'Update ' : 'Submit '}Your Self-Care Time</b></Button>
+                        <center>
+                            <Button className="submit-time" onClick={handleSubmit}><b>{isEditMode ? 'Update ' : 'Submit '}Your Self-Care Time</b></Button>
+                        </center>
                         {animation > 0  && 
                             <Confetti gravity={0.2} width={window.width} height={window.height}/>
-                        }                                            
+                        }       
+
                     </div>
                 </form>
             </Container>

@@ -1,0 +1,87 @@
+/* Style the chat container */
+.self-care-coach-container  {
+    align-self: center;
+    position: relative;
+    width: 90%;     
+    display: flex;  
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+.self-care-coach-container .rcw-widget-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;        
+  }
+  
+  .self-care-coach-container .rcw-conversation-container {
+    width: 100%; /* Use 100% to take the full width of the parent container */
+    height: 100%; /* Use 100% to take the full width of the parent container */
+    margin: auto;
+    margin-top: 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  /* Style the widget header (title, icon, etc.) */
+  .self-care-coach-container .rcw-conversation-container .rcw-header {
+    padding: 10px;
+    color: black;
+  }
+
+  .self-care-coach-container .rcw-new-message {
+    width: 100%;
+  }
+
+  .self-care-coach-container .rcw-client .rcw-message-text {
+    align-self: flex-end;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .self-care-coach-container .rcw-response .rcw-message-text {
+    align-self: flex-start;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .self-care-coach-container .rcw-picker-btn {
+    display: none;
+  }
+  
+  .self-care-coach-container .rcw-sender {
+    align-items: center; /* Change to white or any text color that suits the background */
+  }
+
+  /* Style the send message button */
+.self-care-coach-container .rcw-send-icon {
+    height: 30px;
+  }
+
+  .self-care-coach-container .rcw-launcher.rcw-hide-sm {
+    display: none;
+  }
+
+  .self-care-coach-container .quick-buttons-container {
+    width: 100%;    
+  }
+
+  .self-care-coach-container .quick-buttons-container .quick-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .self-care-coach-container .quick-button {
+    border: 1px solid cyan;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+  }
+  
+  

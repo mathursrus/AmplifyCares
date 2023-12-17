@@ -264,4 +264,17 @@ const getDailyChallenges = {
     }
 }
 
-module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges};
+const seekCoaching = {
+    method: 'post',
+    path: '/seekCoaching', 
+    handler: async (req, res) => {
+        const question = req.body.question; 
+        const user = req.body.user; 
+        const sessionId = req.body.sessionId;        
+        const response = await handlers.seekCoaching(user, question, sessionId);
+
+        res.status(200).json(response);
+    }
+}
+
+module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, seekCoaching};

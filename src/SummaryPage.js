@@ -6,9 +6,6 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts'
 import { getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import CoPilot from './CoPilot';
 
 const SummaryPage = () => {
 
@@ -37,27 +34,8 @@ const SummaryPage = () => {
   // Set the startDay to the first day of the previous month
   const firstDayOfPreviousMonth = new Date(lastMonthsYear, lastMonth, 1);
   const [startDay, setStartDay] = useState(firstDayOfPreviousMonth);
-
-  // copilot
-  const [showCopilot, setShowCopilot] = useState(false);
-
   const summaryChartRef = useRef(null);
   const [summaryChartWidth, setSummaryChartWidth] =useState(0);
-
-  // prompts with insights
-  const userPrompts = [
-    "How is my self-care routine?",
-    "Can you suggest self-care activities for reducing stress and improving mental well-being?",
-    "Learning from others in my team, what activities can I easily incorporate into my self-care routine?",
-    "How can I improve my social care activities?"
-  ]
-
-  const systemPrompts = [
-    "How is my self-care routine? Am I consistent across week days, week ends? Are there particular days where I am doing or not doing an activity? What am I doing well and what am I not?",
-    "What activities should I focus on for stress reduction and mental well-being? Am I already doing some, what am I not doing?",
-    "In addition to what I am doing, what are some easy activities I can incorporate into my self-care routine? When should I do them?",
-    "How is my social care? What can I do to improve social well being and gain joy from giving and interacting with others?"
-  ]
       
   const processChartData = useCallback((selfCareData, medianCareData, highCareData, start, end) => {
     const myData = [];
@@ -259,10 +237,7 @@ const SummaryPage = () => {
     return result;
   }
 
-  function launchCopilot() {
-    setShowCopilot(true);
-  }
-
+  
   function findMaxMinValues(careData) {
     let max = 0;
     let min = 100000;
@@ -297,7 +272,7 @@ const SummaryPage = () => {
   }
 
   return (
-    <div>            
+              
     <div className="legend-container"> 
       <div ref={summaryChartRef} className="summary-container">
         <DateRange
@@ -305,10 +280,7 @@ const SummaryPage = () => {
           endDay={endDay}
           setStartDay={setStartDay}
           setEndDay={setEndDay}
-          message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })} - ${endDay.toLocaleString('en-US', { month: 'long' })} ${endDay.toLocaleString('en-US', { year: 'numeric' })}`}
-          image={"Copilot.png"}
-          imageTitle={"Your self-care copilot"}
-          onImageClick={() => launchCopilot()}
+          message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })} - ${endDay.toLocaleString('en-US', { month: 'long' })} ${endDay.toLocaleString('en-US', { year: 'numeric' })}`}          
           />        
 
         <center>
@@ -519,7 +491,7 @@ const SummaryPage = () => {
         <br />
       </div>             
     </div>
-    {showCopilot && (
+    /*{showCopilot && (
           <div className="flyout show">            
               <div className="flyout-header">
                   {console.log("Opening copilot")}
@@ -527,8 +499,8 @@ const SummaryPage = () => {
                   <CoPilot endpoint={"getselfcareinsights"} userprompts={userPrompts} systemprompts={systemPrompts} />
               </div>                      
           </div>
-      )}
-    </div>
+      )}*/
+    
   );
 };
 
