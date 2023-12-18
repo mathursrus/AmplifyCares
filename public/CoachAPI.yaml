@@ -1,6 +1,6 @@
 openapi: '3.0.2'
 info:
-  title: Selp Help Coach API
+  title: Self Help Coach API
   version: '1.0'
 servers:
   - url: https://amplifycaresserver.azurewebsites.net

@@ -1,9 +1,15 @@
-Descriptor: "Self Help Coach API"
-Name: "CoachAPI"
-DisplayName: "Self Help Coach"
-Description: "Self Help Coach"
-SkillGroups:
-    - Format: API
-      Settings:
-        OpenApiSpecUrl: https://amplifycaresserver.azurewebsites.net/public/CoachAPI.yaml
-        API Authentication:          
+{
+    "Descriptor": "Self Help Coach API",
+    "Name": "CoachAPI",
+    "DisplayName": "Self Help Coach",
+    "Description": "Self Help Coach",
+    "SkillGroups": [
+        {
+            "Format": "API",
+            "Settings": {
+                "OpenApiSpecUrl": "https://amplifycares.yourorgcares.com/CoachAPI.yaml",
+                "API Authentication": "None"
+            }
+        }
+    ]
+}
