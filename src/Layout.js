@@ -59,9 +59,9 @@ function Layout() {
           <div style={{ marginRight: '50px' }}>
             <Navbar.Brand as={Link} to="/submit-time-page">
               <img
-                src={'/AmplifyCaresLogo.png'}
+                src={'/WhoCares.png'}
                 alt="Amplify Cares"
-                height="50"
+                height="150"
               />            
             </Navbar.Brand>
           </div>
