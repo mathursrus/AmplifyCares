@@ -1,0 +1,17 @@
+{
+    "schema_version": "v1",
+    "name_for_human": "Self Help Coach Plugin",
+    "name_for_model": "Self Help Coach Plugin",
+    "description_for_human": "Self Help Coach to help you be the best version of you.",
+    "description_for_model": "Coach for helping users with their self care needs. Tracking self care time, activities, comparison to peers, self care circles, competitive leaderboards and all things related to physical, mental, social, spiritual self care",
+    "auth": {
+      "type": "none"
+    },
+    "api": {
+      "type": "openapi",
+      "url": "https://amplifycaresserver.azurewebsites.net/CoachAPI.json"
+    },
+    "logo_url": "https://amplifycares.yourorgcares.com/logo512.png",
+    "contact_email": "sid.mathur@gmail.com",
+    "legal_info_url": "https://amplifycares.yourorgcares.com/legal"
+  }

@@ -1,0 +1,106 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Self Help Coach API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://amplifycaresserver.azurewebsites.net",
+      "description": "Azure server"
+    }
+  ],
+  "paths": {
+    "/seekCoaching": {
+      "post": {
+        "operationId": "seekCoaching",
+        "summary": "Get a string back with the coach's response",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "question",
+                  "user"
+                ],
+                "properties": {
+                  "question": {
+                    "type": "string",
+                    "description": "The question being asked by the user."
+                  },
+                  "user": {
+                    "type": "string",
+                    "description": "The user asking the question."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "messages": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "The coach's response."
+                    },
+                    "sessionToken": {
+                      "type": "string",
+                      "description": "The session Id."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "seekCoachingRequest": {
+        "type": "object",
+        "required": [
+          "question"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The question being asked by the user."
+          },
+          "user": {
+            "type": "string",
+            "description": "The user asking the question."
+          }
+        }
+      },
+      "seekCoachingResponse": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The coach's response."
+          },
+          "sessionToken": {
+            "type": "string",
+            "description": "The session Id."
+          }
+        }
+      }
+    }
+  }
+}
