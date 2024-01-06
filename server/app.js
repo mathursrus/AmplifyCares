@@ -34,6 +34,8 @@ var writeReactionToComment = routesModules.writeReactionToComment;
 var writeFeedback = routesModules.writeFeedback;
 var sendInvite = routesModules.sendInvite;
 var getDailyChallenges = routesModules.getDailyChallenges;
+var getUserGoals = routesModules.getUserGoals;
+var writeUserGoals = routesModules.writeUserGoals;
 var seekCoaching = routesModules.seekCoaching;
 
 async function startSignalRHub() {
@@ -117,6 +119,8 @@ app[writeReactionToComment.method](writeReactionToComment.path, writeReactionToC
 app[writeFeedback.method](writeFeedback.path, writeFeedback.handler);
 app[sendInvite.method](sendInvite.path, sendInvite.handler);
 app[getDailyChallenges.method](getDailyChallenges.path, getDailyChallenges.handler);
+app[getUserGoals.method](getUserGoals.path, getUserGoals.handler);
+app[writeUserGoals.method](writeUserGoals.path, writeUserGoals.handler);
 app[seekCoaching.method](seekCoaching.path, seekCoaching.handler);
 
 app.post('/hub/negotiate', (req, res) => {  

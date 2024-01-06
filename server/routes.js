@@ -264,6 +264,29 @@ const getDailyChallenges = {
     }
 }
 
+const getUserGoals = {
+    method: 'get',
+    path: '/getusergoals', 
+    handler: async (req, res) => {
+        const token = await req.headers.authorization.split(' ')[1];  
+        const response = await handlers.getUserGoals(token);
+
+        res.status(200).json(response);
+    }
+}
+
+const writeUserGoals = {
+    method: 'post',
+    path: '/writeusergoals', 
+    handler: async (req, res) => {
+        const goals = req.body.item; 
+        const token = await req.headers.authorization.split(' ')[1]; 
+        const response = await handlers.writeUserGoals(goals, token);
+
+        res.status(200).json(response);
+    }
+}
+
 const seekCoaching = {
     method: 'post',
     path: '/seekCoaching', 
@@ -277,4 +300,4 @@ const seekCoaching = {
     }
 }
 
-module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, seekCoaching};
+module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching};

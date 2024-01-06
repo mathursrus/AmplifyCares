@@ -40,15 +40,29 @@ db.invite_info.find();
 
 // all daily challenges
 use('amplifycares-db-catita');
-db.dailychallenge_info.find();
+db.dailychallenge_info.find({Date: {$gt: new Date('2024-01-01')}});
 
 // populate many daily challenges
 use('amplifycares-db-catita');
 db.dailychallenge_info.insertOne({
-  Date: new Date("2023-12-05"),
-  challenge: "Spiritual Care -  Take 2 minutes to ponder the wisdom in this quote and how it relates to your own spiritual journey - The soul usually knows what to do to heal itself. The challenge is to silence the mind.",
+  Date: new Date("2024-01-17"),
+  challenge: "Spiritual Care - The 2 minute affirmation prayer. Affirm your beliefs and seek strength or guidance from a higher power.\
+  Minute 1: Find a quiet space where you can be undisturbed. Stand, sit, or kneel in a way that feels respectful and comfortable for your practice. Take a moment to breathe deeply and center yourself. \
+  Minute 2: Select an affirmation or short prayer that resonates with your beliefs and current needs. It might be a request for strength, peace, wisdom, or gratitude. Repeat this affirmation or prayer slowly and with intention, focusing deeply on the words and their meaning. Feel the connection with your higher power as you speak.\
+  Guidelines:\
+  Choose or craft an affirmation or prayer that genuinely reflects your feelings and aspirations. It should be something that speaks to your heart and reinforces your spiritual path.\
+  As you repeat the words, visualize the positive change or support manifesting in your life. Feel the presence and support of the higher power enveloping you.",
   activityType: 3
   });
+
+
+// all goals
+use('amplifycares-db-catita');
+db.goal_info.find({username:"sidm@microsoft.com"});
+
+// delete some goals 
+use('amplifycares-db-catita');
+db.goal_info.deleteMany({identity: "hi there"});
 
 // delete some invites
 use('amplifycares-db-catita');

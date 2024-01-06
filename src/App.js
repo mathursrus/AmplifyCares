@@ -15,6 +15,7 @@ import { features } from "./FirstRunExperience";
 import './App.css';
 import { refreshUserInfo } from "./utils/userUtil";
 import SelfCareCoach from "./SelfCareCoach";
+import Goals from "./Goals";
 
 const config = {
   auth: {
@@ -82,7 +83,7 @@ function AppPage() {
 
   const [logoutComplete, setLogoutComplete] = useState(false);
   const user = useRef(null);
-  const [userExists, setUserExists] = useState(false);
+  const [userExists, setUserExists] = useState(true);
   const [inTeams, setInTeams] = useState(false);
   const [showFirstRunExperience, setShowFirstRunExperience] = useState(0);
   const AUTH_STATE = "authentication_state";
@@ -336,6 +337,7 @@ function AppPage() {
               <Route path="leaderboard" element={<Leaderboard />} />
               <Route path="team-list" element={<TeamList />} />
               <Route path="self-care-coach" element={<SelfCareCoach />} />
+              <Route path="goals" element={<Goals />} />
             </Route>
           </Routes>
           <FeedbackWidget />

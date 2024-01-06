@@ -103,6 +103,13 @@ function Layout() {
               >
                 Your Self Care Coach
               </Nav.Link>
+              <Nav.Link
+                as={Link}
+                to="/goals"
+                className={location.pathname === '/goals' ? 'active' : ''}
+              >
+                Goals
+              </Nav.Link>
             </Nav>
             <Nav className="justify-content-end">
               <Nav.Link onClick={handleAboutAmplifyCares}>

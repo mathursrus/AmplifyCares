@@ -12,6 +12,7 @@ const reactionsId = "reactions_info";
 const userId = "userInfo";
 const inviteId = "invite_info";
 const challengeId = "dailychallenge_info";
+const goalId = "goal_info";
 const ObjectId = require('mongodb').ObjectId;
 const axios  = require('axios');
 const openai = new OpenAI({
@@ -29,6 +30,7 @@ let container = null;
 let user_container = null;
 let invite_container = null;
 let challenge_container = null;
+let goal_container = null;
 
 async function getMongoDbClient() {
   if (!dbClient) {
@@ -107,19 +109,33 @@ async function getDailyChallengeContainer() {
   return challenge_container;
 }
 
+async function getGoalContainer() {
+  if (!goal_container) {
+    var cl = await getMongoDbClient();
+    goal_container = await cl.collection(goalId);
+    console.log(goal_container);
+  }
+  return goal_container;
+}
+
+function getUserNameFromToken(token) {
+  // Split the token into header, payload, and signature
+  const [headerB64, payloadB64] = token.split('.');
+
+  // Decode the base64-encoded header and payload
+  const header = JSON.parse(atob(headerB64));
+  const payload = JSON.parse(atob(payloadB64));
+
+  //console.log('Decoded Header:', header);
+  //console.log('Decoded Payload:', payload);
+  const user = payload.preferred_username;
+  return user.trim();
+}
+
 async function getUserInfoWithToken(token) {
   try {
       console.log("Success: ", token);
-      // Split the token into header, payload, and signature
-      const [headerB64, payloadB64] = token.split('.');
-
-      // Decode the base64-encoded header and payload
-      const header = JSON.parse(atob(headerB64));
-      const payload = JSON.parse(atob(payloadB64));
-
-      console.log('Decoded Header:', header);
-      console.log('Decoded Payload:', payload);
-      const user = payload.preferred_username;
+      const user = getUserNameFromToken(token);
       
       return getUserInfo(user);
   } catch (err) {
@@ -212,14 +228,7 @@ function lemmatizeActivities(activityArray) {
 
 async function writeEntryWithToken(item, token) {
   try {
-      // Split the token into header, payload, and signature
-      const [headerB64, payloadB64] = token.split('.');
-
-      // Decode the base64-encoded header and payload
-      const header = JSON.parse(atob(headerB64));
-      const payload = JSON.parse(atob(payloadB64));
-
-      const user = payload.preferred_username;
+      const user = getUserNameFromToken(token);
       if (user !== item.name) throw Error("UPN is " + user + ", entry is for " + item.name);
       
       return writeEntry(item);
@@ -1296,7 +1305,44 @@ async function sendmail() {
   sgMail.send(msg);
 }
   
+async function getUserGoals(userToken) {
+  const user = getUserNameFromToken(userToken);
+  const ct = await getGoalContainer();
+  const goals = await ct.find({username:user}).toArray();
+  const final = JSON.stringify(goals);
+  console.log("User '",user,"' has goals ",final);
+  return final;
+}
+ 
+async function writeUserGoals(goals, userToken) {
+  const user = getUserNameFromToken(userToken);
+  const ct = await getGoalContainer();
+  const existingItem = await ct.findOne({ _id: ObjectId(goals._id) });
+  const isEmptyItem = (goals.identity === '');
+  var result = goals._id;
+  if (existingItem) {
+    goals._id = ObjectId(goals._id);  
+    if (isEmptyItem) {
+      // if all entries are 0, then delete
+      ct.deleteOne({ _id: goals._id });
+      console.log('Goal deleted:', goals._id);
+    }    
+    else {      
+      // Item exists, perform an update
+      await ct.updateOne({ _id: goals._id }, { $set: goals });
+      console.log('Goal updated:', goals._id);        
+    }
+  }
+  else {
+    goals.username = user; 
+    const final = await ct.insertOne(goals);
+    result = final.insertedId;
+    console.log('Item inserted:', result);
+  }
   
+  return result;
+}
+
 async function getDailyChallenges(date) {  
   console.log("Getting challenge for date ", date);
     
@@ -1452,4 +1498,4 @@ async function seekCoaching(user, question, sessionToken) {
   }  
 }
 
-module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, seekCoaching};
+module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching};
