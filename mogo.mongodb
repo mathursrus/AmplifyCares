@@ -58,11 +58,11 @@ db.dailychallenge_info.insertOne({
 
 // all goals
 use('amplifycares-db-catita');
-db.goal_info.find({username:"sidm@microsoft.com"});
+db.goal_info.find({username: {$regex: "sidm*"}});
 
 // delete some goals 
 use('amplifycares-db-catita');
-db.goal_info.deleteMany({identity: "hi there"});
+db.goal_info.deleteMany({identity: "226C-FD66"});
 
 // delete some invites
 use('amplifycares-db-catita');

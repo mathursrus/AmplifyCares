@@ -36,7 +36,7 @@ function Goals() {
           const data = await response.json();
           const final = JSON.parse(data);
           console.log("Got user goals ", final);
-          setUserGoals(final[0]);
+          setUserGoals(final.length>0?final[0]:{});
       }
     } catch (error) {
         console.error('Error fetching entries:', error);

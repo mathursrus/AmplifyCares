@@ -48,8 +48,8 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
       <Link to="/?showHabits=1"> Mental Care</Link>, <Link to="/?showHabits=2">Physical Care</Link>, <Link to="/?showHabits=3">Spiritual Care</Link>, <Link to="/?showHabits=4">Social Care</Link>.
       <div className="circle-container">              
         {circles.map((circle, index) => (
-          <div>
-            <div className="circle" key={index}>        
+          <div key={index}>
+            <div className="circle">        
               <Link to={`/?showHabits=${circle.type}&habit=${circle._id}&rand=${Math.random(1000)}`}>                
                 <div className="participants-info" title={getParticipantsTooltip(circle)}>
                   <FontAwesomeIcon className="badge" icon={faUserFriends} /> {circle.participants.length}

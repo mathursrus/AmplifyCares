@@ -83,7 +83,7 @@ function AppPage() {
 
   const [logoutComplete, setLogoutComplete] = useState(false);
   const user = useRef(null);
-  const [userExists, setUserExists] = useState(true);
+  const [userExists, setUserExists] = useState(false);
   const [inTeams, setInTeams] = useState(false);
   const [showFirstRunExperience, setShowFirstRunExperience] = useState(0);
   const AUTH_STATE = "authentication_state";
@@ -141,7 +141,7 @@ function AppPage() {
   }, []);
 
   const getAndSetUserInfo = useCallback(async (token) => {
-    const userInfo = await refreshUserInfo();
+    const userInfo = await refreshUserInfo(token);
     let badges = null;
     let lastLogin = null;
     console.log("Got user info ", userInfo);
