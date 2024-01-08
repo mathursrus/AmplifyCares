@@ -62,7 +62,7 @@ db.goal_info.find({username: {$regex: "sidm*"}});
 
 // delete some goals 
 use('amplifycares-db-catita');
-db.goal_info.deleteMany({identity: "226C-FD66"});
+db.goal_info.deleteMany({username: {$regex: "sidm*"}});
 
 // delete some invites
 use('amplifycares-db-catita');

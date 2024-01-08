@@ -22,26 +22,46 @@
     font-weight: 600;
   }
 
+  .goal-page .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .goal-page .next-step {
+    width: fit-content;
+    align-self: baseline;
+    margin: 5px;
+    background-color: rgb(1, 96, 7);
+    font-size: 12px;
+  }
+
+  .goal-page .svg-inline--fa {
+    margin-left: 10px;
+  }
+
   .identity {
     background-color: white;
-    margin-bottom: 20px;    
     border-radius: 15px;
-    width: 90%;
-    min-height: 60px;
-    align-self: center;
+    width: 95%;
+    min-height: 40px;
+    align-self: baseline;
     padding: 5px;
+    margin: 10px;
     border: transparent;
     align-content: baseline;
     justify-content: baseline;
+    font-size: 12px;
   }
 
   .goal-category {
     background-color: white;
     padding: 10px;
-    margin-bottom: 10px;    
+    margin: 10px;    
+    margin-left: 20px;
     border-radius: 15px;
     width: 90%;
-    align-self: center;
+    border: 1px solid black;
+    align-self: baseline;
   }
 
     .goal-category-mental {
@@ -66,6 +86,7 @@
     margin-top: 10px;
     font-size: 12px;
     border-collapse: collapse;
+    table-layout: fixed;
   }
   
   .goal-category th, .goal-category td {
@@ -73,6 +94,14 @@
     border: 1px solid black;
   }
   
+  .goal-category th:nth-child(1), th:nth-child(2), th:nth-child(3), td:nth-child(1), td:nth-child(2), td:nth-child(3) {
+    width: calc(100%/3); /* Equal width for the first three columns */
+  }
+
+  .goal-category th:nth-child(4), td:nth-child(4) {
+    width: 5px; /* Fixed width of 5px for the last column */
+  }
+
   .goal-category input[type="text"] {
     width: 95%;
     padding: 2px;
@@ -129,6 +158,64 @@
     width: 90%;
     border-radius: 20px;
     align-self: center;
+  }
+
+  .goal-checkin {
+    background-color: white;
+    padding: 10px;
+    margin: 10px;    
+    margin-left: 20px;
+    border-radius: 15px;
+    width: 90%;
+    border: 1px solid black;
+    align-self: baseline;
+  }
+
+  .goal-checkin table {
+    width: 100%;
+    text-align: left;
+    margin-top: 10px;
+    font-size: 12px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .goal-checkin th, td {
+    padding: 0px;
+    border: 1px solid black;
+  }
+
+  .goal-checkin .daily-checkins {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .goal-checkin .checkin-text {
+    align-self: center;
+    justify-self: center;
+    font-size: 12px;
+  }
+
+  .goal-checkin .dayofweek, .css-z3c6am-MuiFormControl-root-MuiTextField-root {
+    flex: 1;
+    margin: 5px;    
+    border-radius: 4px;
+  }
+
+  .goal-checkin .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+    font-size: 12px;
+  }
+
+  .goal-checkin .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 2px;
+  }
+
+  .goal-checkin th:nth-child(1), th:nth-child(3), td:nth-child(1), td:nth-child(3) {
+    width: 40%-10px; /* Equal width for the first three columns */
+  }
+
+  .goal-checkin th:nth-child(2), td:nth-child(2) {
+    width: 90px; /* Fixed width of 5px for the last column */
   }
 
   /* Responsive Design */

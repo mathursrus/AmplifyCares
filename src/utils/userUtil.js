@@ -10,6 +10,7 @@ export const refreshUserInfo = async (token) => {
     const userInfo = await JSON.parse(data);
     if (userInfo.length>0)  {
         localStorage.setItem('userDetails', JSON.stringify(userInfo[0]));
+        return userInfo[0];
     }
-    return userInfo[0];
+    return {};
 }
