@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './SummaryPage.css';
 import { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
-import { getApiUrl } from './utils/urlUtil';
+import { fetchAndInsertToken, getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
 
@@ -199,7 +199,7 @@ const SummaryPage = () => {
   }, [endDay, startDay, userName, selectedCategory, processChartData, processActivitiesData, processHabitsData]);
   
   async function getAggregateStats(url) {
-    const response = await fetch(url);
+    const response = await fetchAndInsertToken(url);
     const data = await response.json();
     return JSON.parse(data);
   };  

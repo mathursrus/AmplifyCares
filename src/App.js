@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from "./Layout";
 import FeedbackWidget from "./FeedbackWidget";
 import { PublicClientApplication, LogLevel } from '@azure/msal-browser';
-import { getApiHost } from './utils/urlUtil';
+import { fetchAndInsertToken, getApiHost } from './utils/urlUtil';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { features } from "./FirstRunExperience";
 import './App.css';
@@ -179,7 +179,7 @@ function AppPage() {
 
   
   const setUserLogin = () => {
-    fetch(getApiHost() + `/setUserLogin?user=${localStorage.getItem('userName')}&logintime=${(new Date()).toISOString()}`);      
+    fetchAndInsertToken(getApiHost() + `/setUserLogin?user=${localStorage.getItem('userName')}&logintime=${(new Date()).toISOString()}`);      
   }
 
   const login = useCallback(async () => {    

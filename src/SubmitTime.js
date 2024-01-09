@@ -4,7 +4,7 @@
     import RecommendationsPage from './RecommendationsPage';
     import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
     import { faInfoCircle, faTimes, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-    import { fetchWithToken, getApiHost, getApiUrl } from './utils/urlUtil';
+    import { fetchAndInsertToken, fetchWithToken, getApiHost, getApiUrl } from './utils/urlUtil';
     import { useNavigate, useLocation } from 'react-router-dom';
     import DatePicker from 'react-datepicker';
     import 'react-datepicker/dist/react-datepicker.css';
@@ -90,7 +90,7 @@ import { refreshUserInfo } from './utils/userUtil';
             try {
                 const formattedDate = date.toLocaleDateString();
                 // Make a server request to get entries for the selected date
-                const response = await fetch(getApiUrl(`/getselfcaredata/?item=${localStorage.getItem('userName')}&date=${formattedDate}`));
+                const response = await fetchAndInsertToken(getApiUrl(`/getselfcaredata/?item=${localStorage.getItem('userName')}&date=${formattedDate}`));
                 if (response.ok) {
                     const data = await response.json();
                     setPastEntries(JSON.parse(data));

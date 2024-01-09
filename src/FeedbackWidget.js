@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { getApiHost } from './utils/urlUtil';
+import { getApiHost, postWithBodyAndToken } from './utils/urlUtil';
 import './FeedbackWidget.css';
 
 const FeedbackWidget = () => {
@@ -167,14 +167,9 @@ const FeedbackWidget = () => {
       reader.onloadend = function () {
         const base64data = reader.result.split(",")[1];
         requestBody.item = base64data;
+        requestBody.user = localStorage.getItem('username');
   
-        fetch(getApiHost() + "/writeFeedback", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        })
+        postWithBodyAndToken(getApiHost() + "/writeFeedback", requestBody)
           .then((response) => {
             if (response.ok) {
               console.log("Success ", response);

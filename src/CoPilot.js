@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Widget, addResponseMessage, addUserMessage, deleteMessages, setQuickButtons, toggleWidget } from 'react-chat-widget';
-import { getApiHost } from './utils/urlUtil';
+import { getApiHost, postWithBodyAndToken } from './utils/urlUtil';
 import 'react-chat-widget/lib/styles.css';
 //import './CoPilot.css'; // Import a CSS file for styling
 
@@ -26,13 +26,7 @@ const CoPilot = ({endpoint, userprompts, systemprompts}) => {
         requestBody.username = localStorage.getItem('userName');
         requestBody.questions = prompts;
 
-        fetch(getApiHost() + `/${endpoint}`, {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        })
+        postWithBodyAndToken(getApiHost() + `/${endpoint}`, requestBody)
         .then(async (response) => {
             if (response.ok) {
                 const result = await response.json();

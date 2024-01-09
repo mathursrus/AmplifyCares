@@ -132,9 +132,17 @@ function getUserNameFromToken(token) {
   return user.trim();
 }
 
+function ensureUserNameAndTokenMatch(user, token) {
+  const userNameFromToken = getUserNameFromToken(token);
+  if (userNameFromToken !== user) {
+    throw new Error("Security Violation: User ", user, " and token ", userNameFromToken, "do not match");
+  }
+  return user;
+}
+
 async function getUserInfoWithToken(token) {
   try {
-      console.log("Success: ", token);
+      //console.log("Success: ", token);
       const user = getUserNameFromToken(token);
       
       return getUserInfo(user);
@@ -173,7 +181,7 @@ async function getUserInfo(user) {
     }
 }
 
-async function setUserLoginInfo(user, loginTime) {
+async function setUserLoginInfo(user, loginTime, token) {
   try {
       console.log('Set UserInfo handler got user: ', user)
       const ct = await getUserContainer();
@@ -187,7 +195,11 @@ async function setUserLoginInfo(user, loginTime) {
     }
 }
 
-async function getAllUsers(domain) {
+async function getAllUsers(domain, token) {
+  const user = getUserNameFromToken(token);
+  if (!user.endsWith("@" + domain)) {
+    throw new Error("Security Violation: User token domain ", user, " does not match requested domain ", domain);
+  }
   try {
     console.log('Get all users handler called');
     const ct = await getUserContainer();
@@ -228,8 +240,8 @@ function lemmatizeActivities(activityArray) {
 
 async function writeEntryWithToken(item, token) {
   try {
-      const user = getUserNameFromToken(token);
-      if (user !== item.name) throw Error("UPN is " + user + ", entry is for " + item.name);
+      ensureUserNameAndTokenMatch(item.name, token);
+      //if (user !== item.name) throw Error("UPN is " + user + ", entry is for " + item.name);
       
       return writeEntry(item);
   } catch (err) {
@@ -290,10 +302,10 @@ async function writeEntry(item) {
       console.error('Error:', err);
   }
 }
-
   
 
-async function readEntries(itemId, startDay, endDay, category) {
+async function readEntries(itemId, startDay, endDay, category, token) {
+  ensureUserNameAndTokenMatch(itemId, token);
   console.log(`Got called with id: ${itemId}, start: ${startDay}, end: ${endDay}, category: ${category}`);
   if (category === undefined)  {
     category = "total";
@@ -602,7 +614,8 @@ async function readPercentile(percentile, startDay, endDay, category) {
   return final;
 }
 
-async function readIndividualData(user, date) {
+async function readIndividualData(user, date, token) {
+  ensureUserNameAndTokenMatch(user, token);
   console.log(`Get Individual Data request`);
   const ct = await getContainer();
   const startOfDay = new Date(date);
@@ -625,8 +638,10 @@ async function readIndividualData(user, date) {
   return final;
 }
 
-async function readActivities(username, startDay, endDay) {
+async function readActivities(username, startDay, endDay, token) {
   console.log(`Getting activities for user: ${username}`);
+
+  ensureUserNameAndTokenMatch(username, token);
 
   let startDate = new Date(startDay);
   startDate.setUTCHours(0, 0, 0, 0);
@@ -798,11 +813,13 @@ async function readTeamStats(startDay, endDay) {
   return final;
 }
 
-async function getSelfCareInsights(username, startDay, endDay, questions) {
+async function getSelfCareInsights(username, startDay, endDay, questions, token) {
   console.log(`Self Care Insights request ${username}, ${startDay}, ${endDay}, ${questions}`);
   const answers = [];
   const promises = [];
       
+  ensureUserNameAndTokenMatch(username, token);
+
   if (questions.length > 0) {
     const ct = await getContainer();
     const start = new Date(startDay);
@@ -915,7 +932,8 @@ async function condenseSelfCareData(data) {
   return updatedData;
 }
 
-async function getTimeInputFromSpeech(username, item, timezone) {
+async function getTimeInputFromSpeech(username, item, timezone, token) {
+  ensureUserNameAndTokenMatch(username, token);
   const audioBuffer = Buffer.from(item, 'base64');
   const formData = new FormData(); 
   formData.append('file', audioBuffer, {
@@ -1067,7 +1085,8 @@ async function convertOpenAIToTimeEntries(username, inputString) {
   return results;    
 }
 
-async function writeRecommendation(item) {
+async function writeRecommendation(item, token) {
+  ensureUserNameAndTokenMatch(item.contributor, token);
   try {
       console.log('Handler got item: ', item);
       // make sure to strip out the additionalcomments 
@@ -1108,7 +1127,8 @@ async function writeRecommendation(item) {
 }
 
 
-async function getRecommendations(itemId, user) {
+async function getRecommendations(itemId, user, token) {
+  ensureUserNameAndTokenMatch(user, token);
   console.log(`Got called with id: ${itemId}, user ${user}`);
   const ct = await getRecommendationsContainer();
   console.log(`Got container: ${ct}`);
@@ -1178,7 +1198,8 @@ async function getRecommendationComments(recommendationId) {
   return final;
 }
 
-async function writeRecommendationComment(item) {
+async function writeRecommendationComment(item, token) {
+  ensureUserNameAndTokenMatch(item.user, token);
   console.log('Adding comment: ', item);
   // remove reactions before saving
   delete item.reactions;
@@ -1220,7 +1241,8 @@ async function writeRecommendationComment(item) {
   }
 }
 
-async function writeReactionToComment(item) {
+async function writeReactionToComment(item, token) {
+  ensureUserNameAndTokenMatch(item.user, token);
   console.log('Adding reaction: ', item);
   try {
       const ct = await getReactionsContainer();
@@ -1250,7 +1272,8 @@ async function writeReactionToComment(item) {
   }
 }
 
-async function writeFeedback(feedback) {
+async function writeFeedback(user, feedback, token) {
+  ensureUserNameAndTokenMatch(user, token);
   const connectionString = process.env.AZURE_BLOB_CONNECTION_STRING;
   const containerName = 'mp4';
 
@@ -1396,7 +1419,8 @@ async function getDailyChallenges(date) {
   return final;
 }
 
-async function seekCoaching(user, question, sessionToken) {
+async function seekCoaching(user, question, sessionToken, token) {
+  ensureUserNameAndTokenMatch(user, token);
   console.log(`Seeking coaching for ${user}, ${question}, ${sessionToken}`);
   try {
     if (sessionToken === undefined) {
@@ -1454,11 +1478,13 @@ async function seekCoaching(user, question, sessionToken) {
             var output;
             console.log("Function name ", function_name, " args ", function_args);
             if (function_name === "getmyselfcarestats") {
-              output = await readEntries(function_args.item, function_args.startDay, function_args.endDay, function_args.category);
+              output = await readEntries(function_args.item, function_args.startDay, function_args.endDay, function_args.category, token);
             } else if (function_name === "getbestselfcarestats") {
               output = await readPercentile(function_args.item, function_args.startDay, function_args.endDay);
             } else if (function_name === "getrecommendations") {
-              output = await getRecommendations(function_args.item, function_args.user);
+              output = await getRecommendations(function_args.item, function_args.user, token);
+            } else if (function_name === "getusergoals") {
+              output = await getUserGoals(token);
             } else {              
               output = "Function not found"+function_name;              
               console.error(output);

@@ -3,7 +3,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { DesktopTimePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-function GoalCheckin() {
+function GoalCheckin({usergoals}) {
   const [goals, setGoals] = useState([
     { name: 'Goal 1', frequency: 'daily', specific: '12:00' },
     { name: 'Goal 2', frequency: 'weekly', specific: { dayOfWeek: 'Monday', time: '09:00' } },

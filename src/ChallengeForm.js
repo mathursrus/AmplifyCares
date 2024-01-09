@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./ChallengeForm.css";
-import { getApiHost } from './utils/urlUtil';
+import { fetchAndInsertToken, getApiHost } from './utils/urlUtil';
 
 function ChallengeForm({ formTitle, textBoxPlaceholder, exclude, onSubmit, onCancel }) {
   const [emailInput, setEmailInput] = useState("");
@@ -15,7 +15,7 @@ function ChallengeForm({ formTitle, textBoxPlaceholder, exclude, onSubmit, onCan
   useEffect(() => {
     //  get the list of known email addresses
     async function fetchData() {
-        const response = await fetch(getApiHost() + `/getAllUsers?domain=@microsoft.com`);
+        const response = await fetchAndInsertToken(getApiHost() + `/getAllUsers?domain=@microsoft.com`);
         const data = await response.json();
         setKnownEmails(JSON.parse(data).map(item => item.username).filter(username => !exclude.includes(username)));
     }

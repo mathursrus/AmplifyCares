@@ -23,6 +23,10 @@ export const getApiHost = () => {
     return "https://amplifycaresserver.azurewebsites.net";
 }
 
+export const fetchAndInsertToken = async (endpoint) => {
+  return fetchWithToken(endpoint, localStorage.getItem('usertoken'));
+}
+
 export const fetchWithToken = async (endpoint, token) => {
     const requestOptions = {
         method: 'GET', 

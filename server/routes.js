@@ -31,7 +31,8 @@ const setUserLoginInfo = {
         console.log("Got req: ", req.query);
         const user = await req.query.user;        
         const logintime = await req.query.logintime;        
-        const response = await handlers.setUserLoginInfo(user, logintime);
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.setUserLoginInfo(user, logintime, token);
         res.status(200).json(response);
     }
 }
@@ -42,7 +43,8 @@ const getAllUsers = {
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
         const domain = await req.query.domain;       
-        const response = await handlers.getAllUsers(domain);
+        const token = await req.headers.authorization.split(' ')[1];
+        const response = await handlers.getAllUsers(domain, token);
         res.status(200).json(response);
     }
 }
@@ -81,8 +83,9 @@ const getSelfCareStats = {
         const startDay = await req.query.startDay;
         const endDay = await req.query.endDay;
         const category = await req.query.category;
+        const token = await req.headers.authorization.split(' ')[1];        
         console.log("Got self care stats request: ", item, startDay, endDay, category);      
-        const response = await handlers.readEntries(item, startDay, endDay, category);
+        const response = await handlers.readEntries(item, startDay, endDay, category, token);
         res.status(200).json(response);
     }
 }
@@ -109,7 +112,8 @@ const getIndividualData = {
         console.log("Got individual data req: ", req.query);
         const item = await req.query.item;
         const date = await req.query.date;
-        const response = await handlers.readIndividualData(item, date);
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.readIndividualData(item, date, token);
         res.status(200).json(response);
     }
 }
@@ -122,7 +126,8 @@ const getActivities = {
         const item = await req.query.item;
         const startDay = await req.query.startDay;
         const endDay = await req.query.endDay;
-        const response = await handlers.readActivities(item, startDay, endDay);
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.readActivities(item, startDay, endDay, token);
         res.status(200).json(response);
     }
 }
@@ -157,7 +162,8 @@ const getSelfCareInsights = {
         const user = req.body.username; 
         const startDay = req.body.startDay;
         const endDay = req.body.endDay;
-        const response = await handlers.getSelfCareInsights(user, startDay, endDay, questions);
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.getSelfCareInsights(user, startDay, endDay, questions, token);
 
         res.status(200).json(response);
     }
@@ -170,7 +176,8 @@ const getTimeInputFromSpeech = {
         const item = req.body.item; 
         const user = req.body.username; 
         const timezone = req.body.timezone;
-        const response = await handlers.getTimeInputFromSpeech(user, item, timezone);
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.getTimeInputFromSpeech(user, item, timezone, token);
 
         res.status(200).json(response);
     }
@@ -181,7 +188,8 @@ const writeRecommendation = {
     path: '/writerecommendation', 
     handler: async (req, res) => {
         const item = req.body.item; 
-        const response = await handlers.writeRecommendation(item); 
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.writeRecommendation(item, token); 
         res.status(200).json(response);
     }
 }
@@ -192,8 +200,9 @@ const getRecommendations = {
     handler: async (req, res) => {
         const item = parseInt(await req.query.item); 
         const user = await req.query.user; 
+        const token = await req.headers.authorization.split(' ')[1];        
         console.log("Got reco item: ", item, ", and user ", user);      
-        const response = await handlers.getRecommendations(item, user);
+        const response = await handlers.getRecommendations(item, user, token);
 
         res.status(200).json(response);
     }
@@ -204,7 +213,8 @@ const writeRecommendationComment = {
     path: '/writerecommendationcomment', 
     handler: async (req, res) => {
         const item = req.body.item; 
-        const response = await handlers.writeRecommendationComment(item); 
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.writeRecommendationComment(item, token); 
         res.status(200).json(response);
     }
 }
@@ -214,8 +224,9 @@ const getRecommendationComments = {
     path: '/getRecommendationComments', 
     handler: async (req, res) => {
         const item = await req.query.item; 
+        const token = await req.headers.authorization.split(' ')[1];        
         console.log("Got reco item: ", item);      
-        const response = await handlers.getRecommendationComments(item);
+        const response = await handlers.getRecommendationComments(item, token);
 
         res.status(200).json(response);
     }
@@ -226,7 +237,8 @@ const writeReactionToComment = {
     path: '/writereactiontocomment', 
     handler: async (req, res) => {
         const item = req.body.item; 
-        const response = await handlers.writeReactionToComment(item); 
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.writeReactionToComment(item, token); 
         res.status(200).json(response);
     }
 }
@@ -235,8 +247,10 @@ const writeFeedback = {
     method: 'post',
     path: '/writeFeedback', 
     handler: async (req, res) => {
+        const user = req.body.user;
         const item = req.body.item;  
-        const response = await handlers.writeFeedback(item);
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.writeFeedback(user, item, token);
 
         res.status(200).json(response);
     }
@@ -294,7 +308,8 @@ const seekCoaching = {
         const question = req.body.question; 
         const user = req.body.user; 
         const sessionId = req.body.sessionId;        
-        const response = await handlers.seekCoaching(user, question, sessionId);
+        const token = await req.headers.authorization.split(' ')[1];        
+        const response = await handlers.seekCoaching(user, question, sessionId, token);
 
         res.status(200).json(response);
     }

@@ -94,11 +94,17 @@
     border: 1px solid black;
   }
   
-  .goal-category th:nth-child(1), th:nth-child(2), th:nth-child(3), td:nth-child(1), td:nth-child(2), td:nth-child(3) {
+  .goal-category th:nth-child(1), 
+  .goal-category th:nth-child(2), 
+  .goal-category th:nth-child(3), 
+  .goal-category td:nth-child(1), 
+  .goal-category td:nth-child(2), 
+  .goal-category td:nth-child(3) {
     width: calc(100%/3); /* Equal width for the first three columns */
   }
 
-  .goal-category th:nth-child(4), td:nth-child(4) {
+  .goal-category th:nth-child(4), 
+  .goal-category td:nth-child(4) {
     width: 5px; /* Fixed width of 5px for the last column */
   }
 
@@ -210,11 +216,15 @@
     padding: 2px;
   }
 
-  .goal-checkin th:nth-child(1), th:nth-child(3), td:nth-child(1), td:nth-child(3) {
+  .goal-checkin th:nth-child(1), 
+  .goal-checkin th:nth-child(3), 
+  .goal-checkin td:nth-child(1), 
+  .goal-checkin td:nth-child(3) {
     width: 40%-10px; /* Equal width for the first three columns */
   }
 
-  .goal-checkin th:nth-child(2), td:nth-child(2) {
+  .goal-checkin th:nth-child(2), 
+  .goal-checkin td:nth-child(2) {
     width: 90px; /* Fixed width of 5px for the last column */
   }
 

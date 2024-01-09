@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './RecommendationsPage.css';
 import RecommendationTile from './RecommendationTile';
-import { getApiUrl, postWithToken } from './utils/urlUtil';
+import { fetchAndInsertToken, getApiUrl, postWithToken } from './utils/urlUtil';
 
 
 
@@ -29,7 +29,7 @@ const RecommendationsPage = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-        const response = await fetch(getApiUrl("/getrecommendations/?item="+careType+"&user="+localStorage.getItem('userName')));
+        const response = await fetchAndInsertToken(getApiUrl("/getrecommendations/?item="+careType+"&user="+localStorage.getItem('userName')));
         const data = await response.json();
         const recos = JSON.parse(data);
         setRecos(recos);
