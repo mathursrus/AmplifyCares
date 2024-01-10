@@ -30,8 +30,8 @@ const config = {
     ssoSilent: true
   },
   cache: {
-    cacheLocation: 'sessionStorage',
-    storeAuthStateInCookie: false
+    cacheLocation: 'localStorage',
+    storeAuthStateInCookie: true
   },
   system: {
     loggerOptions: {
@@ -97,7 +97,7 @@ function AppPage() {
 
   // Function to handle closing the first-run experience modal
   const handleCloseFirstRunExperience = () => {
-    console.log("Turning off FRE");
+    //console.log("Turning off FRE");
     setUserLogin();
     setShowFirstRunExperience(0);
   };

@@ -1,7 +1,12 @@
 {
-    "globalHeaders": {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS"
+  "globalHeaders": {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, OPTIONS"
+  },
+  "routes": [
+    {
+      "route": "/*",
+      "rewrite": "/index.html"
     }
-  }
-  
+  ]
+}

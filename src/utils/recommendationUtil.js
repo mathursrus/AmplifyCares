@@ -1,4 +1,4 @@
-import { postWithToken, getApiUrl } from './urlUtil';
+import { postWithToken, getApiUrl, fetchWithToken } from './urlUtil';
 
 export const addCommentToRecommendation = async (recommendationId, commentString) => { 
   const user=localStorage.getItem('userName');
@@ -13,14 +13,14 @@ export const addCommentToRecommendation = async (recommendationId, commentString
 }
 
 export const writeRecommendationComment = async (comment) => {
-  await postWithToken("/writerecommendationcomment", comment, localStorage.getItem('userName'));
+  await postWithToken("/writerecommendationcomment", comment, localStorage.getItem('userName'), localStorage.getItem('usertoken'));
 }
 
 export const getRecommendationComments = async (recommendationId) => {
-    const response = await fetch(getApiUrl("/getRecommendationComments?item="+recommendationId));
+    const response = await fetchWithToken(getApiUrl("/getRecommendationComments?item="+recommendationId));
     const data = await response.json();
     const comments = JSON.parse(data);
-    console.log("Comments is ", comments);
+    //console.log("Comments is ", comments);
     return comments;
 }
 
@@ -33,5 +33,5 @@ export const writeReactionToComment = async (reaction, commentId) => {
     date: Date.now()
   }; 
   
-  await postWithToken("/writereactiontocomment", reactionToComment, localStorage.getItem('userName'));
+  await postWithToken("/writereactiontocomment", reactionToComment, localStorage.getItem('userName'), localStorage.getItem('usertoken'));
 }
