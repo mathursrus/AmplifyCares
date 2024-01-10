@@ -2,15 +2,5 @@
   "globalHeaders": {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, OPTIONS"
-  },
-  "routes": [
-    {
-      "route": "/*",
-      "rewrite": "/index.html"
-    }
-  ],
-  "mimeTypes": {
-    ".js": "application/javascript",
-    ".css": "text/css"
-  }  
+  }
 }
