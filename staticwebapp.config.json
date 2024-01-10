@@ -10,6 +10,7 @@
     }
   ],
   "mimeTypes": {
-    ".js": "application/javascript"
-  }
+    ".js": "application/javascript",
+    ".css": "text/css"
+  }  
 }
