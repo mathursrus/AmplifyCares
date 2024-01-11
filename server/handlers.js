@@ -119,16 +119,22 @@ async function getGoalContainer() {
 }
 
 function getUserNameFromToken(token) {
-  // Split the token into header, payload, and signature
-  const [headerB64, payloadB64] = token.split('.');
+  var user;
+  if (token.split('.').length === 3) {
+    // Split the token into header, payload, and signature
+    const [headerB64, payloadB64] = token.split('.');
 
-  // Decode the base64-encoded header and payload
-  const header = JSON.parse(atob(headerB64));
-  const payload = JSON.parse(atob(payloadB64));
+    // Decode the base64-encoded header and payload
+    const header = JSON.parse(atob(headerB64));
+    const payload = JSON.parse(atob(payloadB64));
 
-  //console.log('Decoded Header:', header);
-  //console.log('Decoded Payload:', payload);
-  const user = payload.preferred_username;
+    //console.log('Decoded Header:', header);
+    //console.log('Decoded Payload:', payload);
+    user = payload.preferred_username;
+  }
+  else {
+    user = getUserFromSecretKey(token);
+  }
   return user.trim();
 }
 

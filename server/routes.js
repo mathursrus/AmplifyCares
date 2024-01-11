@@ -1,12 +1,24 @@
 const handlers = require('./handlers');
 
+const getTokenFromRequest = (req) => {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        return req.headers.authorization.split(' ')[1];
+    }
+    else if (req.query.secret) { 
+        return req.query.secret;
+    }
+    else {
+        return null;
+    }
+}
+
 const getSecretKeyForUser = {
     method: 'get',
     path: '/getsecretkey',
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
         const item = await req.query.user;     
-        const token = await req.headers.authorization.split(' ')[1];         
+        const token = getTokenFromRequest(req);
         const response = await handlers.getSecretKeyForUser(item, token);
         res.status(200).json(response);
     }
@@ -28,7 +40,7 @@ const getUserInfoWithToken = {
     path: '/getUserInfoWithToken',
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.getUserInfoWithToken(token);
         res.status(200).json(response);
     }
@@ -54,7 +66,7 @@ const setUserLoginInfo = {
         console.log("Got req: ", req.query);
         const user = await req.query.user;        
         const logintime = await req.query.logintime;        
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.setUserLoginInfo(user, logintime, token);
         res.status(200).json(response);
     }
@@ -66,7 +78,7 @@ const getAllUsers = {
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
         const domain = await req.query.domain;       
-        const token = await req.headers.authorization.split(' ')[1];
+        const token = getTokenFromRequest(req);
         const response = await handlers.getAllUsers(domain, token);
         res.status(200).json(response);
     }
@@ -78,7 +90,7 @@ const writeSelfCareEntryWithToken = {
     handler: async (req, res) => {
         console.log("Got req: ", req.query);
         const item = await req.query.item;        
-        const token = await req.headers.authorization.split(' ')[1];
+        const token = getTokenFromRequest(req);
         const response = await handlers.writeEntryWithToken(JSON.parse(item), token);
         res.status(200).json(response);
     }
@@ -106,7 +118,7 @@ const getSelfCareStats = {
         const startDay = await req.query.startDay;
         const endDay = await req.query.endDay;
         const category = await req.query.category;
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         console.log("Got self care stats request: ", item, startDay, endDay, category);      
         const response = await handlers.readEntries(item, startDay, endDay, category, token);
         res.status(200).json(response);
@@ -135,7 +147,7 @@ const getIndividualData = {
         console.log("Got individual data req: ", req.query);
         const item = await req.query.item;
         const date = await req.query.date;
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.readIndividualData(item, date, token);
         res.status(200).json(response);
     }
@@ -149,7 +161,7 @@ const getActivities = {
         const item = await req.query.item;
         const startDay = await req.query.startDay;
         const endDay = await req.query.endDay;
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.readActivities(item, startDay, endDay, token);
         res.status(200).json(response);
     }
@@ -185,7 +197,7 @@ const getSelfCareInsights = {
         const user = req.body.username; 
         const startDay = req.body.startDay;
         const endDay = req.body.endDay;
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.getSelfCareInsights(user, startDay, endDay, questions, token);
 
         res.status(200).json(response);
@@ -199,7 +211,7 @@ const getTimeInputFromSpeech = {
         const item = req.body.item; 
         const user = req.body.username; 
         const timezone = req.body.timezone;
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.getTimeInputFromSpeech(user, item, timezone, token);
 
         res.status(200).json(response);
@@ -211,7 +223,7 @@ const writeRecommendation = {
     path: '/writerecommendation', 
     handler: async (req, res) => {
         const item = req.body.item; 
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.writeRecommendation(item, token); 
         res.status(200).json(response);
     }
@@ -223,7 +235,7 @@ const getRecommendations = {
     handler: async (req, res) => {
         const item = parseInt(await req.query.item); 
         const user = await req.query.user; 
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         console.log("Got reco item: ", item, ", and user ", user);      
         const response = await handlers.getRecommendations(item, user, token);
 
@@ -236,7 +248,7 @@ const writeRecommendationComment = {
     path: '/writerecommendationcomment', 
     handler: async (req, res) => {
         const item = req.body.item; 
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.writeRecommendationComment(item, token); 
         res.status(200).json(response);
     }
@@ -247,7 +259,7 @@ const getRecommendationComments = {
     path: '/getRecommendationComments', 
     handler: async (req, res) => {
         const item = await req.query.item; 
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         console.log("Got reco item: ", item);      
         const response = await handlers.getRecommendationComments(item, token);
 
@@ -260,7 +272,7 @@ const writeReactionToComment = {
     path: '/writereactiontocomment', 
     handler: async (req, res) => {
         const item = req.body.item; 
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.writeReactionToComment(item, token); 
         res.status(200).json(response);
     }
@@ -272,7 +284,7 @@ const writeFeedback = {
     handler: async (req, res) => {
         const user = req.body.user;
         const item = req.body.item;  
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.writeFeedback(user, item, token);
 
         res.status(200).json(response);
@@ -305,7 +317,7 @@ const getUserGoals = {
     method: 'get',
     path: '/getusergoals', 
     handler: async (req, res) => {
-        const token = await req.headers.authorization.split(' ')[1];  
+        const token = getTokenFromRequest(req);  
         const response = await handlers.getUserGoals(token);
 
         res.status(200).json(response);
@@ -317,7 +329,7 @@ const writeUserGoals = {
     path: '/writeusergoals', 
     handler: async (req, res) => {
         const goals = req.body.item; 
-        const token = await req.headers.authorization.split(' ')[1]; 
+        const token = getTokenFromRequest(req); 
         const response = await handlers.writeUserGoals(goals, token);
 
         res.status(200).json(response);
@@ -331,7 +343,7 @@ const seekCoaching = {
         const question = req.body.question; 
         const user = req.body.user; 
         const sessionId = req.body.sessionId;        
-        const token = await req.headers.authorization.split(' ')[1];        
+        const token = getTokenFromRequest(req);        
         const response = await handlers.seekCoaching(user, question, sessionId, token);
 
         res.status(200).json(response);
