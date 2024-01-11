@@ -151,6 +151,52 @@ async function getUserInfoWithToken(token) {
   }
 }
 
+async function getSecretKeyForUser(user, token) {
+  try {
+    console.log('Get Secret Key handler got user: ', user);
+    ensureUserNameAndTokenMatch(user, token);
+    const ct = await getUserContainer();
+    const result=await ct.findOne({ username: user });
+    if (result) {
+      // check if there is a secret key
+      if (result.secret_key) {
+        return result.secret_key;
+      }
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+      }
+      const secretKey = s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                          s4() + '-' + s4() + s4() + s4();
+      console.log("Adding secret key ", secretKey, " for user ", user);
+      ct.updateOne({ username: user }, { $set: { secret_key: secretKey } });
+      return secretKey;
+    }
+    else {
+      throw new Error("User not found");
+    }
+  }
+  catch (err) {
+    console.error('Error:', err);
+  }
+}
+
+async function getUserFromSecretKey(token) {
+  try {
+    console.log('Get User from Secret Key handler got token: ', token);
+    const ct = await getUserContainer();
+    const result=await ct.findOne({ secret_key: token });
+    if (result) {
+      return result.username;
+    }
+    else {
+      throw new Error("User not found");
+    }
+  }
+  catch (err) {
+    console.error('Error:', err);
+  }
+}
+
 async function getUserInfo(user) {
   try {
       console.log('Get UserInfo handler got user: ', user)
@@ -1524,4 +1570,4 @@ async function seekCoaching(user, question, sessionToken, token) {
   }  
 }
 
-module.exports = {getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching};
+module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching};

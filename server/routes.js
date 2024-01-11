@@ -1,5 +1,28 @@
 const handlers = require('./handlers');
 
+const getSecretKeyForUser = {
+    method: 'get',
+    path: '/getsecretkey',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const item = await req.query.user;     
+        const token = await req.headers.authorization.split(' ')[1];         
+        const response = await handlers.getSecretKeyForUser(item, token);
+        res.status(200).json(response);
+    }
+}
+
+const getUserFromSecretKey = {
+    method: 'get',
+    path: '/getuserfromsecretkey',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const item = await req.query.secret;     
+        const response = await handlers.getUserFromSecretKey(item);
+        res.status(200).json(response);
+    }
+}
+
 const getUserInfoWithToken = {
     method: 'get',
     path: '/getUserInfoWithToken',
@@ -315,4 +338,4 @@ const seekCoaching = {
     }
 }
 
-module.exports = { getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching};
+module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching};

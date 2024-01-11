@@ -12,6 +12,8 @@ var indexRouter = require('./routes/index');
 var app = express();
 
 var routesModules = require('./routes');
+var getSecretKeyForUser = routesModules.getSecretKeyForUser;
+var getUserFromSecretKey = routesModules.getUserFromSecretKey;
 var getUserInfoWithToken = routesModules.getUserInfoWithToken;
 /*var getUserInfo = routesModules.getUserInfo;*/
 var setUserLoginInfo = routesModules.setUserLoginInfo;
@@ -96,7 +98,8 @@ app.options('/writeFeedback', (req, res) => {
 });
 
 app.use('/', indexRouter);
-
+app[getSecretKeyForUser.method](getSecretKeyForUser.path, getSecretKeyForUser.handler);
+app[getUserFromSecretKey.method](getUserFromSecretKey.path, getUserFromSecretKey.handler);
 app[getUserInfoWithToken.method](getUserInfoWithToken.path, getUserInfoWithToken.handler);
 /*app[getUserInfo.method](getUserInfo.path, getUserInfo.handler);*/
 app[setUserLoginInfo.method](setUserLoginInfo.path, setUserLoginInfo.handler);
