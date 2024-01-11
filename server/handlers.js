@@ -1524,14 +1524,17 @@ async function seekCoaching(user, question, sessionToken, token) {
             var output;
             console.log("Function name ", function_name, " args ", function_args);
             if (function_name === "getmyselfcarestats") {
-              output = await readEntries(function_args.item, function_args.startDay, function_args.endDay, function_args.category, token);
+              output = await readEntries(user, function_args.startDay, function_args.endDay, function_args.category, token);
             } else if (function_name === "getbestselfcarestats") {
-              output = await readPercentile(function_args.item, function_args.startDay, function_args.endDay);
+              output = await readPercentile(function_args.item, function_args.startDay, function_args.endDay, function_args.category);
             } else if (function_name === "getrecommendations") {
-              output = await getRecommendations(function_args.item, function_args.user, token);
+              output = await getRecommendations(function_args.item, user, token);
             } else if (function_name === "getusergoals") {
               output = await getUserGoals(token);
-            } else {              
+            } else if (function_name === "getsecretkeyforuser") {
+              output = await getSecretKeyForUser(user, token);
+            }
+            else {              
               output = "Function not found"+function_name;              
               console.error(output);
             }
