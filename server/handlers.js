@@ -133,8 +133,9 @@ function getUserNameFromToken(token) {
     user = payload.preferred_username;
   }
   else {
-    user = getUserFromSecretKey(token);
+    user = getUserFromSecretKey(token);  
   }
+  console.log("User is ", user);
   return user.trim();
 }
 
