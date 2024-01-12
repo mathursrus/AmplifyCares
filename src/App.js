@@ -30,7 +30,7 @@ const config = {
     ssoSilent: true
   },
   cache: {
-    cacheLocation: 'localStorage',
+    cacheLocation: 'sessionStorage',
     storeAuthStateInCookie: true
   },
   system: {

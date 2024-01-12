@@ -140,7 +140,7 @@ async function getUserNameFromToken(token) {
 }
 
 async function ensureUserNameAndTokenMatch(user, token) {
-  const userNameFromToken = getUserNameFromToken(token);
+  const userNameFromToken = await getUserNameFromToken(token);
   if (userNameFromToken !== user) {
     throw new Error("Security Violation: User ", user, " and token ", userNameFromToken, "do not match");
   }
