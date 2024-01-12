@@ -118,7 +118,7 @@ async function getGoalContainer() {
   return goal_container;
 }
 
-function getUserNameFromToken(token) {
+async function getUserNameFromToken(token) {
   var user;
   if (token.split('.').length === 3) {
     // Split the token into header, payload, and signature
@@ -133,13 +133,13 @@ function getUserNameFromToken(token) {
     user = payload.preferred_username;
   }
   else {
-    user = getUserFromSecretKey(token);  
+    user = await getUserFromSecretKey(token);  
   }
   console.log("User is ", user);
   return user.trim();
 }
 
-function ensureUserNameAndTokenMatch(user, token) {
+async function ensureUserNameAndTokenMatch(user, token) {
   const userNameFromToken = getUserNameFromToken(token);
   if (userNameFromToken !== user) {
     throw new Error("Security Violation: User ", user, " and token ", userNameFromToken, "do not match");
@@ -150,7 +150,7 @@ function ensureUserNameAndTokenMatch(user, token) {
 async function getUserInfoWithToken(token) {
   try {
       //console.log("Success: ", token);
-      const user = getUserNameFromToken(token);
+      const user = await getUserNameFromToken(token);
       
       return getUserInfo(user);
   } catch (err) {
@@ -161,7 +161,7 @@ async function getUserInfoWithToken(token) {
 async function getSecretKeyForUser(user, token) {
   try {
     console.log('Get Secret Key handler got user: ', user);
-    ensureUserNameAndTokenMatch(user, token);
+    await ensureUserNameAndTokenMatch(user, token);
     const ct = await getUserContainer();
     const result=await ct.findOne({ username: user });
     if (result) {
@@ -249,7 +249,7 @@ async function setUserLoginInfo(user, loginTime, token) {
 }
 
 async function getAllUsers(domain, token) {
-  const user = getUserNameFromToken(token);
+  const user = await getUserNameFromToken(token);
   if (!user.endsWith("@" + domain)) {
     throw new Error("Security Violation: User token domain ", user, " does not match requested domain ", domain);
   }
@@ -293,7 +293,7 @@ function lemmatizeActivities(activityArray) {
 
 async function writeEntryWithToken(item, token) {
   try {
-      ensureUserNameAndTokenMatch(item.name, token);
+    await ensureUserNameAndTokenMatch(item.name, token);
       //if (user !== item.name) throw Error("UPN is " + user + ", entry is for " + item.name);
       
       return writeEntry(item);
@@ -358,7 +358,7 @@ async function writeEntry(item) {
   
 
 async function readEntries(itemId, startDay, endDay, category, token) {
-  ensureUserNameAndTokenMatch(itemId, token);
+  await ensureUserNameAndTokenMatch(itemId, token);
   console.log(`Got called with id: ${itemId}, start: ${startDay}, end: ${endDay}, category: ${category}`);
   if (category === undefined)  {
     category = "total";
@@ -668,7 +668,7 @@ async function readPercentile(percentile, startDay, endDay, category) {
 }
 
 async function readIndividualData(user, date, token) {
-  ensureUserNameAndTokenMatch(user, token);
+  await ensureUserNameAndTokenMatch(user, token);
   console.log(`Get Individual Data request`);
   const ct = await getContainer();
   const startOfDay = new Date(date);
@@ -694,7 +694,7 @@ async function readIndividualData(user, date, token) {
 async function readActivities(username, startDay, endDay, token) {
   console.log(`Getting activities for user: ${username}`);
 
-  ensureUserNameAndTokenMatch(username, token);
+  await ensureUserNameAndTokenMatch(username, token);
 
   let startDate = new Date(startDay);
   startDate.setUTCHours(0, 0, 0, 0);
@@ -871,7 +871,7 @@ async function getSelfCareInsights(username, startDay, endDay, questions, token)
   const answers = [];
   const promises = [];
       
-  ensureUserNameAndTokenMatch(username, token);
+  await ensureUserNameAndTokenMatch(username, token);
 
   if (questions.length > 0) {
     const ct = await getContainer();
@@ -986,7 +986,7 @@ async function condenseSelfCareData(data) {
 }
 
 async function getTimeInputFromSpeech(username, item, timezone, token) {
-  ensureUserNameAndTokenMatch(username, token);
+  await ensureUserNameAndTokenMatch(username, token);
   const audioBuffer = Buffer.from(item, 'base64');
   const formData = new FormData(); 
   formData.append('file', audioBuffer, {
@@ -1139,7 +1139,7 @@ async function convertOpenAIToTimeEntries(username, inputString) {
 }
 
 async function writeRecommendation(item, token) {
-  ensureUserNameAndTokenMatch(item.contributor, token);
+  await ensureUserNameAndTokenMatch(item.contributor, token);
   try {
       console.log('Handler got item: ', item);
       // make sure to strip out the additionalcomments 
@@ -1181,7 +1181,7 @@ async function writeRecommendation(item, token) {
 
 
 async function getRecommendations(itemId, user, token) {
-  ensureUserNameAndTokenMatch(user, token);
+  await ensureUserNameAndTokenMatch(user, token);
   console.log(`Got called with id: ${itemId}, user ${user}`);
   const ct = await getRecommendationsContainer();
   console.log(`Got container: ${ct}`);
@@ -1252,7 +1252,7 @@ async function getRecommendationComments(recommendationId) {
 }
 
 async function writeRecommendationComment(item, token) {
-  ensureUserNameAndTokenMatch(item.user, token);
+  await ensureUserNameAndTokenMatch(item.user, token);
   console.log('Adding comment: ', item);
   // remove reactions before saving
   delete item.reactions;
@@ -1295,7 +1295,7 @@ async function writeRecommendationComment(item, token) {
 }
 
 async function writeReactionToComment(item, token) {
-  ensureUserNameAndTokenMatch(item.user, token);
+  await ensureUserNameAndTokenMatch(item.user, token);
   console.log('Adding reaction: ', item);
   try {
       const ct = await getReactionsContainer();
@@ -1326,7 +1326,7 @@ async function writeReactionToComment(item, token) {
 }
 
 async function writeFeedback(user, feedback, token) {
-  ensureUserNameAndTokenMatch(user, token);
+  await ensureUserNameAndTokenMatch(user, token);
   const connectionString = process.env.AZURE_BLOB_CONNECTION_STRING;
   const containerName = 'mp4';
 
@@ -1382,7 +1382,7 @@ async function sendmail() {
 }
   
 async function getUserGoals(userToken) {
-  const user = getUserNameFromToken(userToken);
+  const user = await getUserNameFromToken(userToken);
   const ct = await getGoalContainer();
   const goals = await ct.find({username:user}).toArray();
   const final = JSON.stringify(goals);
@@ -1391,7 +1391,7 @@ async function getUserGoals(userToken) {
 }
  
 async function writeUserGoals(goals, userToken) {
-  const user = getUserNameFromToken(userToken);
+  const user = await getUserNameFromToken(userToken);
   const ct = await getGoalContainer();
   const existingItem = await ct.findOne({ _id: ObjectId(goals._id) });
   const isEmptyItem = (goals.identity === '');
@@ -1473,7 +1473,7 @@ async function getDailyChallenges(date) {
 }
 
 async function seekCoaching(user, question, sessionToken, token) {
-  ensureUserNameAndTokenMatch(user, token);
+  await ensureUserNameAndTokenMatch(user, token);
   console.log(`Seeking coaching for ${user}, ${question}, ${sessionToken}`);
   try {
     if (sessionToken === undefined) {
