@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Widget, addResponseMessage, addUserMessage, setQuickButtons, toggleInputDisabled, toggleMsgLoader, toggleWidget } from 'react-chat-widget';
+import { Widget, addResponseMessage, addUserMessage, deleteMessages, setQuickButtons, toggleInputDisabled, toggleMsgLoader, toggleWidget } from 'react-chat-widget';
 import { postWithBodyAndToken } from './utils/urlUtil';
 import 'react-chat-widget/lib/styles.css';
 import './SelfCareCoach.css'; // Import a CSS file for styling
+import { useLocation } from 'react-router-dom';
 
 const SelfCareCoach = () => {
   const [sessionId, setSessionId] = useState(null);  
   const [isProcessing, setIsProcessing] = useState(false);
+  const [questionFetched, setQuestionFetched] = useState(false); // New state variable
+  const location = useLocation();
 
   const getSelfCareInsights = useCallback((question) => {    
     console.log("Get self-care insights called");
@@ -64,6 +67,11 @@ const SelfCareCoach = () => {
     }
   }, [isProcessing]);*/
 
+  const handleNewUserMessage = useCallback((newMessage) => {
+    console.log("Got message ", newMessage);
+    getSelfCareInsights(newMessage);
+  }, [getSelfCareInsights]);
+
   useEffect(() => {
     toggleWidget(true);
     console.log("Toggled Copilot to show");
@@ -74,17 +82,22 @@ const SelfCareCoach = () => {
       {label: 'What spiritual care circles do my peers participate in?', value: 'What spiritual care circles do my peers participate in?'}
     ]);
 
+    const searchParams = new URLSearchParams(location.search);
+    const question = searchParams.get('question');
+    if (question && !questionFetched) {
+      console.log("Got question ", question);
+      deleteMessages(2);
+      addUserMessage(question);
+      handleNewUserMessage(question);
+      setQuestionFetched(true); // Set questionFetched to true to indicate question is fetched
+    }
+
     return () => {
       // Toggle the widget to close when the component is unmounted
       toggleWidget(false);
       console.log("Toggled Copilot to hide");
     };
-  });
-
-  const handleNewUserMessage = (newMessage) => {
-    console.log("Got message ", newMessage);
-    getSelfCareInsights(newMessage);
-  }  
+  }, [handleNewUserMessage, location.search, questionFetched]);  
 
   const handleQuickButton = (value) => {
     addUserMessage(value);
