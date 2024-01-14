@@ -36,7 +36,14 @@ function GoalCategory({ name, goals, updateGoals, wellKnownHabitsToAdopt, wellKn
 
   return (
     <div className={`goal-category goal-category-${name.toLowerCase()}`}>
-      <b>{name} Care Goals</b>
+      <div className="goal-category-header">
+        <b>{name} Care Goals</b>
+        <a className="goal-help" 
+          target="_blank" rel="noreferrer"
+          href={`/self-care-coach?question=what ${name} care goals should i set to be my ideal self?`}>
+            Need the Coach to help with {name} goal setting?
+        </a>
+      </div>
       <table>
         <thead>
           <tr>

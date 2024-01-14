@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Widget, addResponseMessage, addUserMessage, deleteMessages, setQuickButtons, toggleInputDisabled, toggleMsgLoader, toggleWidget } from 'react-chat-widget';
+import { Widget, addResponseMessage, addUserMessage, setQuickButtons, toggleInputDisabled, toggleMsgLoader, toggleWidget } from 'react-chat-widget';
 import { postWithBodyAndToken } from './utils/urlUtil';
 import 'react-chat-widget/lib/styles.css';
 import './SelfCareCoach.css'; // Import a CSS file for styling
@@ -85,8 +85,6 @@ const SelfCareCoach = () => {
     const searchParams = new URLSearchParams(location.search);
     const question = searchParams.get('question');
     if (question && !questionFetched) {
-      console.log("Got question ", question);
-      deleteMessages(2);
       addUserMessage(question);
       handleNewUserMessage(question);
       setQuestionFetched(true); // Set questionFetched to true to indicate question is fetched

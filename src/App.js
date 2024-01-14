@@ -30,7 +30,7 @@ const config = {
     ssoSilent: true
   },
   cache: {
-    cacheLocation: 'sessionStorage',
+    cacheLocation: 'localStorage',
     storeAuthStateInCookie: true
   },
   system: {
@@ -195,13 +195,25 @@ function AppPage() {
           setUser([authResult.idToken, account.username, account.name]);
         }
         else {
-          setUser(null);
+          const account = msalInstance.getActiveAccount()
+          console.log("Got account from stack ", account);
+          if (account) {              
+            msalInstance.acquireTokenSilent({account: account}).then(response => {
+              setUser([response.idToken, account.username, account.name]);
+              console.log('User already authenticated:', account.username);
+            }).catch(err => {
+              msalInstance.loginRedirect().catch(err => console.log(err));
+            });
+          }            
+          else {
+            msalInstance.loginRedirect().catch(err => console.log(err));
+          } 
         }
       }).catch(err => {
         console.log(err);
       });
 
-      await msalInstance.loginRedirect();
+      //await msalInstance.loginRedirect();
 
     } catch (error) {
       console.log('Login failed:', error);          
@@ -209,7 +221,6 @@ function AppPage() {
   }, [msalInstance, setUser]);
 
   
-
   useEffect(() => {
     const checkAuthentication = async () => {
       localStorage.setItem(AUTH_STATE, AUTH_STATE_VALUES.AUTHENTICATING);
@@ -270,19 +281,17 @@ function AppPage() {
           msalInstance.setActiveAccount(null);
           setLogoutComplete(true);
         } else {
-          const account = await msalInstance.getActiveAccount();
+          login();
+          /*const account = await msalInstance.getActiveAccount();
           console.log("Got account from stack ", account);
           if (account) {
-            /*const response = await msalInstance.acquireTokenSilent({
-              account: account,
-              scopes: ['user.read']
-            });*/
             const response = await msalInstance.acquireTokenSilent({account: account});                    
             setUser([response.idToken, account.username, account.name]);
             console.log('User already authenticated:', account.username);
           } else {
             login();
           }
+          */
         }
       }      
     }
