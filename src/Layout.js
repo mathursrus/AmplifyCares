@@ -1,16 +1,20 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Outlet, Link, useLocation } from "react-router-dom";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Navbar from "react-bootstrap/Navbar";
 //import * as microsoftTeams from '@microsoft/teams-js';
 import './Layout.css';
 import FirstRunExperience from './FirstRunExperience';
+import SelfCareCoach from './SelfCareCoach';
+import Flyout from './Flyout';
 
 function Layout() {
   const location = useLocation();
   const [showAboutDialog, setShowAboutDialog] = useState(false);
+  const [flyoutState, setFlyoutState] = useState(false);
+  const [flyoutComponent, setFlyoutComponent] = useState(null);
   /*
   try {
     microsoftTeams.initialize();
@@ -47,6 +51,15 @@ function Layout() {
   /*if (localStorage.getItem('userName') === null) {
     localStorage.setItem('userName', 'Alice');
   }*/
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const showHabits = searchParams.get('showHabits');
+    const habit = searchParams.get('habit');    
+    const copilot = searchParams.get('show-copilot');
+    setFlyoutState((showHabits || habit || copilot)?true:false);
+    setFlyoutComponent(copilot==="1" ? "copilot" : null);       
+  }, [location.search]);
 
   const handleAboutAmplifyCares = () => {
     setShowAboutDialog(true);
@@ -98,28 +111,28 @@ function Layout() {
               </Nav.Link>
               <Nav.Link
                 as={Link}
-                to="/self-care-coach"
-                className={location.pathname === '/self-care-coach' ? 'active' : ''}
-              >
-                Your Self Care Coach
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
                 to="/goals"
                 className={location.pathname === '/goals' ? 'active' : ''}
               >
                 Goals
               </Nav.Link>
+              <Nav.Link 
+                as={Link}
+                to={`?show-copilot=1&rand=${Math.random(1000)}`}
+                className={location.pathname === '/self-care-coach' ? 'active' : ''}>        
+                Your Self Care Coach
+              </Nav.Link>              
             </Nav>
             <Nav className="justify-content-end">
               <Nav.Link onClick={handleAboutAmplifyCares}>
                 About AmplifyCares
               </Nav.Link>
-            </Nav>
-            {showAboutDialog && <FirstRunExperience screen="1" onClose={() => setShowAboutDialog(false)} />}
+            </Nav>            
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      {showAboutDialog && <FirstRunExperience screen="1" onClose={() => setShowAboutDialog(false)} />}
+      {flyoutState && <Flyout Component={flyoutComponent==="copilot"?SelfCareCoach:null} onClose={() => {setFlyoutComponent(null); setFlyoutState(false)}} />}
       <center>
         <h2 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h2>
         <h2 className="subheader">A platform designed to encourage and measure self care... AmplifyCares, do you? </h2>

@@ -96,54 +96,10 @@
   color: black; /* Set the text color */
 }
 
-.flyout {
-  /* Existing styles */
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 40%;
-  height: 100%;
-  background: rgb(245, 245, 245);
-  border: 1px solid black;
-
-  /* Add animation properties */
-  animation-duration: 2s;
-  animation-timing-function: ease;
-  animation-fill-mode: forwards;
-  opacity: 0;
-  transform: translateX(100%);
-}
-
-@keyframes flyoutAnimation {
-  0% {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.flyout.show {
-  /* Add animation properties */
-  animation-name: flyoutAnimation;
-}  
-
-.flyout-header {
-  display: flex;
-  justify-content: flex-end;
-  padding: 5px;  
-}
-
-.flyout-close {
-  cursor: pointer;
-  z-index: 9999;
-}
 
 /* Add a media query to target screens with a maximum width of 768px (adjust as needed) */
 @media screen and (max-width: 768px) {
-  .summary-container {
+  .legend-container {
     max-width: 95%; /* Adjust the container's max-width for smaller screens */
     max-height: 95%;
   }

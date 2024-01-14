@@ -56,17 +56,6 @@ const SelfCareCoach = () => {
     });           
   }, [sessionId]);
 
-  /*useEffect(() => {
-    if (isProcessing) {
-      toggleInputDisabled(true);
-      toggleMsgLoader(true);
-    }
-    else {
-      toggleInputDisabled(false);
-      toggleMsgLoader(false);
-    }
-  }, [isProcessing]);*/
-
   const handleNewUserMessage = useCallback((newMessage) => {
     console.log("Got message ", newMessage);
     getSelfCareInsights(newMessage);
@@ -75,24 +64,36 @@ const SelfCareCoach = () => {
   useEffect(() => {
     toggleWidget(true);
     console.log("Toggled Copilot to show");
-    setQuickButtons([
-      {label: 'Have I been consistent in my self care routine?', value: 'Have I been consistent in my self care routine?'},
-      {label: 'How does my physical care compare to the best of my peers?', value: 'How does my physical care compare to the best of my peers?'},
-      {label: 'What social care circles can i join with my peers?', value: 'What social care circles can i join with my peers?'},
-      {label: 'What spiritual care circles do my peers participate in?', value: 'What spiritual care circles do my peers participate in?'}
-    ]);
 
     const searchParams = new URLSearchParams(location.search);
     const question = searchParams.get('question');
     if (question && !questionFetched) {
+      console.log("Got question ", question);
       addUserMessage(question);
       handleNewUserMessage(question);
-      setQuestionFetched(true); // Set questionFetched to true to indicate question is fetched
+      setQuestionFetched(true); // Set questionFetched to true to indicate question is fetched            
+    }
+    if (question) {
+      setQuickButtons([
+        {label: 'Why is it important to describe my ideal self?', value: 'Why is it important to describe my ideal self'},
+        {label: 'Why do I need to blend mental, physical, spiritual and social self care?', value: 'Why do I need to blend mental, physical, spiritual and social self care?'},
+        {label: 'Help me pick goals and habits', value: 'Help me pick goals and habits'},
+        {label: 'What are others doing for similar goals?', value: 'What are others doing for similar goals?'}
+      ]);
+    }
+    else {
+      setQuickButtons([
+        {label: 'Have I been consistent in my self care routine?', value: 'Have I been consistent in my self care routine?'},
+        {label: 'How does my physical care compare to the best of my peers?', value: 'How does my physical care compare to the best of my peers?'},
+        {label: 'What social care circles can i join with my peers?', value: 'What social care circles can i join with my peers?'},
+        {label: 'Why is spiritual care necessary?', value: 'Why is spiritual care necessary?'}
+      ]);
     }
 
     return () => {
       // Toggle the widget to close when the component is unmounted
       toggleWidget(false);
+      setQuickButtons([]);
       console.log("Toggled Copilot to hide");
     };
   }, [handleNewUserMessage, location.search, questionFetched]);  

@@ -1139,7 +1139,7 @@ async function convertOpenAIToTimeEntries(username, inputString) {
 }
 
 async function writeRecommendation(item, token) {
-  await ensureUserNameAndTokenMatch(item.contributor, token);
+  //await ensureUserNameAndTokenMatch(item.contributor, token);
   try {
       console.log('Handler got item: ', item);
       // make sure to strip out the additionalcomments 

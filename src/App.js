@@ -14,7 +14,6 @@ import * as microsoftTeams from "@microsoft/teams-js";
 import { features } from "./FirstRunExperience";
 import './App.css';
 import { refreshUserInfo } from "./utils/userUtil";
-import SelfCareCoach from "./SelfCareCoach";
 import Goals from "./Goals";
 
 const config = {
@@ -345,7 +344,6 @@ function AppPage() {
               <Route path="submit-time-page" element={<SubmitTimePage />} />
               <Route path="leaderboard" element={<Leaderboard />} />
               <Route path="team-list" element={<TeamList />} />
-              <Route path="self-care-coach" element={<SelfCareCoach />} />
               <Route path="goals" element={<Goals />} />
             </Route>
           </Routes>
@@ -357,7 +355,7 @@ function AppPage() {
               </button>
             </div>
           )}
-          {showFirstRunExperience > 0 && <FirstRunExperience screen={showFirstRunExperience} onClose={handleCloseFirstRunExperience} />}          
+          {showFirstRunExperience > 0 && <FirstRunExperience screen={showFirstRunExperience} onClose={handleCloseFirstRunExperience} />}                    
         </div>
       ) : logoutComplete ? (
         <div className="App">

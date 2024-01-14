@@ -1,11 +1,13 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ReactTags } from 'react-tag-autocomplete';
 const { useState, useEffect } = React;
 
 function GoalCategory({ name, goals, updateGoals, wellKnownHabitsToAdopt, wellKnownHabitsToShed }) {
   const [rows, setRows] = useState(goals ? goals : []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     updateGoals(rows);
@@ -39,9 +41,12 @@ function GoalCategory({ name, goals, updateGoals, wellKnownHabitsToAdopt, wellKn
       <div className="goal-category-header">
         <b>{name} Care Goals</b>
         <a className="goal-help" 
-          target="_blank" rel="noreferrer"
-          href={`/self-care-coach?question=what ${name} care goals should i set to be my ideal self?`}>
-            Need the Coach to help with {name} goal setting?
+          href="a" onClick={(e)=>{
+          e.preventDefault(); // Prevent default anchor link behavior
+          const newUrl = `?show-copilot=1&question=what ${name} care goals should i set to be my ideal self?&rand=${Math.random(1000)}`;
+          navigate(newUrl);
+        }}>        
+          Need the Coach to help with {name} goal setting?
         </a>
       </div>
       <table>
