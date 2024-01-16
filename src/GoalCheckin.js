@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
-import { DesktopTimePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import { DesktopTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 function GoalCheckin({usergoals}) {

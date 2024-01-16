@@ -2,12 +2,12 @@ import { React, useState, useEffect} from 'react';
 import GoalCategory from './GoalCategory';
 import './Goals.css';
 import Identity from './Identity.js';
-import { fetchWithToken, getApiHost, postWithToken } from './utils/urlUtil.js';
 import { Button, Accordion, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import Confetti from "react-confetti";
 //import GoalCheckin from './GoalCheckin.js';
+import { getUserGoals, saveUserGoals } from './utils/goalsUtil.js';
 
 const categories = ['Mental', 'Physical', 'Spiritual', 'Social'];
 
@@ -38,11 +38,8 @@ function Goals() {
 
   const fetchAndSetUserGoals = async () => {
     try {
-      const response = await fetchWithToken(getApiHost()+`/getusergoals/?item=${localStorage.getItem('userName')}`, localStorage.getItem('usertoken'));
-      if (response.ok) {
-          const data = await response.json();
-          const final = JSON.parse(data);
-          const value = final.length>0?final[0]:{};
+      const value = await getUserGoals();
+      if (value) {          
           const step1complete = (value.identity && value.identity !== '');
           const step2complete = (value.goals && Object.values(value.goals).some((array) => array.length > 0 && array[0].goal && array[0].goal !== ''));
           const step3complete = step2complete;
@@ -100,7 +97,7 @@ function Goals() {
 
   const saveGoals = () => {
     console.log("Saving goal ", userGoals);
-    postWithToken('/writeusergoals', userGoals, localStorage.getItem('usertoken')); 
+    saveUserGoals(userGoals);
     celebrate();   
   }
 
@@ -175,9 +172,10 @@ function Goals() {
               {goalSettingStep > 2 && (
               <Accordion.Collapse eventKey="3">
                 <Card.Body>
-                  {/*<GoalCheckin />
-                  <Button className="next-step" onClick={saveGoals}><b>Save Goals</b></Button>
-                  */}
+                  {/*
+                  <GoalCheckin />
+                  <Button className="next-step" onClick={saveGoals}><b>Save Goals</b></Button>                  
+              */}
                   <center> Coming Soon .... </center>
                 </Card.Body>
               </Accordion.Collapse>

@@ -10,11 +10,12 @@
     import 'react-datepicker/dist/react-datepicker.css';
     import './SubmitTime.css';
     import UserBadges from './UserBadges';
-    import { ReactTags } from 'react-tag-autocomplete';
     import SpeechRecognition from './SpeechToText';
     import SelfCareCircles from './SelfCareCircles';
     import TimerInputField from './TimerInputField';
-import { refreshUserInfo } from './utils/userUtil';
+    import { refreshUserInfo } from './utils/userUtil';
+    import { getUserGoals } from './utils/goalsUtil';
+    import HabitTracker from './HabitTracker';
     
 
     const React = require('react');
@@ -56,6 +57,7 @@ import { refreshUserInfo } from './utils/userUtil';
         const [isEditMode, setIsEditMode] = useState(false); 
                 
         const [selfCareCircles, setSelfCareCircles] = useState(null);
+        const [userGoals, setUserGoals] = useState([]);
 
         const niceWorkAudio = new Audio('/GoodJob.mp3');
         const sorryAudio = new Audio('/Error.mp3');
@@ -66,7 +68,7 @@ import { refreshUserInfo } from './utils/userUtil';
             const habit = searchParams.get('habit');    
             setFlyoutState(isNaN(showHabits) ? 0 : showHabits);
             setHabit(habit);
-            refreshUserCircles();
+            refreshUserCirclesAndGoals();
             //console.log("Show habits is ", showHabits, ", habit is ", habit, ", flyout state is ", flyoutState);              
         }, [location.search]);
 
@@ -76,15 +78,49 @@ import { refreshUserInfo } from './utils/userUtil';
             setSpiritualHealth({time: '', tags: []});
             setSocialHealth({time: '', tags: []});
             setEditingEntry(null);
-            setIsEditMode(false);
-            fetchEntries(selectedDate);
-        }, [selectedDate]);
+            setIsEditMode(false);            
+        }, []);
 
+        const handleEditClick = useCallback(async (entry) => {
+            // Set the entry to be edited in the state and enter edit mode
+            await clearFields();
+            setEditingEntry(entry);
+            console.log("Editing entry ", entry);
+            // Map the tags in the entry to include the 'value' property based on 'wellKnownTags'
+            const mentalHealthTags = (entry.mental_health_activity);
+            const physicalHealthTags = (entry.physical_health_activity);
+            const spiritualHealthTags = (entry.spiritual_health_activity);
+            const socialHealthTags = (entry.societal_health_activity);
+            
+            setMentalHealth({
+                time: entry.mental_health_time,
+                tags: mentalHealthTags,
+            });
+            setPhysicalHealth({
+                time: entry.physical_health_time,
+                tags: physicalHealthTags,
+            });
+            setSpiritualHealth({
+                time: entry.spiritual_health_time,
+                tags: spiritualHealthTags,
+            });
+            setSocialHealth({
+                time: entry.societal_health_time,
+                tags: socialHealthTags,
+            });
+            setIsEditMode(true);
+        }, [clearFields]);
 
         useEffect(() => {
-            clearFields();            
-        }, [clearFields]);
+            clearFields();  
+            fetchEntries(selectedDate);          
+        }, [clearFields, selectedDate]);
         
+        useEffect(() => {
+            if (pastEntries.length === 1) {
+                handleEditClick(pastEntries[0]);
+            }
+        }, [pastEntries, handleEditClick]);
         
         const fetchEntries = async (date) => {
             try {
@@ -93,7 +129,8 @@ import { refreshUserInfo } from './utils/userUtil';
                 const response = await fetchAndInsertToken(getApiUrl(`/getselfcaredata/?item=${localStorage.getItem('userName')}&date=${formattedDate}`));
                 if (response.ok) {
                     const data = await response.json();
-                    setPastEntries(JSON.parse(data));
+                    const entries = JSON.parse(data);
+                    setPastEntries(entries);                    
                 }
             } catch (error) {
                 console.error('Error fetching entries:', error);
@@ -142,28 +179,28 @@ import { refreshUserInfo } from './utils/userUtil';
                 DateTime: getSubmissionTime(),
                 lastEdited: new Date(),
             };
-            if (MentalHealth.time !== '') {
+            //if (MentalHealth.time !== '') {
                 itemData.mental_health_time = parseInt(MentalHealth.time);
-                itemData.mental_health_activity = MentalHealth.tags.map(item => item.label);
-            }
-            if (PhysicalHealth.time !== '') {
+                itemData.mental_health_activity = MentalHealth.tags;
+            //}
+            //if (PhysicalHealth.time !== '') {
                 itemData.physical_health_time = parseInt(PhysicalHealth.time);
-                itemData.physical_health_activity = PhysicalHealth.tags.map(item => item.label);
-            }
-            if (SpiritualHealth.time !== '') {
+                itemData.physical_health_activity = PhysicalHealth.tags;
+            //}
+            //if (SpiritualHealth.time !== '') {
                 itemData.spiritual_health_time = parseInt(SpiritualHealth.time);
-                itemData.spiritual_health_activity = SpiritualHealth.tags.map(item => item.label);
-            }
-            if (SocialHealth.time !== '') {
+                itemData.spiritual_health_activity = SpiritualHealth.tags;
+            //}
+            //if (SocialHealth.time !== '') {
                 itemData.societal_health_time = parseInt(SocialHealth.time);
-                itemData.societal_health_activity = SocialHealth.tags.map(item => item.label);
-            }
+                itemData.societal_health_activity = SocialHealth.tags;
+            //}
             if (isEditMode) {
                 itemData._id = editingEntry._id;
                 itemData.DateTime = editingEntry.DateTime;                
             }
             console.log(itemData);
-            writeSelfCareItem(itemData);
+            writeSelfCareItem(itemData);            
         };
 
         const writeSelfCareItem = async (itemData) => {
@@ -171,8 +208,14 @@ import { refreshUserInfo } from './utils/userUtil';
             if (!response.ok) {
                 console.log("Ugh");
             }
-            else {
-                celebrate(new Date(itemData.DateTime));
+            else {         
+                const utcDate = new Date(
+                    parseInt(itemData.DateTime.slice(0, 4)),   // Year
+                    parseInt(itemData.DateTime.slice(5, 7)) - 1, // Month (0-based)
+                    parseInt(itemData.DateTime.slice(8, 10)),  // Day                    
+                  );       
+                celebrate(utcDate);                
+                fetchEntries(selectedDate);
             }
             return response;
         };
@@ -191,37 +234,7 @@ import { refreshUserInfo } from './utils/userUtil';
                 navigate('/summary-page');
             }, 6000);
         }
-
-        const handleEditClick = async (entry) => {
-            // Set the entry to be edited in the state and enter edit mode
-            await clearFields();
-            setEditingEntry(entry);
-            console.log("Editing entry ", entry);
-            // Map the tags in the entry to include the 'value' property based on 'wellKnownTags'
-            const mentalHealthTags = mapTagsWithValues(entry.mental_health_activity);
-            const physicalHealthTags = mapTagsWithValues(entry.physical_health_activity);
-            const spiritualHealthTags = mapTagsWithValues(entry.spiritual_health_activity);
-            const socialHealthTags = mapTagsWithValues(entry.societal_health_activity);
-            
-            setMentalHealth({
-                time: entry.mental_health_time,
-                tags: mentalHealthTags,
-            });
-            setPhysicalHealth({
-                time: entry.physical_health_time,
-                tags: physicalHealthTags,
-            });
-            setSpiritualHealth({
-                time: entry.spiritual_health_time,
-                tags: spiritualHealthTags,
-            });
-            setSocialHealth({
-                time: entry.societal_health_time,
-                tags: socialHealthTags,
-            });
-            setIsEditMode(true);
-        };
-
+        
         const handleDeleteClick = async (entry) => {
             const confirmDelete = window.confirm('Are you sure you want to delete this entry?');
             if (confirmDelete) {
@@ -229,10 +242,15 @@ import { refreshUserInfo } from './utils/userUtil';
                 entry.physical_health_time = 0;
                 entry.spiritual_health_time = 0;
                 entry.societal_health_time = 0;
+                entry.mental_health_activity = [];
+                entry.physical_health_activity = [];
+                entry.spiritual_health_activity = [];
+                entry.societal_health_activity = [];
                 const response = await writeSelfCareEntry(entry);
                 if (response.ok) {
                     console.log("Successful delete");
                     clearFields();
+                    fetchEntries(selectedDate);
                 }
                 else {
                     console.log("Something failed ", response.body);
@@ -241,7 +259,7 @@ import { refreshUserInfo } from './utils/userUtil';
         }
         
         // Helper function to map tags with 'value' based on 'wellKnownTags'
-        const mapTagsWithValues = (tags) => {
+        /*const mapTagsWithValues = (tags) => {
             if (tags !== undefined && tags !== null)  {
                 return tags.map((tagName) => {
                     return { label: tagName, value: tagName };
@@ -250,7 +268,7 @@ import { refreshUserInfo } from './utils/userUtil';
             else {
                 return [];
             }
-        };
+        };*/
 
         const mentalHealthRecommendations = (e) => {
             e.preventDefault();
@@ -279,16 +297,19 @@ import { refreshUserInfo } from './utils/userUtil';
         const handleCloseFlyout = () => {
             setHabit('');
             setFlyoutState(0);
-            refreshUserCircles();
+            refreshUserCirclesAndGoals();
             console.log("Clicked close");        
         } 
         
-        const refreshUserCircles = async () => {
+        const refreshUserCirclesAndGoals = async () => {
             const result = await refreshUserInfo();
             console.log("Got user info ", result);
-            setSelfCareCircles(result.circles);                   
-        }
-        
+            setSelfCareCircles(result.circles);
+            
+            const userGoals = await getUserGoals();
+            setUserGoals(userGoals && userGoals.goals ? userGoals.goals : []);              
+        }               
+          
         const isValidFlyoutState = () => {
             return (flyoutState >0 && flyoutState <6);
         }
@@ -296,8 +317,6 @@ import { refreshUserInfo } from './utils/userUtil';
         useEffect(() => {
             console.log("Flyout state is ", flyoutState); 
         }, [flyoutState]); // Run the effect only when flyoutState changes
-
-        //const user_circles = (localStorage.getItem('userDetails') !== undefined && localStorage.getItem('userDetails') !== null) ? (JSON.parse(localStorage.getItem('userDetails'))).circles : [];
 
         return (
             <Container className="submit-time-container">    
@@ -327,9 +346,33 @@ import { refreshUserInfo } from './utils/userUtil';
                         dateFormat="MM/dd/yyyy"
                         className="date-picker"
                         />
-                    </center>                                                         
+                    </center>    
+                    {/* Display a tile for each habit  
+                    <div className='habit-tiles'>
+                        {userGoals && userGoals[0].habitsToAdopt.length>0 && userGoals[0].habitsToAdopt.map((habit) => (
+                            <div key={habit.id} className={`habit-tile adopt ${habit.isDone ? 'completed' : ''}`} data-tooltip={habit}>
+                            <span>{habit}</span>
+                            <input
+                                type='checkbox'
+                                checked={habit.isDone}
+                                onChange={() => toggleHabit(habit.id)}
+                            />
+                            </div>
+                        ))}
+                        {userGoals && userGoals[0].habitsToShed.length>0 && userGoals[0].habitsToShed.map((habit) => (
+                            <div key={habit.id} className={`habit-tile shed ${habit.isDone ? 'completed' : ''}`} data-tooltip={habit}>
+                            <span>{habit}</span>
+                            <input
+                                type='checkbox'
+                                checked={habit.isDone}
+                                onChange={() => toggleHabit(habit.id)}
+                            />
+                            </div>
+                        ))}
+                    </div>            
+                    */}                                        
                     {/* Display the entries in a table */}
-                    {pastEntries.length > 0 && 
+                    {pastEntries.length > 1 && 
                     <div style={{ fontSize: 'smaller' }}>
                         <center>
                             Existing entries
@@ -378,32 +421,7 @@ import { refreshUserInfo } from './utils/userUtil';
                             </a>                        
                         </label>
                         <div className="input-container">
-                            <div className="time-input-container">
-                            {/*<div className="input-with-button">
-                            <input
-                                type="text"
-                                className="text-field time-input"
-                                value={MentalHealth.time}
-                                onChange={(e) => {
-                                    const input = e.target.value;
-                                    try {
-                                        const result = evaluate(input);
-                                        const time = result.toString();
-                                        console.log("Time is ", time);
-                                        setMentalHealth((prev) => ({ ...prev, time }));
-                                    } catch (error) {
-                                        const time = '';
-                                        setMentalHealth((prev) => ({ ...prev, time }));
-                                    }
-                                }}
-                                placeholder={placeholderStrings.MentalHealth}
-                            />
-                            <button
-                                className={`timer-control ${isRunning ? 'stop' : 'start'}`}                                
-                                title={`Click to ${isRunning ? 'Stop' : 'Start'} timer`}
-                                onClick={isRunning ? stopTimer : startTimer}>                                
-                            </button>                            
-                            </div>*/}
+                            <div className="time-input-container">                            
                             <TimerInputField 
                                 value={MentalHealth.time}
                                 placeholder={placeholderStrings.MentalHealth}
@@ -411,7 +429,7 @@ import { refreshUserInfo } from './utils/userUtil';
                                     setMentalHealth((prev) => ({ ...prev, time }))
                                 }}/>
                             </div>
-                            
+                            {/*}
                             <ReactTags
                                 selected={MentalHealth.tags}
                                 suggestions={wellKnownTags.MentalHealth.map((name, index) => ({ value: name, label: name }))}
@@ -427,7 +445,14 @@ import { refreshUserInfo } from './utils/userUtil';
                                 allowNew="true"
                                 labelText=''
                                 collapseOnSelect="true"
-                            />                        
+                            />   
+                            */}
+                            <HabitTracker 
+                                userGoals={userGoals.Mental}
+                                habitsDone={MentalHealth.tags}
+                                suggestedHabits={wellKnownTags.MentalHealth}
+                                habitSetter={setMentalHealth}
+                            />                     
                         </div>
                     </div>
                     <br></br>
@@ -439,25 +464,7 @@ import { refreshUserInfo } from './utils/userUtil';
                             </a>
                         </label>
                         <div className="input-container">
-                        <div className="time-input-container">
-                            {/**<input
-                                type="text"
-                                className="text-field time-input"
-                                value={PhysicalHealth.time}
-                                onChange={(e) => {
-                                    const input = e.target.value;
-                                    try {
-                                        const result = evaluate(input);
-                                        const time = result.toString();
-                                        console.log("Time is ", time);
-                                        setPhysicalHealth((prev) => ({ ...prev, time }));
-                                    } catch (error) {
-                                        const time = '';
-                                        setPhysicalHealth((prev) => ({ ...prev, time }));
-                                    }
-                                }}
-                                placeholder={placeholderStrings.PhysicalHealth}
-                            />**/}
+                        <div className="time-input-container">                            
                             <TimerInputField 
                                 value={PhysicalHealth.time}
                                 placeholder={placeholderStrings.PhysicalHealth}
@@ -465,6 +472,7 @@ import { refreshUserInfo } from './utils/userUtil';
                                     setPhysicalHealth((prev) => ({ ...prev, time }))
                                 }}/>
                         </div>
+                            {/*
                             <ReactTags
                                 selected={PhysicalHealth.tags}
                                 suggestions={wellKnownTags.PhysicalHealth.map((name, index) => ({ value: name, label: name }))}
@@ -480,7 +488,14 @@ import { refreshUserInfo } from './utils/userUtil';
                                 allowNew="true"
                                 labelText=''
                                 collapseOnSelect="true"                                
-                            />                        
+                            />     
+                                */}
+                            <HabitTracker 
+                                userGoals={userGoals.Physical}
+                                habitsDone={PhysicalHealth.tags}
+                                suggestedHabits={wellKnownTags.PhysicalHealth}
+                                habitSetter={setPhysicalHealth}
+                            />                    
                         </div>
                     </div>
                     <br></br>
@@ -500,6 +515,7 @@ import { refreshUserInfo } from './utils/userUtil';
                                         setSpiritualHealth((prev) => ({ ...prev, time }))
                                     }}/>
                             </div>
+                            {/*
                             <ReactTags
                                 selected={SpiritualHealth.tags}
                                 suggestions={wellKnownTags.SpiritualHealth.map((name, index) => ({ value: name, label: name }))}
@@ -515,7 +531,14 @@ import { refreshUserInfo } from './utils/userUtil';
                                 allowNew="true"
                                 labelText=''
                                 collapseOnSelect="true"
-                            />                        
+                            /> 
+                                */}      
+                            <HabitTracker 
+                                userGoals={userGoals.Spiritual}
+                                habitsDone={SpiritualHealth.tags}
+                                suggestedHabits={wellKnownTags.SpiritualHealth}
+                                habitSetter={setSpiritualHealth}
+                            />                  
                         </div>
                     </div>
                     <br></br>
@@ -535,6 +558,7 @@ import { refreshUserInfo } from './utils/userUtil';
                                         setSocialHealth((prev) => ({ ...prev, time }))
                                     }}/>
                             </div>
+                            {/*
                             <ReactTags
                                 selected={SocialHealth.tags}
                                 suggestions={wellKnownTags.SocialHealth.map((name, index) => ({ value: name, label: name }))}
@@ -550,7 +574,14 @@ import { refreshUserInfo } from './utils/userUtil';
                                 allowNew="true"
                                 labelText=''
                                 collapseOnSelect="false"
-                            />                        
+                            />      
+                                */}
+                            <HabitTracker 
+                                userGoals={userGoals.Social}
+                                habitsDone={SocialHealth.tags}
+                                suggestedHabits={wellKnownTags.SocialHealth}
+                                habitSetter={setSocialHealth}
+                            />                   
                         </div>
                     </div>
                     {isValidFlyoutState() && (

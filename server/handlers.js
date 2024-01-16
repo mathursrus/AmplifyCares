@@ -315,7 +315,11 @@ async function writeEntry(item) {
         ((item.mental_health_time || 0) === 0) &&
         ((item.physical_health_time || 0) === 0) &&
         ((item.spiritual_health_time || 0) === 0) &&
-        ((item.societal_health_time || 0) === 0);
+        ((item.societal_health_time || 0) === 0) &&
+        ((item.mental_health_activity || []).length === 0) &&
+        ((item.physical_health_activity || []).length === 0) &&
+        ((item.spiritual_health_activity || []).length === 0) &&
+        ((item.societal_health_activity || []).length === 0);
 
 
       // if not an empty item, lemmatize the activities
