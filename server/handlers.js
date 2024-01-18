@@ -1305,7 +1305,7 @@ async function writeReactionToComment(item, token) {
       const ct = await getReactionsContainer();
 
       // Check if the item with the same ID already exists in the database
-      const existingItem = await ct.findOne({ comment_id: item.comment_id }, { user: item.user});
+      const existingItem = await ct.findOne({ comment_id: item.comment_id, user: item.user});
       var result = item;
       if (existingItem) {
           if (item.emoji === existingItem.emoji) {
