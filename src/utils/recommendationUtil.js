@@ -9,11 +9,11 @@ export const addCommentToRecommendation = async (recommendationId, commentString
     date: Date.now()
   };    
     
-  writeRecommendationComment(comment, user);
+  await writeRecommendationComment(comment);
 }
 
 export const writeRecommendationComment = async (comment) => {
-  await postWithToken("/writerecommendationcomment", comment, localStorage.getItem('userName'), localStorage.getItem('usertoken'));
+  await postWithToken("/writerecommendationcomment", comment, localStorage.getItem('usertoken'));
 }
 
 export const getRecommendationComments = async (recommendationId) => {
@@ -33,5 +33,5 @@ export const writeReactionToComment = async (reaction, commentId) => {
     date: Date.now()
   }; 
   
-  await postWithToken("/writereactiontocomment", reactionToComment, localStorage.getItem('userName'), localStorage.getItem('usertoken'));
+  await postWithToken("/writereactiontocomment", reactionToComment, localStorage.getItem('usertoken'));
 }
