@@ -39,6 +39,9 @@ var getDailyChallenges = routesModules.getDailyChallenges;
 var getUserGoals = routesModules.getUserGoals;
 var writeUserGoals = routesModules.writeUserGoals;
 var seekCoaching = routesModules.seekCoaching;
+var checkNotifications = routesModules.checkNotifications;
+var addNotificationSubscription = routesModules.addNotificationSubscription;
+var removeNotificationSubscription = routesModules.removeNotificationSubscription;
 
 async function startSignalRHub() {
   console.log("Starting hub");
@@ -125,6 +128,9 @@ app[getDailyChallenges.method](getDailyChallenges.path, getDailyChallenges.handl
 app[getUserGoals.method](getUserGoals.path, getUserGoals.handler);
 app[writeUserGoals.method](writeUserGoals.path, writeUserGoals.handler);
 app[seekCoaching.method](seekCoaching.path, seekCoaching.handler);
+app[checkNotifications.method](checkNotifications.path, checkNotifications.handler);
+app[addNotificationSubscription.method](addNotificationSubscription.path, addNotificationSubscription.handler);
+app[removeNotificationSubscription.method](removeNotificationSubscription.path, removeNotificationSubscription.handler);  
 
 app.post('/hub/negotiate', (req, res) => {  
   console.log('Received negotiation request:', req.body);

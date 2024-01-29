@@ -3,8 +3,23 @@
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, OPTIONS"
   },
+  "routes": [
+    {
+      "route": "/sw.js",
+      "headers": {
+        "Content-Type": "application/javascript"
+      }
+    },
+    {
+      "route": "/manifest.json",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/js/*"]
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/js/*", "/sw.js"]
   }
 }
+

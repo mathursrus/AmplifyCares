@@ -11,6 +11,7 @@
     "@azure/storage-blob": "^12.14.0",
     "@microsoft/signalr": "^7.0.9",
     "@sendgrid/mail": "^7.7.0",
+    "azure-sb": "^0.11.2",
     "blob-to-buffer": "^1.2.9",
     "compromise": "^14.10.0",
     "cookie-parser": "~1.4.4",
@@ -22,6 +23,7 @@
     "mongodb": "^3.6.2",
     "morgan": "~1.9.1",
     "nltk": "^0.0.1",
-    "openai": "^4.20.1"
+    "openai": "^4.20.1",
+    "web-push": "^3.6.7"
   }
 }

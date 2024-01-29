@@ -13,14 +13,24 @@ const userId = "userInfo";
 const inviteId = "invite_info";
 const challengeId = "dailychallenge_info";
 const goalId = "goal_info";
+const notificationId = "notification_info";
+
 const ObjectId = require('mongodb').ObjectId;
 const axios  = require('axios');
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
 });
+const webpush = require('web-push');
+const publicKey = 'BGgzf3Q1RhLD_SWMw62Mwqpj-NmuscTTfYibRVv1CGYNZHKc9hH0hQB3pE1MPYPabOF2W3hJZwl8sxMPJjOIME4';
+const privateKey = '9pVVjuAZl5o8gqy91DotsBItSgYYvQbEvL-YSutzpjI';
+webpush.setVapidDetails(
+  'mailto:sid.mathur@gmail.com', // Your contact email
+  publicKey,
+  privateKey
+);
+
 
 //const nlp = require('compromise');
-
 let dbClient = null;
 let team_container = null;
 let recos_container = null;
@@ -31,6 +41,7 @@ let user_container = null;
 let invite_container = null;
 let challenge_container = null;
 let goal_container = null;
+let notification_container = null;
 
 async function getMongoDbClient() {
   if (!dbClient) {
@@ -116,6 +127,15 @@ async function getGoalContainer() {
     console.log(goal_container);
   }
   return goal_container;
+}
+
+async function getNotificationContainer() {
+  if (!notification_container) {
+    var cl = await getMongoDbClient();
+    notification_container = await cl.collection(notificationId);
+    console.log(notification_container);
+  }
+  return notification_container;
 }
 
 async function getUserNameFromToken(token) {
@@ -1584,4 +1604,65 @@ async function seekCoaching(user, question, sessionToken, token) {
   }  
 }
 
-module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching};
+async function checkNotifications() {    
+  const ct = await getNotificationContainer();
+  const subscriptions = await ct.find().toArray();
+  /*var targetSubscriptions = [
+      {
+        endpoint: "https://wns2-bn3p.notify.windows.com/w/?token=BQYAAAA%2bRzxXBFlPcDeECk7Gr15I7Zog8e8IW5Qwz0sk1PuwhvZoPE6%2bfUogmff7uC80Nk2MhFQbo%2bHhMG%2fiNXEJD8%2fiwczlRObEoSh4wni2dVlpnwehNacDpg22GDWoPmWUM92YvxMp8UZg7Y8cBwUEFpXVOlA9gwInBNCV2%2fXR11CH4CP8pGkKGoi6yy%2f2GGwhUGgiWLKm072%2b3Jc6%2bKfd2CImrciZVPMKFhFlPYW4wRGqymuJUGH%2b%2fSe4aUVz9srDUYRn3q8lf8ca5ts%2b4kzmZjj1V6Dm6pCQGUHDcE5oKdi66snExKx2vsoKa43cDB3CWHA%3d",
+        expirationTime: null,
+        keys: {
+            "p256dh": "BLvsvqKTEZiRsq1NvqSgkCcSW_zIfkfegY2uBBn14fZPtqxzdlVoNkB82o9b8OoHBdQ6Z3aVSFVgfHnW7janSOk",
+            "auth": "74h9TxdsVjOPIilP5Jh4rA"
+        }
+    },
+    {
+      "endpoint": "https://fcm.googleapis.com/fcm/send/fcf1uK9Pwfk:APA91bFDKjkOy0YH1w-cXkmTpGZKxPa_o2UoRVqt80fO8C7hVT1R8rOtxVMmjvtVZI_rEufOiaAe6J85Ij5sbaH54-4bl2xOcAf5B3rVXaQ0X6eu8--DBj3MEfIhieqr3Che6GJ6EULf",
+      "expirationTime": null,
+      "keys": {
+          "p256dh": "BC14o2B5I7OpoKSZOoQ7o-QHtMdL2tPBlI4YSotLe2ZNI0uzgPN5L-sufp3BOGOzQXuF3YerydDLFzwEE213hOA",
+          "auth": "X06oNELKVsBM0uzaD19Tsg"
+      }
+    }
+    // ... more subscriptions
+  ];*/
+
+  subscriptions.forEach(async function(subscriptionObject) {
+    try {
+      await webpush.sendNotification(subscriptionObject.subscription, 'Hello World');
+      console.log('Notification sent to:', subscriptionObject);
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
+  });
+}
+
+async function addNotificationSubscription(user, subscription, token) {
+  console.log(`Adding subscription for ${user}, ${subscription}, ${token}`);
+  
+  await ensureUserNameAndTokenMatch(user, token);
+  try {
+    const ct = await getNotificationContainer();
+    const newItem = await ct.insertOne({ user: user, subscription: subscription });
+    result = newItem.insertedId;
+    console.log('Subscription inserted:', result);
+    return result;
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}
+
+async function removeNotificationSubscription(user, subscription, token) {
+  await ensureUserNameAndTokenMatch(user, token);
+  console.log(`Removing subscription for ${user}, ${subscription}`);
+  try {
+    const ct = await getNotificationContainer();
+    const result = await ct.deleteOne({ user: user, subscription: subscription });
+    console.log('Subscription deleted:', result);
+    return result;
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}
+
+module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};

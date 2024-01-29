@@ -355,7 +355,7 @@ function AppPage() {
               </button>
             </div>
           )}
-          {showFirstRunExperience > 0 && <FirstRunExperience screen={showFirstRunExperience} onClose={handleCloseFirstRunExperience} />}                    
+          {showFirstRunExperience > 0 && <FirstRunExperience screen={showFirstRunExperience} onClose={handleCloseFirstRunExperience} />}                              
         </div>
       ) : logoutComplete ? (
         <div className="App">

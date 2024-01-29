@@ -8,6 +8,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import Confetti from "react-confetti";
 //import GoalCheckin from './GoalCheckin.js';
 import { getUserGoals, saveUserGoals } from './utils/goalsUtil.js';
+import {seekNotificationPermission, sendPushNotification} from './utils/notificationsUtil.js';
 
 const categories = ['Mental', 'Physical', 'Spiritual', 'Social'];
 
@@ -65,7 +66,7 @@ function Goals() {
     //console.log("User goals identity is ", userGoals.identity);
   }
 
-  const completeStep1 = () => {
+  const completeStep1 = () => {      
     if (userGoals.identity && userGoals.identity !== '') {
       setCurrentStep(2); 
       setGoalSettingStep(2);
@@ -85,6 +86,11 @@ function Goals() {
     else {
       alert("Please set at least 1 goal you want to target in your self care journey");
     }
+  }
+
+  const completeStep3 = () => {
+    seekNotificationPermission();
+    sendPushNotification("Sids notification", "This is a test.");
   }
 
   const celebrate = () => {
@@ -173,10 +179,9 @@ function Goals() {
               <Accordion.Collapse eventKey="3">
                 <Card.Body>
                   {/*
-                  <GoalCheckin />
-                  <Button className="next-step" onClick={saveGoals}><b>Save Goals</b></Button>                  
-              */}
-                  <center> Coming Soon .... </center>
+                  <GoalCheckin />*/                  
+                  <Button className="next-step" onClick={() => completeStep3()}><b>Coming soon ....</b></Button>                  
+                  }                  
                 </Card.Body>
               </Accordion.Collapse>
               )}

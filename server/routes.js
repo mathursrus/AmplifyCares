@@ -350,4 +350,39 @@ const seekCoaching = {
     }
 }
 
-module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching};
+const checkNotifications = {
+    method: 'get',
+    path: '/checknotifications', 
+    handler: async (req, res) => {
+        const response = await handlers.checkNotifications();
+        res.status(200).json(response);
+    }
+}
+
+const addNotificationSubscription = {
+    method: 'post',
+    path: '/addnotificationsubscription', 
+    handler: async (req, res) => {
+        const subscription = req.body.subscription; 
+        const user = req.body.user;
+        const token = getTokenFromRequest(req);        
+        const response = await handlers.addNotificationSubscription(user, subscription, token);
+
+        res.status(200).json(response);
+    }
+}
+
+const removeNotificationSubscription = {
+    method: 'post',
+    path: '/removenotificationsubscription', 
+    handler: async (req, res) => {
+        const subscription = req.body.subscription;
+        const user = req.body.user; 
+        const token = getTokenFromRequest(req);        
+        const response = await handlers.removeNotificationSubscription(user, subscription, token);
+
+        res.status(200).json(response);
+    }
+}
+
+module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};

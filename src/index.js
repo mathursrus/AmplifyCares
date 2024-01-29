@@ -3,11 +3,64 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import AppPage from './App';
 import reportWebVitals from './reportWebVitals';
+import { checkPushSubscription } from './utils/notificationsUtil';
+
+/*console.log = (function(logFunc){
+  return function(text){
+      logFunc(text);
+      // Also output the log to an element on the page
+      document.getElementById('console-output').innerText += text + '\n';
+  }
+}(console.log));*/
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      // Unregister any existing service workers first
+      /*await navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.unregister().then((success) => {
+            if (success) {
+              console.log('Successfully unregistered old service worker:', registration.scope);
+            } else {
+              console.error('Failed to unregister old service worker:', registration.scope);
+            }
+          });
+        }
+      });*/
+  
+      // Now register the new service worker
+      await navigator.serviceWorker
+        .register('/sw.js', { scope: '/' }) // Path to your service worker file
+        .then(async (registration) => {
+          console.log('Services Worker registered with scope:', registration.scope);
+          await checkPushSubscription(registration);
+          console.log("Push subscription checked, moving on");
+        })
+        .catch((error) => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+  }  
+  
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 //  <React.StrictMode>
+<div>
     <AppPage />
+    <div id="console-output" style={{
+      whiteSpace: 'pre-wrap',
+      backgroundColor: '#f0f0f0',
+      border: '1px solid #ddd',
+      padding: '10px',
+      marginBottom: '20px',
+      maxHeight: '300px',
+      overflow: 'auto',
+      display: 'none' // Change to 'block' to make it visible
+  }}>
+      Console Output...
+  </div>
+</div>
 //  </React.StrictMode>
 );
 
