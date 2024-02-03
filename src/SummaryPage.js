@@ -21,14 +21,14 @@ const SummaryPage = () => {
   const [showTheBest, setShowTheBest] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("total");
   // Initialize the visibility state for each habit
-  const [habitVisibility, setHabitVisibility] = useState('');
+  //const [habitVisibility, setHabitVisibility] = useState('');
   //const [habitColors, setHabitColors] = useState({});
   const userName = localStorage.getItem('userName');
   const currentDate = new Date(); // Get the current date
   const currentMonth = currentDate.getMonth(); // Get the current month
   const currentYear = currentDate.getFullYear(); // Get the current year  
-  const lastMonth = (currentMonth === 0 ? 11:(currentMonth-1));
-  const lastMonthsYear = (currentMonth === 0? (currentYear-1) : currentYear);
+  //const lastMonth = (currentMonth === 0 ? 11:(currentMonth-1));
+  //const lastMonthsYear = (currentMonth === 0? (currentYear-1) : currentYear);
 
   // Set the endDay to the last day of the current month
   const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
@@ -110,7 +110,7 @@ const SummaryPage = () => {
       const { habits_data } = entry;
       habits_data.forEach((habit) => {
         const { text } = habit;
-        if (habitNamesSet.size === 0) setHabitVisibility(text); // make the first habit visible by default
+        //if (habitNamesSet.size === 0) setHabitVisibility(text); // make the first habit visible by default
         if (!habitNamesSet.has(text)) {
           habitNamesSet.add(text);
           habitColors[text] = getRandomColor();           
@@ -547,6 +547,7 @@ const SummaryPage = () => {
                                 return [...(habitsToAdoptRows || []), ...(habitsToShedRows || [])];
                               });
                             }
+                            return null;
                           })}                        
                       </tbody>
                     </table>
