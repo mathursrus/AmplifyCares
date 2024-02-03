@@ -7,6 +7,8 @@ import { fetchAndInsertToken, getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
 import { getUserGoals } from './utils/goalsUtil';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const SummaryPage = () => {
 
@@ -325,7 +327,7 @@ const SummaryPage = () => {
           />
         </center>
         {loading ? (
-          <p>Loading...</p>
+          <center><p>Loading...</p></center>
         ) : ( 
           <div>
           <center>
@@ -525,7 +527,13 @@ const SummaryPage = () => {
                                       <td
                                         key={data.date}
                                         className={data[habitToAdopt] ? 'green-cell' : 'red-cell'}
-                                      ></td>
+                                      >
+                                        {data[habitToAdopt] ? (
+                                          <FontAwesomeIcon icon={faCheck} className="green" />
+                                        ) : (
+                                          <FontAwesomeIcon icon={faTimes} className="no-show" />
+                                        )}
+                                      </td>
                                     ))}
                                   </tr>
                                 ));
@@ -538,7 +546,13 @@ const SummaryPage = () => {
                                       <td
                                         key={data.date}
                                         className={data[habitToShed] ? 'red-cell' : 'green-cell'}
-                                      ></td>
+                                      >
+                                        {data[habitToShed] ? (
+                                          <FontAwesomeIcon icon={faCheck} className="red" />
+                                        ) : (
+                                          <FontAwesomeIcon icon={faTimes} className="no-show" />
+                                        )}  
+                                      </td>
                                     ))}
                                   </tr>
                                 ));

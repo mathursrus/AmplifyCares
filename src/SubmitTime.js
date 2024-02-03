@@ -339,7 +339,8 @@
                     </div>
 
                     <center>
-                        <h5>Select the date you're submitting time for  </h5>
+                        <span className='non-bold'>Select the date you're submitting time for  </span>
+                        <br></br>
                         <DatePicker
                         selected={selectedDate}
                         onChange={(date) => {console.log("Selected date ", date); setSelectedDate(date)}}

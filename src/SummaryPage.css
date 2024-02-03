@@ -218,6 +218,20 @@
   width: fit-content;
 }
 
+.green {
+  color: green;
+  font-size: 12px;
+}
+
+.red {
+  color: red;
+  font-size: 12px;  
+}
+
+.no-show {
+  display: none;
+}
+
 /* Style green cells */
 .green-cell {
   background-color: green;
