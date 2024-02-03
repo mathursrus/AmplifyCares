@@ -6,13 +6,16 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts'
 import { fetchAndInsertToken, getApiUrl } from './utils/urlUtil';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
+import { getUserGoals } from './utils/goalsUtil';
 
 const SummaryPage = () => {
 
+  const [mode, setMode] = useState("Performance"); 
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState([]);
   const [activitiesData, setActivitiesData] = useState([]);
   const [habitsData, setHabitsData] = useState([]);
+  const [goalsData, setGoalsData] = useState(null);
   const [showSelf, setShowSelf] = useState(true);
   const [showMostOthers, setShowMostOthers] = useState(true);
   const [showTheBest, setShowTheBest] = useState(true);
@@ -32,11 +35,24 @@ const SummaryPage = () => {
   const [endDay, setEndDay] = useState(lastDayOfMonth);
 
   // Set the startDay to the first day of the previous month
-  const firstDayOfPreviousMonth = new Date(lastMonthsYear, lastMonth, 1);
-  const [startDay, setStartDay] = useState(firstDayOfPreviousMonth);
+  //const firstDayOfPreviousMonth = new Date(lastMonthsYear, lastMonth, 1);
+  //const [startDay, setStartDay] = useState(firstDayOfPreviousMonth);
+  // Set the startDay to the first day of the current month
+  const firstDayOfThisMonth = new Date(currentYear, currentMonth, 1);
+  const [startDay, setStartDay] = useState(firstDayOfThisMonth);
+
   const summaryChartRef = useRef(null);
   const [summaryChartWidth, setSummaryChartWidth] =useState(0);
       
+  const handleModeToggle = () => {
+    console.log("Toggling mode ", mode);
+    if (mode === "Performance") {
+      setMode("Improvement");
+      return;      
+    }
+    setMode("Performance");
+  };
+  
   const processChartData = useCallback((selfCareData, medianCareData, highCareData, start, end) => {
     const myData = [];
     console.log("Processing for dates ", start, " to ", end);
@@ -175,13 +191,16 @@ const SummaryPage = () => {
       const selfCareData = await getAggregateStats(getApiUrl(`/getselfcarestats/?item=${userName}&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
       const medianCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=50&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
       const highCareData = await getAggregateStats(getApiUrl(`/getpercentiles?item=99&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}&category=${selectedCategory}`));
+      const goalsData = await getUserGoals();
 
       //const habitData = await getAggregateStats(getApiUrl(`/getselfcareactivities/?item=${userName}&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}`))
       //console.log("Habit data is ", habitData);
 
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
       setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));
-      setHabitsData(processHabitsData(selfCareData, startDay, utcEnd))
+      setHabitsData(processHabitsData(selfCareData, startDay, utcEnd));
+      setGoalsData(goalsData);
+      
       setLoading(false);
     }
     //console.log("Summary page got called with start day ", startDay, ", end day ", endDay);
@@ -272,236 +291,317 @@ const SummaryPage = () => {
   }
 
   return (
-              
-    <div className="legend-container"> 
+    <div className="legend-container">
       <div ref={summaryChartRef} className="summary-container">
         <DateRange
           startDay={startDay}
           endDay={endDay}
           setStartDay={setStartDay}
           setEndDay={setEndDay}
-          message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })} - ${endDay.toLocaleString('en-US', { month: 'long' })} ${endDay.toLocaleString('en-US', { year: 'numeric' })}`}          
-          />        
-
+          //message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })} - ${endDay.toLocaleString('en-US', { month: 'long' })} ${endDay.toLocaleString('en-US', { year: 'numeric' })}`}
+          message={`Your Self Care Stats for ${startDay.toLocaleString('en-US', { month: 'long' })} ${startDay.toLocaleString('en-US', { year: 'numeric' })}`}
+        />
         <center>
-          {/* Add a dropdown select for category selection */}
-          <select className="category" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-            <option value="total">Overall Self Care</option>
-            <option value="mental">Mental Care</option>
-            <option value="physical">Physical Care</option>
-            <option value="spiritual">Spiritual Care</option>
-            <option value="social">Social Care</option>            
-          </select>          
+          <img
+            src="/self-improvement-icon.png"
+            alt="Improvement Mode"
+            title="Improvement Mode"
+            height="30px"
+            width="30px"
+          />
+          <div className="toggle-container">
+            <label className="switch">
+              <input type="checkbox" className="toggle-input" onChange={handleModeToggle} checked={mode === "Performance"} />
+              <span className="slider"></span>
+              <span className="toggle-label">{mode}</span>
+            </label>
+          </div>
+          <img
+            src="/competition-icon.png"
+            alt="Performance Mode"
+            title="Performance Mode"
+            height="25px"
+            width="30px"
+          />
         </center>
-        <center>
-          <div style={{marginTop: '1rem'}}/>
-          <h2 className="subheader">See your self care journey (and enhance it by learning from others like you).</h2>
-          <br></br>
-          
-          {!loading?  
-          (<div>
-           {chartData.length > 0 && activitiesData.length > 0 ?
-           (
-            <div class="summary-chart">
-              <LineChart width={summaryChartWidth} height={Math.min(300,summaryChartWidth/2)} data={chartData}>
-                <XAxis 
-                stroke="black" 
-                  tickFormatter={formatDate} 
-                  dataKey="date"
-                />
-                <YAxis  
-                  stroke="black">
-                  <Label
-                    value="Total Minutes Spent on Self-Care"
-                    position="insideLeft"
-                    angle={-90}
-                    offset={10}
-                    style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
-                  /> 
-                </YAxis>
-                {showSelf && (
-                  <Line
-                    type="monotone"
-                    dataKey="self_care_minutes"
-                    stroke="purple"
-                    strokeWidth="4"
-                    name="You"
-                  />
-                )}
-                {showMostOthers && (
-                  <Line
-                    type="monotone"
-                    dataKey="median_care_minutes"
-                    stroke="orange"
-                    strokeWidth="2"
-                    name="The Majority"
-                  />
-                )}
-                {showTheBest && (
-                  <Line
-                    type="monotone"
-                    dataKey="high_care_minutes"
-                    stroke="green"
-                    strokeWidth="2"
-                    name="The Best"
-                  />
-                )}
-                <Tooltip contentStyle={{ backgroundColor: "transparent" }} />              
-              </LineChart>                               
-              <div class="wordcloud-container"> 
-                <div className="label-container">
-                  <span className="label">Self-care activities</span>
-                </div>
-                {showSelf && (
-                  <div class="wordcloud">
-                    <WordCloud 
-                        data={activitiesData[0].self_care_activities}  
-                        fontSize={(word) => 20+80*(word.value-activitiesData[0].min_time_on_activity+1)/(activitiesData[0].max_time_on_activity-activitiesData[0].min_time_on_activity+1)}
-                        rotate={0}
-                        spiral="rectangular"      
-                        padding={5}
-                        fill={"purple"}                                                 
-                    />                  
-                  </div>             
-                )}
-                {showMostOthers && (
-                  <div class="wordcloud">
-                    <WordCloud 
-                      data={activitiesData[0].median_care_activities}  
-                      fontSize={(word) => 20+80*(word.value-activitiesData[0].min_time_on_activity+1)/(activitiesData[0].max_time_on_activity-activitiesData[0].min_time_on_activity+1)}
-                      rotate={0}
-                      spiral="rectangular"      
-                      padding={5}
-                      fill={"orange"}                                                 
-                    />
-                  </div>
-                )}  
-                {showTheBest && (
-                  <div class="wordcloud">
-                    <WordCloud 
-                      data={activitiesData[0].high_care_activities}  
-                      fontSize={(word) => 20+80*(word.value-activitiesData[0].min_time_on_activity+1)/(activitiesData[0].max_time_on_activity-activitiesData[0].min_time_on_activity+1)}
-                      rotate={0}
-                      spiral="rectangular"      
-                      padding={5}
-                      fill={"green"}                                                 
-                    />
-                  </div>
-                )}                    
-              </div>
-              <Legend
-                content={(props) => {
-                  return (
-                    <div className="legend-items">
-                      <div
-                        className="legend-item"
-                        onClick={() => setShowSelf(!showSelf)}
-                      >
-                        <span
-                          style={{ color: 'purple', paddingRight: '5px', cursor: 'pointer' }}
-                          title="Hours you spent on self care in the day"
-                        >
-                          {showSelf ? '● ' : '○ '}
-                          You
-                        </span>                      
+        {loading ? (
+          <p>Loading...</p>
+        ) : ( 
+          <div>
+          <center>
+            {/* Add a dropdown select for category selection */}
+            <select className="category" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+              <option value="total">Overall Self Care</option>
+              <option value="mental">Mental Care</option>
+              <option value="physical">Physical Care</option>
+              <option value="spiritual">Spiritual Care</option>
+              <option value="social">Social Care</option>
+            </select>
+          </center>
+          {mode === "Performance" ? (
+            <div>            
+              <center>
+                <div style={{ marginTop: '1rem' }} />
+                <h2 className="subheader">Performance Mode - Compare and Enhance your self care journey.</h2>
+                <br></br>
+    
+                {chartData.length > 0 && activitiesData.length > 0 ? (
+                  <div class="summary-chart">
+                    <LineChart width={summaryChartWidth} height={Math.min(300, summaryChartWidth / 2)} data={chartData}>
+                      <XAxis
+                        stroke="black"
+                        tickFormatter={formatDate}
+                        dataKey="date"
+                      />
+                      <YAxis
+                        stroke="black">
+                        <Label
+                          value="Total Minutes Spent on Self-Care"
+                          position="insideLeft"
+                          angle={-90}
+                          offset={10}
+                          style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
+                        />
+                      </YAxis>
+                      {showSelf && (
+                        <Line
+                          type="monotone"
+                          dataKey="self_care_minutes"
+                          stroke="purple"
+                          strokeWidth="4"
+                          name="You"
+                        />
+                      )}
+                      {showMostOthers && (
+                        <Line
+                          type="monotone"
+                          dataKey="median_care_minutes"
+                          stroke="orange"
+                          strokeWidth="2"
+                          name="The Majority"
+                        />
+                      )}
+                      {showTheBest && (
+                        <Line
+                          type="monotone"
+                          dataKey="high_care_minutes"
+                          stroke="green"
+                          strokeWidth="2"
+                          name="The Best"
+                        />
+                      )}
+                      <Tooltip contentStyle={{ backgroundColor: "transparent" }} />
+                    </LineChart>
+                    <div class="wordcloud-container">
+                      <div className="label-container">
+                        <span className="label">Self-care activities</span>
                       </div>
-                      <div
-                        className="legend-item"
-                        onClick={() => setShowMostOthers(!showMostOthers)}
-                      >
-                        <span
-                          style={{ color: 'orange', paddingRight: '5px', cursor: 'pointer' }}
-                          title="Median hours spent by everyone on self care in the day"
-                        >
-                          {showMostOthers ? '● ' : '○ '}
-                          The Majority
-                        </span>                      
-                      </div>
-                      <div
-                        className="legend-item"
-                        onClick={() => setShowTheBest(!showTheBest)}
-                      >
-                        <span
-                          style={{ color: 'green', paddingRight: '5px', cursor: 'pointer' }}
-                          title="Hours spent by the top 10% on self care in the day"
-                        >
-                          {showTheBest ? '● ' : '○ '}
-                          The Best
-                        </span>                      
-                      </div>
+                      {showSelf && (
+                        <div class="wordcloud">
+                          <WordCloud
+                            data={activitiesData[0].self_care_activities}
+                            fontSize={(word) => 20 + 80 * (word.value - activitiesData[0].min_time_on_activity + 1) / (activitiesData[0].max_time_on_activity - activitiesData[0].min_time_on_activity + 1)}
+                            rotate={0}
+                            spiral="rectangular"
+                            padding={5}
+                            fill={"purple"}
+                          />
+                        </div>
+                      )}
+                      {showMostOthers && (
+                        <div class="wordcloud">
+                          <WordCloud
+                            data={activitiesData[0].median_care_activities}
+                            fontSize={(word) => 20 + 80 * (word.value - activitiesData[0].min_time_on_activity + 1) / (activitiesData[0].max_time_on_activity - activitiesData[0].min_time_on_activity + 1)}
+                            rotate={0}
+                            spiral="rectangular"
+                            padding={5}
+                            fill={"orange"}
+                          />
+                        </div>
+                      )}
+                      {showTheBest && (
+                        <div class="wordcloud">
+                          <WordCloud
+                            data={activitiesData[0].high_care_activities}
+                            fontSize={(word) => 20 + 80 * (word.value - activitiesData[0].min_time_on_activity + 1) / (activitiesData[0].max_time_on_activity - activitiesData[0].min_time_on_activity + 1)}
+                            rotate={0}
+                            spiral="rectangular"
+                            padding={5}
+                            fill={"green"}
+                          />
+                        </div>
+                      )}
                     </div>
-                    );
-                  }}
-              />                
-              {habitsData && (
-                <div>
-                <br></br> 
-                <h2 className="subheader">Be consistent with your self care habits.</h2>  
-                {(habitNames.length > 0) ? (
+                    <Legend
+                      content={(props) => {
+                        return (
+                          <div className="legend-items">
+                            <div
+                              className="legend-item"
+                              onClick={() => setShowSelf(!showSelf)}
+                            >
+                              <span
+                                style={{ color: 'purple', paddingRight: '5px', cursor: 'pointer' }}
+                                title="Hours you spent on self care in the day"
+                              >
+                                {showSelf ? '● ' : '○ '}
+                                You
+                              </span>
+                            </div>
+                            <div
+                              className="legend-item"
+                              onClick={() => setShowMostOthers(!showMostOthers)}
+                            >
+                              <span
+                                style={{ color: 'orange', paddingRight: '5px', cursor: 'pointer' }}
+                                title="Median hours spent by everyone on self care in the day"
+                              >
+                                {showMostOthers ? '● ' : '○ '}
+                                The Majority
+                              </span>
+                            </div>
+                            <div
+                              className="legend-item"
+                              onClick={() => setShowTheBest(!showTheBest)}
+                            >
+                              <span
+                                style={{ color: 'green', paddingRight: '5px', cursor: 'pointer' }}
+                                title="Hours spent by the top 10% on self care in the day"
+                              >
+                                {showTheBest ? '● ' : '○ '}
+                                The Best
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      }}
+                    />
+                  </div>
+                ) : (
+                <p>No Data</p>
+              )}
+            </center>
+          </div>
+        ) : (
+          <div>
+            {habitsData && goalsData && (
+              <div>
+                <center>
+                <br></br>
+                <h2 className="subheader">Self Improvement Mode - Be consistent with your self care habits.</h2>
+                {habitNames.length > 0 && goalsData.goals ? (
                   <div>
-                  <div className="legend">
+                    <table className="habit-table">
+                      <thead>
+                        <tr>
+                          <th>Habit</th>
+                          {habitsData.map((data) => (
+                            <th key={data.date}>{data.date.slice(8,10)}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {/*habitNames.map((habitName) => (
+                          <tr key={habitName}>
+                            <td>{habitName}</td>
+                            {habitsData.map((data) => (
+                              <td
+                                key={data.date}
+                                className={data[habitName] ? 'green-cell' : 'red-cell'}
+                              ></td>
+                            ))}
+                          </tr>
+                            ))*/}                      
+                          {Object.entries(goalsData.goals).map(([category, goals]) => {
+                            console.log("Category is ", category, " and goals are ", goals);
+                            if (selectedCategory.toLowerCase() === category.toLowerCase() || selectedCategory === 'total') {
+                              return goals.flatMap((goal, goalIndex) => {
+                                // Create an array of rows for HabitsToAdopt
+                                const habitsToAdoptRows = goal.habitsToAdopt?.map((habitToAdopt, index) => (
+                                  <tr key={habitToAdopt}>
+                                    <td className='adopt'>(+){habitToAdopt}</td>
+                                    {habitsData.map((data) => (
+                                      <td
+                                        key={data.date}
+                                        className={data[habitToAdopt] ? 'green-cell' : 'red-cell'}
+                                      ></td>
+                                    ))}
+                                  </tr>
+                                ));
+
+                                // Create an array of rows for HabitsToShed
+                                const habitsToShedRows = goal.habitsToShed?.map((habitToShed, index) => (
+                                  <tr key={habitToShed}>
+                                    <td className='shed'>(-){habitToShed}</td>
+                                    {habitsData.map((data) => (
+                                      <td
+                                        key={data.date}
+                                        className={data[habitToShed] ? 'red-cell' : 'green-cell'}
+                                      ></td>
+                                    ))}
+                                  </tr>
+                                ));
+
+                                // Combine both arrays of rows
+                                return [...(habitsToAdoptRows || []), ...(habitsToShedRows || [])];
+                              });
+                            }
+                          })}                        
+                      </tbody>
+                    </table>
+                    {/*
+                    <div className="legend">
                       <select className="category" value={habitVisibility} onChange={(e) => setHabitVisibility(e.target.value)}>
                         {habitNames.map((habitName) => (
                           <option value={habitName} color='purple'>
                             {habitName}
                           </option>
                         ))}
-                      </select>    
-                  </div>                         
-                  <LineChart width={summaryChartWidth} height={Math.min(300,summaryChartWidth/2)} data={habitsData}>
-                    <XAxis stroke="black" tickFormatter={formatDate} dataKey="date"/>
-                    <YAxis stroke="black">
-                      <Label
-                        value="Your habit consistency"
-                        position="insideLeft"
-                        angle={-90}
-                        offset={10}
-                        style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
-                      />
-                    </YAxis>                  
-                    {habitNames.map((habitName) => (
-                      habitVisibility === habitName && (
-                        <Line
-                          key={habitName}
-                          type="monotone"
-                          dataKey={habitName}
-                          stroke="purple"
-                          strokeWidth={2}
-                          name={habitName}
+                      </select>
+                    </div>
+                    
+                    <LineChart width={summaryChartWidth} height={Math.min(300, summaryChartWidth / 2)} data={habitsData}>
+                      <XAxis stroke="black" tickFormatter={formatDate} dataKey="date" />
+                      <YAxis stroke="black">
+                        <Label
+                          value="Your habit consistency"
+                          position="insideLeft"
+                          angle={-90}
+                          offset={10}
+                          style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
                         />
-                      )
-                    ))}
-                    <Tooltip contentStyle={{ backgroundColor: "transparent" }} />                                    
-                  </LineChart>
-                  </div>                
+                      </YAxis>
+                      {habitNames.map((habitName) => (
+                        habitVisibility === habitName && (
+                          <Line
+                            key={habitName}
+                            type="monotone"
+                            dataKey={habitName}
+                            stroke="purple"
+                            strokeWidth={2}
+                            name={habitName}
+                          />
+                        )
+                      ))}
+                      <Tooltip contentStyle={{ backgroundColor: "transparent" }} />
+                    </LineChart>
+                    */}
+                  </div>
                 ) : (
-                  <i>No habits being tracked. Track your habits by entering time <Link to={`/?submit-time-page`}>here</Link></i> 
+                  <i>No habits being tracked. Create your goals and habits <Link to={`/goals`}>here</Link></i>
                 )}
-                </div>                         
-              )}
-            </div>
-            ) : (
-            <p>No Data</p>
-            )} 
-            </div>             
-          ) : (
-            <p>Loading...</p>
-          )}
-        </center>
-        <br />
-      </div>             
-    </div>
-    /*{showCopilot && (
-          <div className="flyout show">            
-              <div className="flyout-header">
-                  {console.log("Opening copilot")}
-                  <FontAwesomeIcon className="flyout-close" icon={faTimes} onClick={() => setShowCopilot(false)} />
-                  <CoPilot endpoint={"getselfcareinsights"} userprompts={userPrompts} systemprompts={systemPrompts} />
-              </div>                      
+                </center>
+              </div>
+            )}
           </div>
-      )}*/
-    
-  );
+        )}
+        <br />
+      </div>
+        )}
+      </div>
+    </div>
+  );  
 };
 
 export default SummaryPage;

@@ -89,13 +89,156 @@
 
 .summary-container .category {
   background-color: transparent;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 .summary-container .category option {
   background-color: transparent; /* Set the background color of options to transparent */
-  color: black; /* Set the text color */
+  color: black; /* Set the text color */  
 }
 
+/* The container for the toggle switch */
+.toggle-container {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 25px;
+  margin-bottom: 10px;
+}
+
+/* The toggle switch input element */
+.toggle-input {
+  display: none;
+}
+
+/* The slider (circle) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc; /* Default background color */
+  transition: 0.4s;
+  border-radius: 34px; /* Rounded sliders */
+}
+
+/* The slider when it's in the "on" state */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 25px;
+  width: 25px;
+  left: 0px;
+  bottom: 0px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+/* Style the slider when it's checked (on) */
+.toggle-input:checked + .slider {
+  background-color: #2196F3; /* Blue background color when checked */
+}
+
+/* Move the circle to the right when checked (on) */
+.toggle-input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.toggle-label {
+  font-size: 12px;
+  margin-left: 55px;
+  display: none;
+}
+
+.toggle-container .tooltip {
+  display: inline-block;
+  position: relative;  
+}
+
+/* Style the table */
+.habit-table {
+  width: 95%;
+  table-layout: fixed;
+  border-radius: 40px;
+  border-collapse: collapse;
+}
+
+
+/* Style table headers */
+.habit-table th {
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  padding: 2px;
+  font-size: 10px;
+  text-align: left;
+  width: fit-content;
+}
+
+/* Style table rows */
+.habit-table tr {
+  border: 1px solid #ddd;
+  font-size: 10px;
+  width: fit-content;
+}
+
+.habit-table th:first-child,
+.habit-table td:first-child {
+  width: 100px; /* Let the first column adjust to content */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.habit-table th:hover, .habit-table td:hover {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: inherit;
+  max-width: none;
+}
+
+/* Style even rows */
+.habit-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Style odd rows */
+.habit-table tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+/* Style table cells */
+.habit-table td {
+  border: 1px solid #ddd;
+  padding: 0px;
+  text-align: left;
+  width: fit-content;
+}
+
+/* Style green cells */
+.green-cell {
+  background-color: green;
+  color: white;
+}
+
+/* Style red cells */
+.red-cell {
+  background-color: red;
+  color: white;
+}
+
+.adopt {
+  color: green;
+  font-weight: bold;
+}
+
+.shed {
+  color: red;
+  font-weight: bold;
+}
 
 /* Add a media query to target screens with a maximum width of 768px (adjust as needed) */
 @media screen and (max-width: 768px) {
