@@ -21,6 +21,10 @@
   position: relative;
 }
 
+.summary-container .subheader {
+  font-size: 15px;
+}
+
 .recharts-legend-wrapper {
   position: unset !important;
   display: flex;
@@ -98,78 +102,17 @@
   color: black; /* Set the text color */  
 }
 
-/* The container for the toggle switch */
-.toggle-container {
-  display: inline-block;
-  position: relative;
-  width: 50px;
-  height: 25px;
-  margin-bottom: 10px;
-}
-
-/* The toggle switch input element */
-.toggle-input {
-  display: none;
-}
-
-/* The slider (circle) */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc; /* Default background color */
-  transition: 0.4s;
-  border-radius: 34px; /* Rounded sliders */
-}
-
-/* The slider when it's in the "on" state */
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 25px;
-  width: 25px;
-  left: 0px;
-  bottom: 0px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-/* Style the slider when it's checked (on) */
-.toggle-input:checked + .slider {
-  background-color: #2196F3; /* Blue background color when checked */
-}
-
-/* Move the circle to the right when checked (on) */
-.toggle-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.toggle-label {
-  font-size: 12px;
-  margin-left: 55px;
-  display: none;
-}
-
-.toggle-container .tooltip {
-  display: inline-block;
-  position: relative;  
-}
-
 /* Style the table */
-.habit-table {
+.summary-habit-table {
   width: 95%;
   table-layout: fixed;
   border-radius: 40px;
-  border-collapse: collapse;
+  border-collapse: collapse;  
 }
 
 
 /* Style table headers */
-.habit-table th {
+.summary-habit-table th {
   background-color: #f2f2f2;
   border: 1px solid #ddd;
   padding: 2px;
@@ -179,21 +122,21 @@
 }
 
 /* Style table rows */
-.habit-table tr {
+.summary-habit-table tr {
   border: 1px solid #ddd;
   font-size: 10px;
   width: fit-content;
 }
 
-.habit-table th:first-child,
-.habit-table td:first-child {
+.summary-habit-table th:first-child,
+.summary-habit-table td:first-child {
   width: 100px; /* Let the first column adjust to content */
   white-space: nowrap; /* Prevent text from wrapping */
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
-.habit-table th:hover, .habit-table td:hover {
+.summary-habit-table th:hover, .summary-habit-table td:hover {
   white-space: normal;
   overflow: visible;
   text-overflow: inherit;
@@ -201,55 +144,65 @@
 }
 
 /* Style even rows */
-.habit-table tr:nth-child(even) {
+.summary-habit-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
 /* Style odd rows */
-.habit-table tr:nth-child(odd) {
+.summary-habit-table tr:nth-child(odd) {
   background-color: #fff;
 }
 
 /* Style table cells */
-.habit-table td {
+.summary-habit-table td {
   border: 1px solid #ddd;
   padding: 0px;
   text-align: left;
   width: fit-content;
 }
 
-.green {
+.summary-habit-table .green {
   color: green;
   font-size: 12px;
 }
 
-.red {
+.summary-habit-table .red {
   color: red;
   font-size: 12px;  
 }
 
-.no-show {
+.summary-habit-table .no-show {
   display: none;
 }
 
-/* Style green cells */
-.green-cell {
+s/* Style green cells */
+.summary-habit-table .green-cell {
   background-color: green;
   color: white;
 }
 
+.summary-habit-table .light-green-cell {
+  background-color: white;
+  color: white;
+}
+
 /* Style red cells */
-.red-cell {
+.summary-habit-table .red-cell {
   background-color: red;
   color: white;
 }
 
-.adopt {
+.summary-habit-table .light-red-cell {
+  background-color: white;
+  color: white;
+}
+
+.summary-habit-table .adopt {
   color: green;
   font-weight: bold;
 }
 
-.shed {
+.summary-habit-table .shed {
   color: red;
   font-weight: bold;
 }
@@ -263,8 +216,12 @@
 
   /* Reduce the font size for the legend items on smaller screens */
   .legend-item span {
-    font-size: 14px;
+    font-size: 12px;
   }  
+
+  .summary-container .subheader {
+    font-size: 12px;
+  }
 
   .summary-container .wordcloud-container {
     /* Adjust the width and alignment of the WordCloud container for smaller screens */
@@ -280,6 +237,21 @@
     /* Adjust the font size and margin for the label on smaller screens */
     font-size: 0px;
   } 
+
+  .summary-habit-table th:first-child,
+  .summary-habit-table td:first-child {
+    width: 30px;
+  }
+
+  .summary-habit-table th {
+    padding: 0px;
+    font-size: 6px;    
+  }
+  
+  /* Style table rows */
+  .summary-habit-table tr {
+    font-size: 6px;    
+  }
 }
 
 

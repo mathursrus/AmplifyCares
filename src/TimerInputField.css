@@ -65,11 +65,13 @@
     display: flex;
     justify-items: center;
     align-content: center;
+    width: 150px;
+    height: 150px;
   }
   
   .timer-container .close-button {
     position: relative;
-    top: -10px;
+    top: -40px;
     right: -110px;
     width: 10px;
     height: 10px;
@@ -80,4 +82,12 @@
     font-size: 20px;
     font-weight: bold;
     color: #007bff;
+  }
+
+  .timer-container .stopwatch {
+    align-self: center;
+    text-align: center;
+    color: green;
+    font-size: 35px;
+    display: flex;
   }

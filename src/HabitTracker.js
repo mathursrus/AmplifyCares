@@ -7,6 +7,7 @@ const React = require('react');
 const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) => {
 
     const [allTags, setAllTags] = React.useState([]);
+    const [allSuggestions, setAllSuggestions] = React.useState([]);
     
     const populateTags = React.useCallback(() => {
         const tags = [];
@@ -23,7 +24,7 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
                         label: habitToAdopt,
                         selected: habitsDone && habitsDone.includes(habitToAdopt)                
                     });
-                    });
+                    });                    
                 }
         
                 // Iterate through HabitsToShed
@@ -37,7 +38,7 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
                         label: habitToShed,
                         selected: habitsDone && habitsDone.includes(habitToShed)               
                     });
-                    });
+                    });                    
                 }
             });
           }    
@@ -56,9 +57,20 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
                 }
             });
           };
-          setAllTags(tags);        
+          setAllTags(tags);     
+          
+          setAllSuggestions(suggestedHabits.filter((habit) => {
+            // Check if the habit is present in any goal's habitsToAdopt or habitsToShed
+            return !userGoals.some((goal) => {
+              return (
+                (goal.habitsToAdopt && goal.habitsToAdopt.includes(habit)) ||
+                (goal.habitsToShed && goal.habitsToShed.includes(habit))
+              );
+            });
+          }));
+
           console.log("All tags ", tags);
-    }, [habitsDone, userGoals]);
+    }, [habitsDone, userGoals, suggestedHabits]);
 
     React.useEffect(() => {
         console.log("HabitTracker useEffect");
@@ -114,7 +126,7 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
         <ReactTags
             //tags={allTags}
             selected={allTags}
-            suggestions={suggestedHabits.map((name, index) => ({ label: name, value: name }))}
+            suggestions={allSuggestions.map((name, index) => ({ label: name, value: name }))}
             onDelete={(tagIndex) => {
                     handleTagDelete(allTags[tagIndex]);                                    
                     }}
@@ -122,7 +134,7 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
                     handleTagAddition(newTag);
                 }}
             renderTag={CustomTag}
-            placeholderText="Activities..."
+            placeholderText=""
             allowNew="true"
             labelText=''
             collapseOnSelect="true"                                

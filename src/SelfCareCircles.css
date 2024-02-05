@@ -1,101 +1,143 @@
-.circle-container {
-    display: flex;   
-    flex-direction: row;    
-    justify-content: flex-start;
+.self-care-circles-canvas .circles-header {
+  font-size: 24px; /* Adjust the font size as needed */
+  font-weight: bold;
+}
+
+.self-care-circles-canvas .circles-text {
+  font-size: 18px; /* Adjust the font size as needed */
+  font-weight: normal;
+}
+
+.self-care-circles-canvas .circle-container {
+  display: flex;   
+  flex-direction: row;    
+  justify-content: flex-start;
+}
+
+.self-care-circles-canvas .circle {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+}
+
+.self-care-circles-canvas .circle-image {
+  position: relative;
+  width: 80px; /* Adjust the size of the circle */
+  height: 80px; /* Adjust the size of the circle */
+  border-radius: 50%; /* Make it circular */
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.self-care-circles-canvas .circle-image img {
+  width: 100%;
+  height: auto;
+}
+
+.self-care-circles-canvas .participants-info {
+  position: relative;
+  top: 20px;
+  left: -10px;
+  background-color: green; /* Badge background color */
+  color: #fff; /* Badge text color */
+  border-radius: 20%;
+  padding-right: 5px;
+  font-size: 12px;
+  width: fit-content;
+  cursor: default;
+  z-index: 5;
+}
+
+.self-care-circles-canvas .check-in-button {
+  position: relative;
+  bottom: 20px;
+  left: 30px;
+  background-color: #306DC8; /* Button background color */
+  color: #fff; /* Button text color */
+  border: none;
+  border-radius: 20%;
+  padding: 0px 5px;
+  font-size: 16px;
+  width: fit-content;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.self-care-circles-canvas .title {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; /* Adjust the maximum width as needed */
+  font-size: 12px;
+}
+
+.self-care-circles-canvas .modal-container {
+  /* Position the container at the center of the viewport */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9;
+}
+
+.self-care-circles-canvas .modal-time-entry {
+  background-color: rgb(139, 219, 193); /* Semi-transparent background */
+  border: 2px solid #007bff; /* Border color and width */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
+  padding: 20px;   
+}
+
+.self-care-circles-canvas .modal-time-entry-header {
+  display: flex;
+  justify-content: flex-end;    
+}
+
+.self-care-circles-canvas .modal-time-entry-close {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .self-care-circles-canvas .circles-header {
+    font-size: 14px; 
+  }
+
+  .self-care-circles-canvas .circles-text {
+    font-size: 12px; /* Adjust the font size as needed */      
+  }
+
+  .self-care-circles-canvas .circle {
+    margin-right: 5px;
   }
   
-  .circle {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    margin: 5px;
-    margin-right: 20px;
+  .self-care-circles-canvas .circle-image {
+    width: 40px; /* Adjust the size of the circle */
+    height: 40px; /* Adjust the size of the circle */    
   }
-  
-  .circle-image {
-    position: relative;
-    width: 80px; /* Adjust the size of the circle */
-    height: 80px; /* Adjust the size of the circle */
-    border-radius: 50%; /* Make it circular */
-    overflow: hidden;
-    margin: 0 auto;
-  }
-  
-  .circle-image img {
-    width: 100%;
-    height: auto;
-  }
-  
-  .participants-info {
-    position: relative;
-    top: 20px;
+
+  .self-care-circles-canvas .participants-info {
+    top: 10px;
     left: -10px;
-    background-color: green; /* Badge background color */
-    color: #fff; /* Badge text color */
-    border-radius: 20%;
-    padding-right: 5px;
-    font-size: 12px;
-    width: fit-content;
-    cursor: default;
-    z-index: 5;
+    font-size: 8px;    
   }
   
-  .check-in-button {
-    position: relative;
+  .self-care-circles-canvas .check-in-button {
     bottom: 20px;
-    left: 30px;
-    background-color: #306DC8; /* Button background color */
-    color: #fff; /* Button text color */
-    border: none;
-    border-radius: 20%;
-    padding: 0px 5px;
-    font-size: 16px;
-    width: fit-content;
-    cursor: pointer;
-    z-index: 5;
-  }
-  
-  .title {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 80%; /* Adjust the maximum width as needed */
-    font-size: 12px;
+    left: 20px;
+    font-size: 10px;    
   }
 
-  .modal-container {
-    /* Position the container at the center of the viewport */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9;
+  .self-care-circles-canvas .title {
+    font-size: 10px;
   }
 
-  .modal-time-entry {
-    background-color: rgb(139, 219, 193); /* Semi-transparent background */
-    border: 2px solid #007bff; /* Border color and width */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);
-    padding: 20px;   
-  }
-
-  .modal-time-entry-header {
-    display: flex;
-    justify-content: flex-end;    
-  }
-  
-  .modal-time-entry-close {
-    cursor: pointer;
-  }
-  
-  
-  
+}

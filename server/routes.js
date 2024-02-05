@@ -72,6 +72,20 @@ const setUserLoginInfo = {
     }
 }
 
+const setUserPreference = {
+    method: 'get',
+    path: '/setUserPreference',
+    handler: async (req, res) => {
+        console.log("Got req: ", req.query);
+        const user = await req.query.user;        
+        const preference = await req.query.preference;        
+        const value = await req.query.value;
+        const token = getTokenFromRequest(req);        
+        const response = await handlers.setUserPreference(user, preference, value, token);
+        res.status(200).json(response);
+    }
+}
+
 const getAllUsers = {
     method: 'get',
     path: '/getAllUsers',
@@ -163,6 +177,36 @@ const getActivities = {
         const endDay = await req.query.endDay;
         const token = getTokenFromRequest(req);        
         const response = await handlers.readActivities(item, startDay, endDay, token);
+        res.status(200).json(response);
+    }
+}
+
+const addHabitToDay = {
+    method: 'get',
+    path: '/addhabit',
+    handler: async (req, res) => {
+        console.log("Got add habit req: ", req.query);
+        const user = await req.query.user;
+        const habit = await req.query.habit;
+        const date = await req.query.date;
+        const category = await req.query.category;
+        const token = getTokenFromRequest(req);        
+        const response = await handlers.addHabitToDay(user, date, habit, category, token);
+        res.status(200).json(response);
+    }
+}
+
+const removeHabitFromDay = {
+    method: 'get',
+    path: '/removehabit',
+    handler: async (req, res) => {
+        console.log("Got add habit req: ", req.query);
+        const user = await req.query.user;
+        const habit = await req.query.habit;
+        const date = await req.query.date;
+        const category = await req.query.category;
+        const token = getTokenFromRequest(req);        
+        const response = await handlers.removeHabitFromDay(user, date, habit, category, token);
         res.status(200).json(response);
     }
 }
@@ -385,4 +429,4 @@ const removeNotificationSubscription = {
     }
 }
 
-module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};
+module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, addHabitToDay, removeHabitFromDay, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};

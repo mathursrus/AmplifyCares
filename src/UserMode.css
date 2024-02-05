@@ -1,0 +1,61 @@
+/* The container for the toggle switch */
+.user-mode-container {
+    display: inline-block;
+    position: relative;
+    width: 50px;
+    height: 25px;
+    margin-bottom: 10px;
+  }
+  
+  /* The toggle switch input element */
+  .user-mode-container .toggle-input {
+    display: none;
+  }
+  
+  /* The slider (circle) */
+  .user-mode-container .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Default background color */
+    transition: 0.4s;
+    border-radius: 34px; /* Rounded sliders */
+  }
+  
+  /* The slider when it's in the "on" state */
+  .user-mode-container .slider:before {
+    position: absolute;
+    content: "";
+    height: 25px;
+    width: 25px;
+    left: 0px;
+    bottom: 0px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  /* Style the slider when it's checked (on) */
+  .user-mode-container .toggle-input:checked + .slider {
+    background-color: #2196F3; /* Blue background color when checked */
+  }
+  
+  /* Move the circle to the right when checked (on) */
+  .user-mode-container .toggle-input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  
+  .user-mode-container .toggle-label {
+    font-size: 12px;
+    margin-left: 55px;
+    display: none;
+  }
+  
+  .user-mode-container .toggle-container .tooltip {
+    display: inline-block;
+    position: relative;  
+  }
+  

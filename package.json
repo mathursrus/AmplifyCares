@@ -62,6 +62,7 @@
     "react-tag-autocomplete": "^7.0.1",
     "react-tag-input": "^6.8.1",
     "react-time-picker": "^6.6.0",
+    "react-timer-hook": "^3.0.7",
     "react-wordcloud": "^1.2.7",
     "react-youtube": "^10.1.0",
     "reactjs-social-login": "^2.6.2",

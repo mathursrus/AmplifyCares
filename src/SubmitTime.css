@@ -7,152 +7,162 @@
     /*background-color: rgb(104, 119, 119);*/
   }
 
-  .time-entry-form {
-    border: 1px solid black;
-    border-radius: 20px;
-    padding: 5px;
-  }
+.submit-time-container .subheader {
+  font-size: 20px;
+}
 
-  .time-entry-form .side-by-side{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 10px;
-  }
+.submit-time-container .time-entry-form {
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 5px;
+}
 
-  .time-entry-form .submit-time {
-    width: 100%;
-    border-radius: 20px;
-  }
+.submit-time-container .time-entry-form .side-by-side{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
 
-  .talk-to-enter {
-    flex: 1;
-    border: 1px solid black;
-    border-radius: 20px;
-    margin: 5px;
-    padding: 10px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
+.submit-time-container .time-entry-form .submit-time {
+  margin-top: 30px;
+  width: 100%;
+  border-radius: 10px;
+}
 
-  .self-care-circles-canvas {
-    flex: 2;
-    padding: 10px;
-    justify-content: flex-start;
-    background-color: white;
-    border-radius: 20px;
-    border: 1px solid black;
-    margin: 5px;
-    overflow: auto;
-  }
+.submit-time-container .talk-to-enter {
+  flex: 1;
+  border: 1px solid black;
+  border-radius: 20px;
+  margin: 5px;
+  padding: 10px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
 
-  .formLabel {
-    display: flex;
-    justify-content: flex-start;
-    width: fit-content;    
-  }
+.submit-time-container .self-care-circles-canvas {
+  flex: 2;
+  padding: 10px;
+  justify-content: flex-start;
+  background-color: white;
+  border-radius: 20px;
+  border: 1px solid black;
+  margin: 5px;
+  overflow: auto;
+}
+
+.submit-time-container .formLabel {
+  display: flex;
+  justify-content: flex-start;
+  width: fit-content;    
+}
+
+.submit-time-container input::placeholder { font-size: 12px; }
+
+.submit-time-container .react-datepicker__input-container {
+  margin: 5px;
+  background-color: transparent;
+  position: relative;
+}
+
+.submit-time-container .react-datepicker__input-container input {
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a box shadow to create depth */
+  padding: 5px; /* Add some padding to give the input some space */
+}
+
+/* Add a pseudo-element to create a small arrow indicating it's a picker */
+.submit-time-container .react-datepicker__input-container::after {
+  content: "\25BC";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #090000;
+}
+
+
+/* CSS for non-bold table headings */
+.submit-time-container .non-bold {
+  font-weight: normal;
+  font-size: 18px;
+}
+
+.submit-time-container .bold {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* CSS for table borders */
+.submit-time-container .entry-table {
+  margin-top: 5px;
+  border-collapse: collapse;
   
-  input::placeholder { font-size: 12px; }
+}
 
-  .react-datepicker__input-container {
-    margin: 5px;
-    background-color: transparent;
-    position: relative;
-  }
-
-  .react-datepicker__input-container input {
-    border-color: transparent;
-    background-color: transparent;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a box shadow to create depth */
-    padding: 5px; /* Add some padding to give the input some space */
-  }
-
-  /* Add a pseudo-element to create a small arrow indicating it's a picker */
-  .react-datepicker__input-container::after {
-    content: "\25BC";
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #090000;
-  }
+.entry-table th, .entry-table td {
+  border: 1px solid black;
+  text-align: center;
+}
 
 
-  /* CSS for non-bold table headings */
-  .non-bold {
-    font-weight: normal;
-  }
+.submit-time-container .flyout {
+  /* Existing styles */
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: fit-content;
+  max-width: 100%;
+  height: 100%;
+  background: rgb(245, 245, 245);
+  border: 1px solid black;
 
-  /* CSS for table borders */
-  .entry-table {
-    margin-top: 5px;
-    border-collapse: collapse;
-    
-  }
+  /* Add animation properties */
+  animation-duration: 2s;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+  opacity: 0;
+  transform: translateX(100%);
+  z-index: 9999;
+}
 
-  .entry-table th, .entry-table td {
-    border: 1px solid black;
-    text-align: center;
-  }
-
-
-  .submit-time-container .flyout {
-    /* Existing styles */
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: fit-content;
-    max-width: 100%;
-    height: 100%;
-    background: rgb(245, 245, 245);
-    border: 1px solid black;
-  
-    /* Add animation properties */
-    animation-duration: 2s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
+@keyframes flyoutAnimation {
+  0% {
     opacity: 0;
     transform: translateX(100%);
-    z-index: 9999;
   }
-  
-  @keyframes flyoutAnimation {
-    0% {
-      opacity: 0;
-      transform: translateX(100%);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
+}
+
+.submit-time-container.flyout.show {
+  /* Add animation properties */
+  animation-name: flyoutAnimation;
+}  
+
+.submit-time-container.flyout-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.submit-time-container.flyout-close {
+  cursor: pointer;
+}
   
-  .submit-time-container.flyout.show {
-    /* Add animation properties */
-    animation-name: flyoutAnimation;
-  }  
-  
-  .submit-time-container.flyout-header {
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px;
-  }
-  
-  .submit-time-container.flyout-close {
-    cursor: pointer;
-  }
-  
-  /* Add this CSS to your stylesheet */
-.input-container {
+.submit-time-container .input-container {
   display: flex;
   width: 100%;
   align-items: flex-start; /* Vertically align items */
 }
 
-.time-input-container {
+.submit-time-container .time-input-container {
   flex: 1; /* Occupy 33% width */
   position: relative;
   margin-left: 0px;
@@ -161,7 +171,7 @@
   width: 100%;
 }
 
-.input-with-button {
+.submit-time-container .input-with-button {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -169,14 +179,14 @@
 }
 
 /* Style the time input */
-.text-field.time-input {
+.submit-time-container .text-field.time-input {
   flex: 1;
   position: relative;
   margin-left: 0px;
   overflow: auto;
 }
 
-.timer-control {
+.submit-time-container .timer-control {
   margin-right: 8px;
   padding: 15px;
   position: absolute;
@@ -187,12 +197,143 @@
 }
 
 /* Style the button when the timer is running */
-.timer-control.start {
+.submit-time-container .timer-control.start {
   background-color: #4caf50;
 }
 
 /* Style the button when the timer is stopped */
-.timer-control.stop {
+.submit-time-container .timer-control.stop {
   background-color: #d9534f;
 }
 
+/* Style the table */
+.editable-habit-table-container {
+  width: 95%;
+  border: 1px #090000;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1); /* Add a box shadow to create depth */
+}
+
+.editable-habit-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+
+/* Style table headers */
+.editable-habit-table th {
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  padding: 2px;
+  font-size: 10px;
+  text-align: left;
+  width: fit-content;
+}
+
+/* Style table rows */
+.editable-habit-table tr {
+  border: 1px solid #ddd;
+  font-size: 10px;
+  width: fit-content;
+}
+
+.editable-habit-table th:first-child,
+.editable-habit-table td:first-child {
+  width: 100px; /* Let the first column adjust to content */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.editable-habit-table th:hover, .editable-habit-table td:hover {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: inherit;
+  max-width: none;
+}
+
+/* Style even rows */
+.editable-habit-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Style odd rows */
+.editable-habit-table tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+/* Style table cells */
+.editable-habit-table td {
+  border: 1px solid #ddd;
+  padding: 0px;
+  text-align: left;
+  width: fit-content;
+}
+
+.editable-habit-table .green {
+  color: green;
+  font-size: 15px;
+}
+
+.editable-habit-table .red {
+  color: red;
+  font-size: 15px;  
+}
+
+.editable-habit-table .no-show {
+  display: none;
+}
+
+/* Style green cells */
+.green-cell {
+  background-color: green;
+  color: white;
+}
+
+/* Style red cells */
+.red-cell {
+  background-color: red;
+  color: white;
+}
+
+.adopt {
+  color: green;
+  font-weight: bold;
+}
+
+.shed {
+  color: red;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .submit-time-container .non-bold {
+    font-size: 14px;
+  }
+
+  .submit-time-container .bold {
+    font-size: 14px;
+  }
+
+  .submit-time-container .react-datepicker__input-container input {
+    font-size: 14px;
+  }
+
+  .submit-time-container .subheader {
+    font-size: 14px;
+  }
+  .editable-habit-table th:first-child,
+  .editable-habit-table td:first-child {
+    width: 100px;
+  }
+
+  .editable-habit-table th {
+    padding: 0px;
+    font-size: 10px;    
+  }
+  
+  /* Style table rows */
+  .editable-habit-table tr {
+    font-size: 10px;    
+  }
+}

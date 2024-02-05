@@ -3,7 +3,13 @@
     display: flex;
     align-items: center; /* Vertically center the content */    
 }
-  
+
+.message-container .dateheader {
+    margin: 0;
+    font-size: 24px; /* Adjust the font size as needed */
+    font-weight: bold;
+}
+
 .stats-image {
     position: relative;
     margin-left: 10px; /* Adjust this value to control the horizontal spacing */
@@ -11,9 +17,15 @@
     cursor: pointer;
   }
   
-  /* Style the image within the superscript */
-  .stats-image img {
-    width: 40px; /* Adjust the width as needed */
-    height: 40px; /* Adjust the height as needed */
-    vertical-align: middle;
+/* Style the image within the superscript */
+.stats-image img {
+  width: 40px; /* Adjust the width as needed */
+  height: 40px; /* Adjust the height as needed */
+  vertical-align: middle;
+}
+
+@media screen and (max-width: 768px) {
+  .message-container .dateheader {
+    font-size: 14px; /* Adjust the font size as needed */    
   }
+}

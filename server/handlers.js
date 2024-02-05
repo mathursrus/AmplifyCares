@@ -268,6 +268,24 @@ async function setUserLoginInfo(user, loginTime, token) {
     }
 }
 
+async function setUserPreference(user, preference, value, token) {
+  try {
+      console.log('Set User Preference handler got user: ', user);
+      ensureUserNameAndTokenMatch(user, token);
+      const ct = await getUserContainer();
+      await ct.findOneAndUpdate(
+        { username: user },
+        { $set: { [preference]: value } },
+        { upsert: true });
+      const result = await getUserInfo(user);
+      console.log(`Preference set, result is: ${result}`);
+      return result;  
+    } catch (err) {
+      console.error('Error:', err);
+      return null;
+    }
+}
+
 async function getAllUsers(domain, token) {
   const user = await getUserNameFromToken(token);
   if (!user.endsWith("@" + domain)) {
@@ -778,6 +796,97 @@ async function readActivities(username, startDay, endDay, token) {
   const final = JSON.stringify(result);
   console.log(`Finale is ${final}`);
   return final;
+}
+
+function getCategoryArrayToUpdate(category) {
+  let categoryArrayToUpdate;
+  switch (category.toLowerCase()) {
+    case 'mental':
+      categoryArrayToUpdate = 'mental_health_activity';
+      break;
+    case 'physical':
+      categoryArrayToUpdate = 'physical_health_activity';
+      break;
+    case 'spiritual':
+      categoryArrayToUpdate = 'spiritual_health_activity';
+      break;
+    case 'social':
+      categoryArrayToUpdate = 'societal_health_activity';
+      break;
+    default:
+      categoryArrayToUpdate = null; // Handle unknown category
+      break;
+  }
+  return categoryArrayToUpdate;
+}
+
+async function addHabitToDay(username, date, habit, category, token) {
+  console.log(`Add habit to day request ${username}, ${date}, ${habit}, ${category}`);
+  await ensureUserNameAndTokenMatch(username, token);
+
+  const habitDate = new Date(date);
+  habitDate.setUTCHours(0, 0, 0, 0);
+
+  const categoryArrayToUpdate = getCategoryArrayToUpdate(category);
+
+  var result;
+  let update = [];      
+  const ct = await getContainer();
+  const existingEntry = await ct.findOne({ name: username, DateTime: habitDate });
+  if (!existingEntry) {
+    console.log(`Entry doesn't exist, create a new entry`);
+    // Entry doesn't exist, create a new entry
+    await ct.insertOne({
+      name: username,
+      DateTime: habitDate,      
+    });
+  }
+  else {
+    update = existingEntry[categoryArrayToUpdate] || [];
+    console.log(`Existing entry with category: ${update}`);
+  }
+  if (!update.includes(habit)) {
+    // add habit to the array and update the entry
+    update.push(habit);
+    result = await ct.updateOne(
+      { name: username, DateTime: habitDate },
+      { $set: { [categoryArrayToUpdate]: update } }
+    );
+  }
+  console.log(`Add habit to day result is: ${result}`);
+  return result;
+}
+
+async function removeHabitFromDay(username, date, habit, category, token) {
+  console.log(`Remove habit from day request ${username}, ${date}, ${habit}, ${category}`);
+  await ensureUserNameAndTokenMatch(username, token);
+
+  const habitDate = new Date(date);
+  habitDate.setUTCHours(0, 0, 0, 0);
+
+  const categoryArrayToUpdate = getCategoryArrayToUpdate(category);
+
+  var result;
+  let update = [];      
+  const ct = await getContainer();
+  const existingEntry = await ct.findOne({ name: username, DateTime: habitDate });
+  if (!existingEntry) {
+    console.log(`Entry doesn't exist, nothing to do`);    
+  }
+  else {
+    update = existingEntry[categoryArrayToUpdate] || [];
+    console.log(`Existing entry with category: ${update}`);
+  }
+  if (update.includes(habit)) {
+    // remove habit from the array and update the entry
+    update = update.filter((item) => item !== habit);
+    result = await ct.updateOne(
+      { name: username, DateTime: habitDate },
+      { $set: { [categoryArrayToUpdate]: update } }
+    );
+  }
+  console.log(`Remove habit from day result is: ${result}`);
+  return result;
 }
 
 async function readTeamList() {
@@ -1665,4 +1774,4 @@ async function removeNotificationSubscription(user, subscription, token) {
   }
 }
 
-module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};
+module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, addHabitToDay, removeHabitFromDay, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};

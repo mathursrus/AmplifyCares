@@ -10,19 +10,20 @@ export const DateRange = ({startDay, endDay, setStartDay, setEndDay, message, im
         <>
             <br></br>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <div>
-                    <Button style={{ background: 'gray' }} onClick={() => {
-                        const newStartDay = new Date(startDay.getFullYear(), startDay.getMonth() - 1, 1);
-                        const newEndDay = new Date(endDay.getFullYear(), endDay.getMonth() - 1 + 1, 0);
-                        setStartDay(newStartDay);
-                        setEndDay(newEndDay);
-                    }}>
-                        <FontAwesomeIcon icon={faCaretLeft} style={{ color: 'black' }} />
-                    </Button>
+                <div>                    
+                    <FontAwesomeIcon icon={faCaretLeft} 
+                        style={{ color: 'black', backgroundColor: 'gray'}} 
+                        onClick={() => {
+                            const newStartDay = new Date(startDay.getFullYear(), startDay.getMonth() - 1, 1);
+                            const newEndDay = new Date(endDay.getFullYear(), endDay.getMonth() - 1 + 1, 0);
+                            setStartDay(newStartDay);
+                            setEndDay(newEndDay);
+                        }}
+                    />                    
                 </div>
                 
                 <div className="message-container">
-                    <h3>{message}</h3>
+                    <h3 className='dateheader'>{message}</h3>
                     {image && (
                     <span className="stats-image">
                         <img src={image} alt={imageTitle} title={imageTitle} 
@@ -33,15 +34,17 @@ export const DateRange = ({startDay, endDay, setStartDay, setEndDay, message, im
                     )}
                 </div>
 
-                <div>
-                    <Button style={{ background: 'gray' }} onClick={() => {
-                        const newStartDay = new Date(startDay.getFullYear(), startDay.getMonth() + 1, 1);
-                        const newEndDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1 + 1, 0);
-                        setStartDay(newStartDay);
-                        setEndDay(newEndDay);
-                    }}>
-                        <FontAwesomeIcon icon={faCaretRight} style={{ color: 'black' }} />
-                    </Button>
+                <div>                    
+                    <FontAwesomeIcon 
+                        icon={faCaretRight} 
+                        style={{ color: 'black', backgroundColor: 'gray'}} 
+                        onClick={() => {
+                            const newStartDay = new Date(startDay.getFullYear(), startDay.getMonth() + 1, 1);
+                            const newEndDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1 + 1, 0);
+                            setStartDay(newStartDay);
+                            setEndDay(newEndDay);
+                        }}
+                    />                    
                 </div>
             </div>
             {/*<div style={{display: 'flex', justifyContent: 'space-between'}}>

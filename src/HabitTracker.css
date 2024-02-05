@@ -37,6 +37,7 @@
     background: #eaeef2;
     /* match the font styles */
     font-size: 10px;
+    font-weight: normal;
     line-height: inherit;
     width: 60px; /* Set a fixed width for each tag */
     overflow: hidden; /* Hide overflowing text */
@@ -51,6 +52,7 @@
   .react-tags__tag.adopt.selected {
     background-color: #037809;
     color: white;
+    font-weight: bold;
   }
 
   .react-tags__tag.shed {
@@ -60,6 +62,7 @@
   .react-tags__tag.shed.selected {
     background-color: red;
     color: white;
+    font-weight: bold;
   }
 
   .react-tags__tag.adopt::after {
@@ -159,64 +162,6 @@
   
   .icon-space {
     margin-right: 10px; /* Adjust the margin-right value to control the space between the icons */
-  }
-  
-  .habit-tiles {
-    margin: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  
-  .habit-tile {
-    width: 100px; /* Set the width for each tile */
-    height: 100px; /* Set the height to match the width for square tiles */
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 10px;  
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Show ellipsis for overflow text */
-    position: relative; /* Required for tooltip */
-  }
-  
-  .habit-tile.adopt {
-    background-color: #a7f791b5;
-    border: 1px solid #07a90c;
-  }
-  
-  .habit-tile.adopt.completed {
-    background-color: #07a90c; /* Background color for completed habits */
-  }
-  
-  .habit-tile.shed {
-    background-color: #f88f8fb5;
-    border: 1px solid #f74343;
-  }
-  
-  .habit-tile.shed.completed {
-    background-color: #f74343; /* Background color for completed habits */
-  }
-  
-  .habit-tile:hover::after {
-    content: attr(data-tooltip); /* Display tooltip text */
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    top: 100%; /* Position below the tile */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 1;
   }
   
   

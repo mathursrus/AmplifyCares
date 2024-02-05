@@ -17,6 +17,7 @@ var getUserFromSecretKey = routesModules.getUserFromSecretKey;
 var getUserInfoWithToken = routesModules.getUserInfoWithToken;
 /*var getUserInfo = routesModules.getUserInfo;*/
 var setUserLoginInfo = routesModules.setUserLoginInfo;
+var setUserPreference = routesModules.setUserPreference;
 var getAllUsers = routesModules.getAllUsers;
 var writeSelfCareEntryWithToken = routesModules.writeSelfCareEntryWithToken;
 //var writeSelfCareEntry = routesModules.writeSelfCareEntry;
@@ -25,6 +26,8 @@ var getPercentiles = routesModules.getPercentiles;
 var getTeamStats = routesModules.getTeamStats;
 var getIndividualData = routesModules.getIndividualData;
 var getActivities = routesModules.getActivities;
+var addHabitToDay = routesModules.addHabitToDay;
+var removeHabitFromDay = routesModules.removeHabitFromDay;
 var getTeamList = routesModules.getTeamList;
 var getSelfCareInsights = routesModules.getSelfCareInsights;
 var getTimeInputFromSpeech = routesModules.getTimeInputFromSpeech;
@@ -106,6 +109,7 @@ app[getUserFromSecretKey.method](getUserFromSecretKey.path, getUserFromSecretKey
 app[getUserInfoWithToken.method](getUserInfoWithToken.path, getUserInfoWithToken.handler);
 /*app[getUserInfo.method](getUserInfo.path, getUserInfo.handler);*/
 app[setUserLoginInfo.method](setUserLoginInfo.path, setUserLoginInfo.handler);
+app[setUserPreference.method](setUserPreference.path, setUserPreference.handler);
 app[getAllUsers.method](getAllUsers.path, getAllUsers.handler);
 app[writeSelfCareEntryWithToken.method](writeSelfCareEntryWithToken.path, writeSelfCareEntryWithToken.handler);
 //app[writeSelfCareEntry.method](writeSelfCareEntry.path, writeSelfCareEntry.handler);
@@ -113,6 +117,8 @@ app[getSelfCareStats.method](getSelfCareStats.path, getSelfCareStats.handler);
 app[getPercentiles.method](getPercentiles.path, getPercentiles.handler);
 app[getIndividualData.method](getIndividualData.path, getIndividualData.handler);
 app[getActivities.method](getActivities.path, getActivities.handler);
+app[addHabitToDay.method](addHabitToDay.path, addHabitToDay.handler);
+app[removeHabitFromDay.method](removeHabitFromDay.path, removeHabitFromDay.handler);
 app[getTeamList.method](getTeamList.path, getTeamList.handler);
 app[getTeamStats.method](getTeamStats.path, getTeamStats.handler);
 app[getSelfCareInsights.method](getSelfCareInsights.path, getSelfCareInsights.handler);
