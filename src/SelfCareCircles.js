@@ -49,7 +49,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
         <Link to="/?showHabits=1"> Mental Care</Link>, <Link to="/?showHabits=2">Physical Care</Link>, <Link to="/?showHabits=3">Spiritual Care</Link>, <Link to="/?showHabits=4">Social Care</Link>.
       </h5>
       {circles.length === 0 && (
-        <span><br></br>Here is a circle to get you started <Link to="/?showHabits=5">Daily Challenge</Link></span>
+        <span className='circles-text'><br></br>Here is a circle to get you started <Link to="/?showHabits=5">Daily Challenge</Link></span>
       )}
       <div className="circle-container">              
         {circles.map((circle, index) => (

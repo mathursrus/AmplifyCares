@@ -11,39 +11,39 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
     
     const populateTags = React.useCallback(() => {
         const tags = [];
-        if (userGoals) {
-            userGoals.forEach((goal, goalIndex) => {
-                // Iterate through HabitsToAdopt
-                if (goal.habitsToAdopt) {
-                    goal.habitsToAdopt.forEach((habitToAdopt, index) => {
-                    tags.push({
-                        id: `${goalIndex}-adopt-${index}`,
-                        type: 'adopt',
-                        text: habitToAdopt,
-                        value: habitToAdopt,
-                        label: habitToAdopt,
-                        selected: habitsDone && habitsDone.includes(habitToAdopt)                
-                    });
-                    });                    
-                }
-        
-                // Iterate through HabitsToShed
-                if (goal.habitsToShed) {
-                    goal.habitsToShed.forEach((habitToShed, index) => {
-                    tags.push({
-                        id: `${goalIndex}-shed-${index}`,
-                        type: 'shed',
-                        text: habitToShed,
-                        value: habitToShed,
-                        label: habitToShed,
-                        selected: habitsDone && habitsDone.includes(habitToShed)               
-                    });
-                    });                    
-                }
+        if (userGoals && userGoals.length > 0) {
+          userGoals.forEach((goal, goalIndex) => {
+              // Iterate through HabitsToAdopt
+              if (goal.habitsToAdopt) {
+                  goal.habitsToAdopt.forEach((habitToAdopt, index) => {
+                  tags.push({
+                      id: `${goalIndex}-adopt-${index}`,
+                      type: 'adopt',
+                      text: habitToAdopt,
+                      value: habitToAdopt,
+                      label: habitToAdopt,
+                      selected: habitsDone && habitsDone.includes(habitToAdopt)                
+                  });
+                  });                    
+              }
+      
+              // Iterate through HabitsToShed
+              if (goal.habitsToShed) {
+                  goal.habitsToShed.forEach((habitToShed, index) => {
+                  tags.push({
+                      id: `${goalIndex}-shed-${index}`,
+                      type: 'shed',
+                      text: habitToShed,
+                      value: habitToShed,
+                      label: habitToShed,
+                      selected: habitsDone && habitsDone.includes(habitToShed)               
+                  });
+                  });                    
+              }
             });
           }    
           
-          if (habitsDone) {
+          if (habitsDone && habitsDone.length > 0) {
             habitsDone.forEach((goal, goalIndex) => {
                 if (!tags.find((tag) => tag.label === goal)) {
                     tags.push({
@@ -61,7 +61,7 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
           
           setAllSuggestions(suggestedHabits.filter((habit) => {
             // Check if the habit is present in any goal's habitsToAdopt or habitsToShed
-            return !userGoals.some((goal) => {
+            return !userGoals || !userGoals.length === 0 || !userGoals.some((goal) => {
               return (
                 (goal.habitsToAdopt && goal.habitsToAdopt.includes(habit)) ||
                 (goal.habitsToShed && goal.habitsToShed.includes(habit))
