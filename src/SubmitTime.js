@@ -64,8 +64,8 @@ const SubmitTimePage = () => {
     const [selfCareCircles, setSelfCareCircles] = useState(null);
     const [userGoals, setUserGoals] = useState([]);
 
-    const niceWorkAudio = new Audio('/GoodJob.mp3');
-    const sorryAudio = new Audio('/Error.mp3');
+    //const niceWorkAudio = new Audio('/GoodJob.mp3');
+    //const sorryAudio = new Audio('/Error.mp3');
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -162,6 +162,7 @@ const SubmitTimePage = () => {
         return date;
     }        
 
+    /*
     const showData = async (results) => {
         console.log("Submit time got results ", results);  
         if (results.length > 0 && results[0] !== null) {
@@ -178,7 +179,7 @@ const SubmitTimePage = () => {
             // play sound clip saying error happened
             sorryAudio.play();
         }
-    }        
+    } */       
 
     const writeSelfCareEntry = async (itemData) => {
         console.log("Write Self Care Entry called with ", itemData);

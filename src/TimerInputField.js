@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { evaluate, exp } from 'mathjs';
-import ReactCountdownClock from 'react-countdown-clock';
+import { evaluate } from 'mathjs';
+//import ReactCountdownClock from 'react-countdown-clock';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faHourglassStart } from '@fortawesome/free-solid-svg-icons'; // Import icons
 import { useStopwatch, useTimer  } from 'react-timer-hook';
