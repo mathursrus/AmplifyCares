@@ -98,19 +98,19 @@ const SubmitTimePage = () => {
         const socialHealthTags = (entry.societal_health_activity);
         
         setMentalHealth({
-            time: entry.mental_health_time,
+            time: entry.mental_health_time?""+entry.mental_health_time:"",
             tags: mentalHealthTags,
         });
         setPhysicalHealth({
-            time: entry.physical_health_time,
+            time: entry.physical_health_time?""+entry.physical_health_time:"",
             tags: physicalHealthTags,
         });
         setSpiritualHealth({
-            time: entry.spiritual_health_time,
+            time: entry.spiritual_health_time?""+entry.spiritual_health_time:"",
             tags: spiritualHealthTags,
         });
         setSocialHealth({
-            time: entry.societal_health_time,
+            time: entry.societal_health_time?""+entry.societal_health_time:"",
             tags: socialHealthTags,
         });
         setIsEditMode(true);

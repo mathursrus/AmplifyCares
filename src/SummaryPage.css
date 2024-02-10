@@ -104,10 +104,10 @@
 
 /* Style the table */
 .summary-habit-table {
-  width: 95%;
-  table-layout: fixed;
+  width: 100%;
   border-radius: 40px;
   border-collapse: collapse;  
+  table-layout: fixed;
 }
 
 
@@ -118,19 +118,17 @@
   padding: 2px;
   font-size: 10px;
   text-align: left;
-  width: fit-content;
 }
 
 /* Style table rows */
 .summary-habit-table tr {
   border: 1px solid #ddd;
   font-size: 10px;
-  width: fit-content;
 }
 
 .summary-habit-table th:first-child,
 .summary-habit-table td:first-child {
-  width: 100px; /* Let the first column adjust to content */
+  width: 20%; 
   white-space: nowrap; /* Prevent text from wrapping */
   text-overflow: ellipsis;
   overflow: hidden;
@@ -157,8 +155,7 @@
 .summary-habit-table td {
   border: 1px solid #ddd;
   padding: 0px;
-  text-align: left;
-  width: fit-content;
+  text-align: left;  
 }
 
 .summary-habit-table .green {
@@ -238,19 +235,14 @@ s/* Style green cells */
     font-size: 0px;
   } 
 
-  .summary-habit-table th:first-child,
-  .summary-habit-table td:first-child {
-    width: 30px;
-  }
-
   .summary-habit-table th {
     padding: 0px;
-    font-size: 6px;    
+    font-size: 8px;    
   }
   
   /* Style table rows */
   .summary-habit-table tr {
-    font-size: 6px;    
+    font-size: 8px;    
   }
 }
 

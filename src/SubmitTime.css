@@ -208,14 +208,13 @@
 
 /* Style the table */
 .editable-habit-table-container {
-  width: 95%;
+  width: 100%;
   border: 1px #090000;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1); /* Add a box shadow to create depth */
 }
 
 .editable-habit-table {
   width: 100%;
-  table-layout: fixed;
   border-collapse: collapse;
 }
 
@@ -322,18 +321,19 @@
   .submit-time-container .subheader {
     font-size: 14px;
   }
+  
   .editable-habit-table th:first-child,
   .editable-habit-table td:first-child {
-    width: 100px;
+    width: 20%;
   }
 
   .editable-habit-table th {
     padding: 0px;
-    font-size: 10px;    
+    font-size: 8px;    
   }
   
   /* Style table rows */
   .editable-habit-table tr {
-    font-size: 10px;    
+    font-size: 8px;    
   }
 }

@@ -99,7 +99,8 @@ const TimerInputField = ({value, placeholder, setValue}) => {
         />        
         {!showDialog && (
             <div className="timer-tooltip-content">
-                <button onClick={handleStartCountdownClick}>
+                <button onClick={handleStartCountdownClick} 
+                        title={value==='' || value=== '0'?`Start timing yourself`:`Start countdown from ${value} minutes`}>
                     <FontAwesomeIcon icon={faHourglassStart} />
                 </button>
             </div>        

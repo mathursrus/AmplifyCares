@@ -58,7 +58,7 @@ db.dailychallenge_info.insertOne({
 
 // all goals
 use('amplifycares-db-catita');
-db.goal_info.find({username: {$regex: "sidm*"}});
+db.goal_info.find({username: {$regex: ".*"}});
 
 // delete some goals 
 use('amplifycares-db-catita');
@@ -78,7 +78,7 @@ db.invite_info.deleteMany({invite: {$regex:"User janebo@.*"}});
 
 // find all entries on a particular date
 use('amplifycares-db-catita');
-db.self_care_stats.find({DateTime: { $gt: new Date('2023-09-18') }});
+db.self_care_stats.find({DateTime: { $gt: new Date('2024-02-08') }});
 
 // find entry with id 
 use('amplifycares-db-catita');

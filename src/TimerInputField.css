@@ -22,8 +22,8 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    opacity: 0;
-    visibility: hidden;
+    opacity: 1;
+    visibility: visible;
     transition: opacity 0.5s, visibility 0.5s;    
   }
 
