@@ -66,7 +66,7 @@ const TimerInputField = ({value, placeholder, setValue}) => {
     const date = new Date();
     date.setSeconds(date.getSeconds() + time);
     setExpiryTimestamp(date);
-    setDirection(!value || value === '' ? 'up':'down');
+    setDirection(!value || value === '' || value === '0' ? 'up':'down');
   };
 
   const handleStop = () => {

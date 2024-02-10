@@ -8,6 +8,7 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
 
     const [allTags, setAllTags] = React.useState([]);
     const [allSuggestions, setAllSuggestions] = React.useState([]);
+    const [isExpanded, setIsExpanded] = React.useState(false);
     
     const populateTags = React.useCallback(() => {
         const tags = [];
@@ -78,6 +79,7 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
     }, [populateTags]);
     
     const handleTagClick = (tag) => {
+        setIsExpanded(true);
         const updatedTags = allTags;
         const tagIndex = updatedTags.findIndex((t) => t.id === tag.id);
     
@@ -95,17 +97,22 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
         }
         else {
             handleTagDelete(tag);                            
-        }
+        }        
       };
 
       const handleTagAddition = (tag) => {
         //console.log("Added tag ", tag);
-        habitSetter(((prev) => ({ ...prev, tags: [...habitsDone, tag.label] })));            
+        habitSetter(((prev) => ({ ...prev, tags: [...habitsDone, tag.label] })));
+        // keep focus
+        const tagElement = document.getElementById(tag.id); // Assuming tag.id is unique
+        if (tagElement) {
+            tagElement.focus();
+        }            
       }
 
       const handleTagDelete = (tag) => {
         //console.log("Deleted tag ", tag);
-        habitSetter(((prev) => ({ ...prev, tags: (habitsDone.filter((t, i) => t !== tag.label))})));
+        habitSetter(((prev) => ({ ...prev, tags: (habitsDone.filter((t, i) => t !== tag.label))})));        
       }
 
     function CustomTag({ classNames, tag, ...tagProps }) {
@@ -133,11 +140,16 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
             onAdd={(newTag) => {
                     handleTagAddition(newTag);
                 }}
+            onShouldExpand={() => {const retval = !isExpanded;
+                                  //console.log("Should expand ", retval);
+                                  setIsExpanded(retval); 
+                                  return retval;}}
             renderTag={CustomTag}
             placeholderText=""
             allowNew="true"
             labelText=''
-            collapseOnSelect="true"                                
+            collapseOnSelect={true}            
+            autofocus={false}                              
         /> 
     //</div>
   )
