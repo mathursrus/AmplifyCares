@@ -80,7 +80,14 @@ function Layout() {
           </div>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">              
+            <Nav className="me-auto">
+              <Nav.Link
+                as={Link}
+                to="/goals"
+                className={location.pathname === '/goals' ? 'active' : ''}
+              >
+                Your Goals
+              </Nav.Link>              
               <Nav.Link
                 as={Link}
                 to="/submit-time-page"
@@ -95,6 +102,12 @@ function Layout() {
               >
                 Self Care Stats
               </Nav.Link>
+              <Nav.Link 
+                as={Link}
+                to={`?show-copilot=1&rand=${Math.random(1000)}`}
+                className={location.pathname === '/self-care-coach' ? 'active' : ''}>        
+                Your Self Care Coach
+              </Nav.Link>              
               <Nav.Link
                 as={Link}
                 to="/leaderboard"
@@ -108,20 +121,7 @@ function Layout() {
                 className={location.pathname === '/team-list' ? 'active' : ''}
               >
                 Team List
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                to="/goals"
-                className={location.pathname === '/goals' ? 'active' : ''}
-              >
-                Goals
-              </Nav.Link>
-              <Nav.Link 
-                as={Link}
-                to={`?show-copilot=1&rand=${Math.random(1000)}`}
-                className={location.pathname === '/self-care-coach' ? 'active' : ''}>        
-                Your Self Care Coach
-              </Nav.Link>              
+              </Nav.Link>                                          
             </Nav>
             <Nav className="justify-content-end">
               <Nav.Link onClick={handleAboutAmplifyCares}>

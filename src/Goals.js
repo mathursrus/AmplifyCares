@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import Confetti from "react-confetti";
 //import GoalCheckin from './GoalCheckin.js';
-import { getUserGoals, saveUserGoals } from './utils/goalsUtil.js';
+import { getGoalSettingStep, getUserGoals, saveUserGoals } from './utils/goalsUtil.js';
 import {seekNotificationPermission, sendPushNotification} from './utils/notificationsUtil.js';
 
 const categories = ['Mental', 'Physical', 'Spiritual', 'Social'];
@@ -40,13 +40,8 @@ function Goals() {
   const fetchAndSetUserGoals = async () => {
     try {
       const value = await getUserGoals();
-      if (value) {          
-          const step1complete = (value.identity && value.identity !== '');
-          const step2complete = (value.goals && Object.values(value.goals).some((array) => array.length > 0 && array[0].goal && array[0].goal !== ''));
-          const step3complete = step2complete;
-          const goalSettingStep = (step1complete && step2complete && step3complete)?4:
-                                    (step1complete && step2complete)? 3: 
-                                      (step1complete? 2:1);
+      if (value) {
+          const goalSettingStep = getGoalSettingStep(value);                    
           console.log("Setting step to ", goalSettingStep, " and goals to ", value);
           setGoalSettingStep(goalSettingStep);
           setUserGoals(value);
@@ -73,7 +68,9 @@ function Goals() {
       saveGoals();
     }
     else {
-      alert("Please identify your best self before proceeding to goal setting");
+      if (window.confirm("You need to identify your best self before proceeding to goal setting. Are you sure you want to proceed?")) {
+        saveGoals();
+      }
     }
   }
 
@@ -84,7 +81,9 @@ function Goals() {
       saveGoals();
     }
     else {
-      alert("Please set at least 1 goal you want to target in your self care journey");
+      if (window.confirm("You need to set at least 1 goal you want to target in your self care journey. Are you sure you want to proceed?")) {
+        saveGoals();
+      }
     }
   }
 

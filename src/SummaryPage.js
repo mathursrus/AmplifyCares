@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
-import { getUserGoals } from './utils/goalsUtil';
+import { getGoalSettingStep, getUserGoals } from './utils/goalsUtil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserMode from './UserMode';
@@ -336,7 +336,8 @@ return (
             <center>
             <br></br>
             <h2 className="subheader">Self Improvement Mode - Be consistent with your self care habits.</h2>
-            {goalsData.goals ? (
+            {goalsData.goals && 
+                (getGoalSettingStep(goalsData) > 2)? (
               <div>
                 <table className="summary-habit-table">
                   <thead>

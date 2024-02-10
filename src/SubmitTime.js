@@ -14,7 +14,7 @@ import UserBadges from './UserBadges';
 import SelfCareCircles from './SelfCareCircles';
 import TimerInputField from './TimerInputField';
 import { addHabitToDay, getHabitsData, getUserMode, refreshUserInfo, removeHabitFromDay } from './utils/userUtil';
-import { getUserGoals } from './utils/goalsUtil';
+import { getGoalSettingStep, getUserGoals } from './utils/goalsUtil';
 import HabitTracker from './HabitTracker';
 import UserMode from './UserMode';
     
@@ -538,7 +538,8 @@ const SubmitTimePage = () => {
                         <center><p>Loading...</p></center>
                     ) : (
                     <div className='editable-habit-table-container'>
-                    {goalsData.goals ? (
+                    {goalsData.goals && 
+                        (getGoalSettingStep(goalsData) > 2) ? (
                         <table className="editable-habit-table">
                         <thead>
                             <tr>
@@ -590,7 +591,17 @@ const SubmitTimePage = () => {
                                         ))}
                                     </tr>
                                 ));
-                                return [...(habitsToAdoptRows || []), ...(habitsToShedRows || [])];
+
+                                console.log("Habits to adopt rows ", habitsToAdoptRows);
+                                console.log("Habits to shed rows ", habitsToShedRows);
+
+                                if (habitsToAdoptRows.length === 0 && habitsToShedRows.length === 0) {
+                                    const retval = <i>No habits being tracked. Create your goals and habits <Link to={`/goals`}>here</Link></i>;
+                                    return retval;
+                                }
+                                else {
+                                    return [...(habitsToAdoptRows || []), ...(habitsToShedRows || [])];
+                                }
                             });
                             })}
                         </tbody>

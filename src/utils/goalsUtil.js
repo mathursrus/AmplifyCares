@@ -10,3 +10,16 @@ export const getUserGoals = async () => {
 export const saveUserGoals = (userGoals) => {
     return postWithToken('/writeusergoals', userGoals, localStorage.getItem('usertoken')); 
 }
+
+export const getGoalSettingStep = (goal) => {
+    if (goal) {
+        const step1complete = (goal.identity && goal.identity !== '');
+        const step2complete = (goal.goals && Object.values(goal.goals).some((array) => array.length > 0 && array[0].goal && array[0].goal !== ''));
+        const step3complete = step2complete;
+        const goalSettingStep = (step1complete && step2complete && step3complete)?4:
+                                (step1complete && step2complete)? 3: 
+                                    (step1complete? 2:1);
+        return goalSettingStep;
+    }
+    return 1;
+}
