@@ -171,13 +171,13 @@ const parseUserInfo = async (response) => {
     let retval = {};
     try {
       const data = await response.json();
-      console.log("Got user info ", data);
+      //console.log("Got user info ", data);
       const userInfo = JSON.parse(data);
       if (userInfo.length > 0) {
         localStorage.setItem('userDetails', JSON.stringify(userInfo[0]));
         retval = userInfo[0];        
       }
-      console.log("Returning user info ", retval);
+      //console.log("Returning user info ", retval);
       latest_user_info = retval;
       return retval;
     } catch (error) {

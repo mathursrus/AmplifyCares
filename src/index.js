@@ -14,9 +14,10 @@ import { checkPushSubscription } from './utils/notificationsUtil';
 }(console.log));*/
 
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
+  window.addEventListener('load', async () => {
+    try {
       // Unregister any existing service workers first
-      /*await navigator.serviceWorker.getRegistrations().then((registrations) => {
+      await navigator.serviceWorker.getRegistrations().then((registrations) => {
         for (const registration of registrations) {
           registration.unregister().then((success) => {
             if (success) {
@@ -26,22 +27,30 @@ if ('serviceWorker' in navigator) {
             }
           });
         }
-      });*/
-  
+      });
+
       // Now register the new service worker
-      await navigator.serviceWorker
-        .register('/sw.js', { scope: '/' }) // Path to your service worker file
-        .then(async (registration) => {
-          console.log('Services Worker registered with scope:', registration.scope);
-          await checkPushSubscription(registration);
-          console.log("Push subscription checked, moving on");
-        })
-        .catch((error) => {
-          console.error('Service Worker registration failed:', error);
-        });
-    });
-  }  
-  
+      const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      console.log('Service Worker registered with scope:', registration.scope);
+      
+      // Wait until the service worker is activated and ready
+      await navigator.serviceWorker.ready;
+
+      // Check and handle push subscription
+      await checkPushSubscription(registration);
+      console.log("Push subscription checked, moving on");
+
+      // Register periodic sync after the service worker is ready
+      setInterval(() => {
+        console.log("Registering periodic sync");
+        registration.sync.register('time-check');
+      }, 10 * 60 * 1000);
+      console.log("Periodic sync registered");
+    } catch (error) {
+      console.error('Service Worker registration failed:', error);
+    }
+  });
+} 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -1,15 +1,26 @@
+// Inside your service worker (sw.js)
+self.addEventListener('install', (event) => {
+  console.log('Service Worker installed');
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('Service Worker activated');
+});
+
+
 // Register a periodic background sync task
 self.addEventListener('sync', (event) => {
+  console.log("Sync event received! ");
   if (event.tag === 'time-check') {
     console.log("Periodic sync event received!");
     const now = new Date();
     const hours = now.getHours();
     const minutes = now.getMinutes();
 
-    if (hours === 0 && minutes < 15) {
+    if (hours === 9) {
       // Trigger the notification
       const options = {
-        body: 'Good morning! It is now 7 AM.',
+        body: 'Good morning! This is your daily reminder to rock your habits. Will fine tune this notification soon.',
         icon: 'logo192.png',
         badge: 'logo192.png',
       };
@@ -17,18 +28,6 @@ self.addEventListener('sync', (event) => {
       self.registration.showNotification('Daily Notification', options);
     }
   }
-});
-
-self.addEventListener('install', function(event) {
-  event.waitUntil(
-    self.registration.periodicSync.register('time-check', {
-      minInterval: 1, // 1 mins
-    })
-  );
-});
-  
-self.addEventListener('activate', function(event) {
-  // Cleanup old caches if needed
 });
 
 self.addEventListener('push', function(event) {

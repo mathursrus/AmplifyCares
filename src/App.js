@@ -132,7 +132,7 @@ function AppPage() {
       setShowFirstRunExperience(3);      
     }
     else {
-      console.log("Nothing to show here");
+      //console.log("Nothing to show here");
       setShowFirstRunExperience(0);
       setUserLogin();      
     }
@@ -148,7 +148,7 @@ function AppPage() {
     badges = userInfo.badgesOnTrack;
     lastLogin = userInfo.lastLoginTime;            
     await setUserBadges(badges);
-    console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));         
+    //console.log("Badges is ", JSON.parse(localStorage.getItem('badges')));         
     updateUserLastLogin(lastLogin);
   }, [setUserBadges, updateUserLastLogin]);
 

@@ -69,11 +69,11 @@ const HabitTracker = ({ userGoals, habitsDone, suggestedHabits, habitSetter }) =
             });
           }));
 
-          console.log("All tags ", tags);
+          //console.log("All tags ", tags);
     }, [habitsDone, userGoals, suggestedHabits]);
 
     React.useEffect(() => {
-        console.log("HabitTracker useEffect");
+        //console.log("HabitTracker useEffect");
         populateTags();      
     }, [populateTags]);
     

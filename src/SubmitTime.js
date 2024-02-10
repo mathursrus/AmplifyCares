@@ -241,7 +241,7 @@ const SubmitTimePage = () => {
         
         // Set the state variable to the random number
         const rand = getRandomNumber();
-        console.log("Animation set to ", rand);
+        // console.log("Animation set to ", rand);
         setAnimation(rand);
         
         setTimeout(() => {
@@ -329,7 +329,7 @@ const SubmitTimePage = () => {
     
     const refreshUserCirclesAndGoals = async () => {
         const result = await refreshUserInfo();
-        console.log("Got user info ", result);
+        //console.log("Got user info ", result);
         setSelfCareCircles(result.circles);
         
         const userGoals = await getUserGoals();
@@ -341,7 +341,7 @@ const SubmitTimePage = () => {
     }
 
     useEffect(() => {
-        console.log("Flyout state is ", flyoutState); 
+        //console.log("Flyout state is ", flyoutState); 
     }, [flyoutState]); // Run the effect only when flyoutState changes
 
     return (
@@ -592,8 +592,8 @@ const SubmitTimePage = () => {
                                     </tr>
                                 ));
 
-                                console.log("Habits to adopt rows ", habitsToAdoptRows);
-                                console.log("Habits to shed rows ", habitsToShedRows);
+                                //console.log("Habits to adopt rows ", habitsToAdoptRows);
+                                //console.log("Habits to shed rows ", habitsToShedRows);
 
                                 if (habitsToAdoptRows.length === 0 && habitsToShedRows.length === 0) {
                                     const retval = <i>No habits being tracked. Create your goals and habits <Link to={`/goals`}>here</Link></i>;
