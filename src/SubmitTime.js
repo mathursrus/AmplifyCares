@@ -69,13 +69,35 @@ const SubmitTimePage = () => {
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        const showHabits = parseInt(searchParams.get('showHabits'));
+        const showHabits = searchParams.get('showHabits');
         const habit = searchParams.get('habit');    
-        setFlyoutState(isNaN(showHabits) ? 0 : showHabits);
+        setFlyoutState(showHabits ? mapParamToFlyoutState(showHabits) : 0);
         setHabit(habit);
         refreshUserCirclesAndGoals();
         //console.log("Show habits is ", showHabits, ", habit is ", habit, ", flyout state is ", flyoutState);              
     }, [location.search]);
+
+    function mapParamToFlyoutState(param) {
+        const temp = parseInt(param);
+        console.log("Mapping param ", param, " to ", temp);
+        if (isNaN(temp)) {
+            switch (param) {
+                case 'mental':
+                    return 1;
+                case 'physical':
+                    return 2;
+                case 'spiritual':
+                    return 3;
+                case 'social':
+                    return 4;
+                default:
+                    return 0;
+            }
+        }
+        else {
+            return temp;
+        }
+    }
 
     const clearFields = useCallback(() => {
         setMentalHealth({time: '', tags: []});

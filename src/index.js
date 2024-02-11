@@ -39,13 +39,6 @@ if ('serviceWorker' in navigator) {
       // Check and handle push subscription
       await checkPushSubscription(registration);
       console.log("Push subscription checked, moving on");
-
-      // Register periodic sync after the service worker is ready
-      setInterval(() => {
-        console.log("Registering periodic sync");
-        registration.sync.register('time-check');
-      }, 10 * 60 * 1000);
-      console.log("Periodic sync registered");
     } catch (error) {
       console.error('Service Worker registration failed:', error);
     }
