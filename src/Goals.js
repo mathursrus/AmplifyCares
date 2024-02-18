@@ -8,7 +8,7 @@ import { faCheckCircle, faCheckDouble, faEdit } from '@fortawesome/free-solid-sv
 import Confetti from "react-confetti";
 import GoalCheckin from './GoalCheckin.js';
 import { getGoalSettingStep, getUserGoals, saveUserGoals } from './utils/goalsUtil.js';
-import {seekNotificationPermission, sendPushNotification} from './utils/notificationsUtil.js';
+import {sendPushNotification} from './utils/notificationsUtil.js';
 import GoalCheckinData from './GoalCheckinData.js';
 
 const categories = ['Mental', 'Physical', 'Spiritual', 'Social'];
