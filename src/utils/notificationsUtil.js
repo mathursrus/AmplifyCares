@@ -23,13 +23,7 @@ export const checkPushSubscription = async (registration) => {
         console.log("Got stored subcription ", storedSubscription);
         return;
     }
-    await seekNotificationPermission();
-    if (hasNotificationPermission()) {
-        subscribeUser();        
-    }
-    else {
-        console.log("No permission to send notifications");
-    }
+    await seekNotificationPermission();    
   }
 
 export const seekNotificationPermission = () => {
@@ -53,27 +47,29 @@ export const seekNotificationPermission = () => {
 
 function subscribeUser() {
     console.log("Subscribing user");
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then(function(registration) {
-        if (!registration.pushManager) {
-          console.error('Push manager unavailable :(');
-          return;
+    if (localStorage.getItem('userName') && localStorage.getItem('userName') !== '') {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(function(registration) {
+                if (!registration.pushManager) {
+                console.error('Push manager unavailable :(');
+                return;
+                }
+                
+                const appKey = urlBase64ToUint8Array('BGgzf3Q1RhLD_SWMw62Mwqpj-NmuscTTfYibRVv1CGYNZHKc9hH0hQB3pE1MPYPabOF2W3hJZwl8sxMPJjOIME4');
+                console.log("App key ", appKey);
+                registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: appKey
+                })
+                .then(function(subscription) {
+                console.log('Push subscription:', subscription);
+                saveNotificationSubscription(subscription);
+                })
+                .catch(function(error) {
+                console.error('Error during push subscription:', error);
+                });
+            });
         }
-        
-        const appKey = urlBase64ToUint8Array('BGgzf3Q1RhLD_SWMw62Mwqpj-NmuscTTfYibRVv1CGYNZHKc9hH0hQB3pE1MPYPabOF2W3hJZwl8sxMPJjOIME4');
-        console.log("App key ", appKey);
-        registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: appKey
-        })
-        .then(function(subscription) {
-          console.log('Push subscription:', subscription);
-          saveNotificationSubscription(subscription);
-        })
-        .catch(function(error) {
-          console.error('Error during push subscription:', error);
-        });
-      });
     }
   }
   
@@ -89,7 +85,7 @@ export const hasNotificationPermission = () => {
     return false;
 }
 
-export const sendPushNotification = (title, body) => {
+export const sendPushNotification = (title, body, urlstring) => {
     console.log("Sending push notification");
     if (hasNotificationPermission()) {
         navigator.serviceWorker.ready.then(function (registration) {
@@ -97,6 +93,7 @@ export const sendPushNotification = (title, body) => {
             registration.showNotification(title, {
                 body: body,
                 icon: 'logo192.png', // Customize the icon
+                image: urlstring
             });
         });
     }

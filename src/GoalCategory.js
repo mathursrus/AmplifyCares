@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactTags } from 'react-tag-autocomplete';
+import { generateGuid } from './utils/guidUtils';
+import './GoalCategory.css';
 const { useState, useEffect } = React;
 
 function GoalCategory({ name, goals, updateGoals, wellKnownHabitsToAdopt, wellKnownHabitsToShed }) {
@@ -14,7 +16,7 @@ function GoalCategory({ name, goals, updateGoals, wellKnownHabitsToAdopt, wellKn
   }, [rows, updateGoals]);
 
   const addRow = () => {
-    const newRow = { goal: '', habitsToAdopt: [], habitsToShed: [] };
+    const newRow = { goal: '', id: generateGuid(), habitsToAdopt: [], habitsToShed: [] };
     setRows([...rows, newRow]);
   };
 

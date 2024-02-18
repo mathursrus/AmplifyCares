@@ -62,13 +62,13 @@
 
 .submit-time-container input::placeholder { font-size: 12px; }
 
-.submit-time-container .react-datepicker__input-container {
+.react-datepicker__input-container {
   margin: 5px;
   background-color: transparent;
   position: relative;
 }
 
-.submit-time-container .react-datepicker__input-container input {
+.react-datepicker__input-container input {
   border-color: transparent;
   background-color: transparent;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a box shadow to create depth */
@@ -76,7 +76,7 @@
 }
 
 /* Add a pseudo-element to create a small arrow indicating it's a picker */
-.submit-time-container .react-datepicker__input-container::after {
+.react-datepicker__input-container::after {
   content: "\25BC";
   position: absolute;
   right: 10px;

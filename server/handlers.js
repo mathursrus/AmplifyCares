@@ -13,6 +13,7 @@ const userId = "userInfo";
 const inviteId = "invite_info";
 const challengeId = "dailychallenge_info";
 const goalId = "goal_info";
+const goalCheckinId = "goal_checkin_info";
 const notificationId = "notification_info";
 
 const ObjectId = require('mongodb').ObjectId;
@@ -41,6 +42,7 @@ let user_container = null;
 let invite_container = null;
 let challenge_container = null;
 let goal_container = null;
+let goal_checkin_container = null;
 let notification_container = null;
 
 async function getMongoDbClient() {
@@ -127,6 +129,15 @@ async function getGoalContainer() {
     console.log(goal_container);
   }
   return goal_container;
+}
+
+async function getGoalCheckinContainer() {
+  if (!goal_checkin_container) {
+    var cl = await getMongoDbClient();
+    goal_checkin_container = await cl.collection(goalCheckinId);
+    console.log(goal_checkin_container);
+  }
+  return goal_checkin_container;
 }
 
 async function getNotificationContainer() {
@@ -1552,6 +1563,59 @@ async function writeUserGoals(goals, userToken) {
   return result;
 }
 
+async function writeUserGoalCheckIn(checkin, userToken) {
+  await ensureUserNameAndTokenMatch(checkin.name, userToken);
+  checkin.DateTime = new Date(checkin.DateTime);
+  checkin.DateTime.setUTCHours(0, 0, 0, 0);
+  const ct = await getGoalCheckinContainer();
+  const existingItem = await ct.findOne({ _id: ObjectId(checkin._id) });
+  const isEmptyItem = (!checkin.checkin || checkin.checkin.length === 0);
+  var result = checkin._id;
+  if (existingItem) {
+    checkin._id = ObjectId(checkin._id);  
+    if (isEmptyItem) {
+      ct.deleteOne({ _id: checkin._id });
+      console.log('Checkin deleted:', checkin._id);
+    }    
+    else {      
+      // Item exists, perform an update
+      await ct.updateOne({ _id: checkin._id }, { $set: checkin });
+      console.log('Checkin updated:', checkin._id);        
+    }
+  }
+  else {
+    const final = await ct.insertOne(checkin);
+    result = final.insertedId;
+    console.log('Item inserted:', result);
+  }
+  
+  return result;
+}
+
+async function getUserGoalCheckIn(user, date, token) {
+  await ensureUserNameAndTokenMatch(user, token);
+  console.log(`Get User Goal Checkin Data request`);
+  const ct = await getGoalCheckinContainer();
+  const startOfDay = new Date(date);
+  startOfDay.setUTCHours(0, 0, 0, 0); // Set the time to midnight for the same day
+  const endOfDay = new Date(date);
+  endOfDay.setUTCHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
+
+  console.log("Start ", startOfDay, ", End ", endOfDay);
+
+  const result = await ct.find({
+    name: user,
+    DateTime: {
+      $gte: startOfDay,
+      $lte: endOfDay
+    }
+  }).toArray();
+  console.log(`Checkin Data is: ${result}`);
+  const final = JSON.stringify(result);
+  console.log(`Final checkin data is ${final}`);
+  return final;
+}
+
 async function getDailyChallenges(date) {  
   console.log("Getting challenge for date ", date);
     
@@ -1774,4 +1838,4 @@ async function removeNotificationSubscription(user, subscription, token) {
   }
 }
 
-module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, addHabitToDay, removeHabitFromDay, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, getDailyChallenges, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};
+module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, addHabitToDay, removeHabitFromDay, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, writeUserGoalCheckIn, getUserGoalCheckIn, getDailyChallenges, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};

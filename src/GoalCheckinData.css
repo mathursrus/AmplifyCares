@@ -1,0 +1,73 @@
+.goal-checkin-container {
+    width: 100%;
+    font-size: 14px;
+}
+
+.goal-checkin-data {
+    display: flex;
+    flex-direction: row;
+}
+
+.goal-checkin-data .red {
+    color: rgb(161, 69, 7);
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 2px;
+}
+
+.goal-checkin-data .goal-name {
+    flex: 4;
+    font-weight: bold;
+    white-space: nowrap; /* Prevents wrapping */
+    overflow: hidden; /* Hides overflow */
+    text-overflow: ellipsis; /* Displays ellipsis when content overflows */
+}
+
+.goal-checkin-data .goal-name:hover {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: inherit;    
+  }
+
+.goal-checkin-data .goal-value {
+    flex: 1;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: transparent;
+}
+
+.goal-checkin-data .goal-text {
+    flex: 5;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: transparent;
+}
+
+.goal-checkin-container .complete {
+    width: 100%;
+    align-self: center;
+    margin-top: 10px;
+    background-color: rgb(1, 96, 7);
+}
+
+@media screen and (max-width: 550px) {
+    .goal-checkin-container {
+        font-size: 12px;
+    }
+
+    .goal-checkin-data {
+      flex-direction: column; /* Change direction to column for small screens */
+    }
+  
+    .goal-checkin-data .goal-name,
+    .goal-checkin-data .goal-value,
+    .goal-checkin-data .goal-text {
+      flex: none; /* Remove flex basis to allow content to expand */
+      width: 100%; /* Set width to 100% for full-width display */
+      margin: 5px 0; /* Adjust margin for spacing */
+    }
+  }

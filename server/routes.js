@@ -380,6 +380,30 @@ const writeUserGoals = {
     }
 }
 
+const writeUserGoalCheckIn = {
+    method: 'post',
+    path: '/writeusergoalcheckin', 
+    handler: async (req, res) => {
+        const checkin = req.body.item; 
+        const token = getTokenFromRequest(req); 
+        const response = await handlers.writeUserGoalCheckIn(checkin, token);
+
+        res.status(200).json(response);
+    }
+}
+
+const getUserGoalCheckIn = {
+    method: 'get',
+    path: '/getusergoalcheckin',
+    handler: async (req, res) => {
+        const user = await req.query.user;
+        const date = await req.query.date;
+        const token = getTokenFromRequest(req);        
+        const response = await handlers.getUserGoalCheckIn(user, date, token);
+        res.status(200).json(response);
+    }
+}
+
 const seekCoaching = {
     method: 'post',
     path: '/seekCoaching', 
@@ -429,4 +453,4 @@ const removeNotificationSubscription = {
     }
 }
 
-module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, addHabitToDay, removeHabitFromDay, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};
+module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, addHabitToDay, removeHabitFromDay, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, writeUserGoalCheckIn, getUserGoalCheckIn, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};

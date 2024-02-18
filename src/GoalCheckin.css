@@ -1,0 +1,106 @@
+.goal-checkin {
+    background-color: white;
+    padding: 10px;
+    margin: 10px;    
+    margin-left: 20px;
+    border-radius: 15px;
+    width: 90%;
+    border: 1px solid black;
+    align-self: baseline;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .goal-checkin-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 10px;
+  }
+
+  .goal-checkin table {
+    width: 100%;
+    text-align: left;
+    margin-top: 10px;
+    font-size: 12px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .goal-checkin .goal-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .goal-checkin .goal {
+    flex: 0 0 auto; /* Allow the goals to wrap */
+    width: auto; /* Adjust the width as needed */
+    padding: 5px;
+    margin: 5px;
+    background-color:#4CAF50;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: normal;
+  }
+  
+  .goal-checkin .goal:hover {
+    background-color: #45a049;
+  }
+
+  .goal-checkin .css-z3c6am-MuiFormControl-root-MuiTextField-root {
+    margin: 0px;
+    margin-left: 5px;    
+    border-radius: 4px;
+    width: 125px;
+    border: 1px solid black;
+  }
+
+  .goal-checkin th, td {
+    padding: 0px;
+    border: 1px solid black;
+  }
+
+  .goal-checkin .daily-checkins {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .goal-checkin .checkin-text {
+    align-self: center;
+    justify-self: center;
+    font-size: 12px;
+  }
+
+  .goal-checkin .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .goal-checkin .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 2px;
+  }
+
+  .goal-checkin .day-of-week-combo {
+    flex: 1;
+    margin-left: 5px;   
+    margin-right: 5px; 
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px;
+    border: 1px solid black;
+  }
+
+  .goal-checkin th:nth-child(1), 
+  .goal-checkin th:nth-child(3), 
+  .goal-checkin td:nth-child(1), 
+  .goal-checkin td:nth-child(3) {
+    width: 40%-10px; /* Equal width for the first three columns */
+  }
+
+  .goal-checkin th:nth-child(2), 
+  .goal-checkin td:nth-child(2) {
+    width: 90px; /* Fixed width of 5px for the last column */
+  }

@@ -14,7 +14,7 @@ import UserBadges from './UserBadges';
 import SelfCareCircles from './SelfCareCircles';
 import TimerInputField from './TimerInputField';
 import { addHabitToDay, getHabitsData, getUserMode, refreshUserInfo, removeHabitFromDay } from './utils/userUtil';
-import { getGoalSettingStep, getUserGoals } from './utils/goalsUtil';
+import { getGoalSettingStep, getUserGoals, isGoalCategory } from './utils/goalsUtil';
 import HabitTracker from './HabitTracker';
 import UserMode from './UserMode';
     
@@ -573,6 +573,9 @@ const SubmitTimePage = () => {
                         </thead>
                         <tbody>
                             {Object.entries(goalsData.goals).map(([category, goals]) => {
+                            if (!isGoalCategory(category))  {
+                                return [];
+                            }
                             return goals.flatMap((goal, goalIndex) => {
                                 const habitsToAdoptRows = goal.habitsToAdopt?.map((habitToAdopt, index) => (
                                 <tr key={habitToAdopt}>

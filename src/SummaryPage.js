@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
-import { getGoalSettingStep, getUserGoals } from './utils/goalsUtil';
+import { getGoalSettingStep, getUserGoals, isGoalCategory } from './utils/goalsUtil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserMode from './UserMode';
@@ -351,6 +351,9 @@ return (
                   <tbody>                                              
                     {Object.entries(goalsData.goals).map(([category, goals]) => {
                       //console.log("Category is ", category, " and goals are ", goals);
+                      if (!isGoalCategory(category)) {
+                        return [];
+                      }
                       if (selectedCategory.toLowerCase() === category.toLowerCase() || selectedCategory === 'total') {
                         return goals.flatMap((goal, goalIndex) => {
                           // Create an array of rows for HabitsToAdopt

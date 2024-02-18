@@ -64,6 +64,14 @@ db.goal_info.find({username: {$regex: ".*"}});
 use('amplifycares-db-catita');
 db.goal_info.deleteMany({username: {$regex: "sidm*"}});
 
+// all goal checkins
+use('amplifycares-db-catita');
+db.goal_checkin_info.find();
+
+// delete some checkins 
+use('amplifycares-db-catita');
+db.goal_checkin_info.deleteMany({name: {$regex: "sidm*"}});
+
 // delete some invites
 use('amplifycares-db-catita');
 db.dailychallenge_info.deleteMany({Date: {$gt: new Date('2023-11-24')}});

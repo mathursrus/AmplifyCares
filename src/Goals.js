@@ -4,11 +4,12 @@ import './Goals.css';
 import Identity from './Identity.js';
 import { Button, Accordion, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faCheckDouble, faEdit } from '@fortawesome/free-solid-svg-icons';
 import Confetti from "react-confetti";
-//import GoalCheckin from './GoalCheckin.js';
+import GoalCheckin from './GoalCheckin.js';
 import { getGoalSettingStep, getUserGoals, saveUserGoals } from './utils/goalsUtil.js';
 import {seekNotificationPermission, sendPushNotification} from './utils/notificationsUtil.js';
+import GoalCheckinData from './GoalCheckinData.js';
 
 const categories = ['Mental', 'Physical', 'Spiritual', 'Social'];
 
@@ -32,6 +33,7 @@ function Goals() {
   const [goalSettingStep, setGoalSettingStep] = useState(1); // How far along is the user in goal setting
   const [currentStep, setCurrentStep] = useState(1); // How far along is the user in goal setting
   const [animation, setAnimation] = useState(false);
+  const [editMode, setEditMode] = useState(true);
 
   useEffect(() => {
     fetchAndSetUserGoals();
@@ -43,6 +45,9 @@ function Goals() {
       if (value) {
           const goalSettingStep = getGoalSettingStep(value);                    
           console.log("Setting step to ", goalSettingStep, " and goals to ", value);
+          if (goalSettingStep > 3) {
+            setEditMode(false);
+          }
           setGoalSettingStep(goalSettingStep);
           setUserGoals(value);
       }
@@ -88,8 +93,16 @@ function Goals() {
   }
 
   const completeStep3 = () => {
-    seekNotificationPermission();
-    sendPushNotification("Sids notification", "This is a test.");
+    if (userGoals.goals.dailyCheckinInfo || userGoals.goals.weeklyCheckinInfo || userGoals.goals.monthlyCheckinInfo) {
+      saveGoals();
+      //seekNotificationPermission();
+      sendPushNotification("Rock your self care goals!", 
+        "This is what your checkin reminder will look like.",
+        "goals");
+    }
+    else {
+      alert("No checkin info set. You will not be reminded to checkin on your goals.");        
+    }
   }
 
   const celebrate = () => {
@@ -102,17 +115,36 @@ function Goals() {
 
   const saveGoals = () => {
     console.log("Saving goal ", userGoals);
-    saveUserGoals(userGoals);
+    saveUserGoals(userGoals).then((response) => {
+      fetchAndSetUserGoals();
+    });
     celebrate();   
   }
 
   return (
     <div>
-      {userGoals ? (
+      {userGoals ? (        
         <div className="goal-page">
-        <div>
-          <center><h4>Your journey towards a better version of yourself starts with these 3 simple steps</h4></center>      
-          <br></br>
+          <div className='title'>          
+            <span>
+              {editMode? "Your journey towards a better version of yourself starts with these 3 simple steps":
+                          "Checkin and track your self care goals. You are doing great!"}                          
+            </span>
+            <a className="switch-mode" 
+              href="a" onClick={(e)=>{
+                e.preventDefault(); // Prevent default anchor link behavior
+                setEditMode(!editMode);
+              }}>
+                {editMode? (goalSettingStep > 2 ? 
+                  <FontAwesomeIcon icon={faCheckDouble} title='Goal Checkin' />: ''): 
+                  <FontAwesomeIcon icon={faEdit} title='Edit Goals' />
+                }
+            </a>
+          </div>      
+          {!editMode ? (
+            <GoalCheckinData goal={userGoals} />
+          ) : (
+          <div>
           {/*goalSettingStep === 0 && (
             <Button className="next-step" onClick={() => {setCurrentStep(1); setGoalSettingStep(1)}}><b>Ready to Start?</b></Button>            
           )*/}
@@ -174,16 +206,17 @@ function Goals() {
                   )}
                 </span>
               </Accordion.Header>
-              {goalSettingStep > 2 && (
               <Accordion.Collapse eventKey="3">
                 <Card.Body>
+                  {goalSettingStep > 2 && (
+                    <GoalCheckin goals={userGoals.goals}/>
+                  )}
                   {/*
-                  <GoalCheckin />*/                  
-                  <Button className="next-step" onClick={() => completeStep3()}><b>Coming soon ....</b></Button>                  
+                  */                  
+                  <Button className="next-step" onClick={() => completeStep3()}><b>Rock on. Hit this button and observe the notification that will keep you accountable.</b></Button>                  
                   }                  
                 </Card.Body>
               </Accordion.Collapse>
-              )}
             </Accordion.Item>
           </Accordion>
 
@@ -192,6 +225,7 @@ function Goals() {
           )}
           
         </div>
+        )}
         </div>      
       ):(
         <div>
