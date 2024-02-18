@@ -402,44 +402,7 @@ return (
                         return null;
                         })}                        
                     </tbody>
-                  </table>
-                  {/*
-                  <div className="legend">
-                    <select className="category" value={habitVisibility} onChange={(e) => setHabitVisibility(e.target.value)}>
-                      {habitNames.map((habitName) => (
-                        <option value={habitName} color='purple'>
-                          {habitName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <LineChart width={summaryChartWidth} height={Math.min(300, summaryChartWidth / 2)} data={habitsData}>
-                    <XAxis stroke="black" tickFormatter={formatDate} dataKey="date" />
-                    <YAxis stroke="black">
-                      <Label
-                        value="Your habit consistency"
-                        position="insideLeft"
-                        angle={-90}
-                        offset={10}
-                        style={{ textAnchor: 'middle', fontWeight: 'bold', fill: 'black' }}
-                      />
-                    </YAxis>
-                    {habitNames.map((habitName) => (
-                      habitVisibility === habitName && (
-                        <Line
-                          key={habitName}
-                          type="monotone"
-                          dataKey={habitName}
-                          stroke="purple"
-                          strokeWidth={2}
-                          name={habitName}
-                        />
-                      )
-                    ))}
-                    <Tooltip contentStyle={{ backgroundColor: "transparent" }} />
-                  </LineChart>
-                  */}
+                  </table>                  
                 </div>
                 ) : (
                   <i>No habits being tracked. Create your goals and habits <Link to={`/goals`}>here</Link></i>

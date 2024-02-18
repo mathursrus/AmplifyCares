@@ -49,6 +49,7 @@ function Goals() {
             setEditMode(false);
           }
           setGoalSettingStep(goalSettingStep);
+          setCurrentStep(goalSettingStep);
           setUserGoals(value);
       }
     } catch (error) {
