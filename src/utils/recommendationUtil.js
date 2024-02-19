@@ -1,5 +1,16 @@
 import { postWithToken, getApiUrl, fetchWithToken } from './urlUtil';
 
+export const getDailyChallengeCircle = () => {
+  const circle = {
+    _id: "6562f3469555c41088f0b93c",
+    title: "Daily 2 min Challenge",
+    type: 5,
+    participants: [],
+    selfOrTogether: "DIT"
+  };
+  return circle;
+}
+
 export const addCommentToRecommendation = async (recommendationId, commentString) => { 
   const user=localStorage.getItem('userName');
   const comment = {

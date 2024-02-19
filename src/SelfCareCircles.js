@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserFriends, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import TimeEntryForm from './TimeEntryForm';
 import './SelfCareCircles.css';
-import { addCommentToRecommendation } from './utils/recommendationUtil';
+import { addCommentToRecommendation, getDailyChallengeCircle } from './utils/recommendationUtil';
 import DailySelfCareChallenge from './DailySelfCareChallenge';
 
 const React = require('react');
@@ -14,7 +14,11 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
   /*console.log("Got circles ", circles);*/
   // handle user checking in
   const [checkingInCircle, setCheckingInCircle] = useState(null); 
-  
+
+  if (circles.find(circle => circle.type === 5) === undefined) {
+    circles.push(getDailyChallengeCircle());
+  }
+
   const handleCheckInClick = (e, circle) => {
     e.preventDefault();
     console.log("Setting checking in circle to ", circle);
@@ -31,7 +35,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
     addCommentToRecommendation(checkingInCircle._id, commentString);        
   }
 
-  function getParticipantsTooltip(circle) {
+  /*function getParticipantsTooltip(circle) {
     const participants = circle.participants;
     if (participants.length === 0)  {
       return "No one in the circle yet. Start the circle."
@@ -39,7 +43,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
     else{
       return "Circle members: \n" + participants.join('\n');
     }
-  }
+  }*/
 
   return (
     <div className="self-care-circles-canvas">
@@ -56,9 +60,9 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
           <div key={index}>
             <div className="circle">        
               <Link to={`/?showHabits=${circle.type}&habit=${circle._id}&rand=${Math.random(1000)}`}>                
-                <div className="participants-info" title={getParticipantsTooltip(circle)}>
+                {/*<div className="participants-info" title={getParticipantsTooltip(circle)}>
                   <FontAwesomeIcon className="badge" icon={faUserFriends} /> {circle.participants.length}
-                </div>
+                </div>*/}
                 <div className="circle-image">
                   <img src={(circle.selfOrTogether === 'DIY' ? 'diy.jpg' : (circle.selfOrTogether === 'DIT' ? 'dit.jpg' : null))} alt={circle.selfOrTogether} />            
                 </div>                  

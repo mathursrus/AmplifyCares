@@ -273,7 +273,7 @@ const RecommendationTile = ({recommendation, handleJoinRecommendation, handleLea
                                              */}
                                              <div className='comment-reactions'>
                                                 {Object.entries(commentReactions[comment._id] || {}).map(([emoji, users]) => (
-                                                    <span key={emoji} className="comment-reaction">
+                                                    <span key={comment._id+emoji} className="comment-reaction">
                                                     <span
                                                         onClick={() => handleAddReactionToComment(emoji, comment)}
                                                         className="emoji"

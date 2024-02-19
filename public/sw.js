@@ -116,7 +116,7 @@ self.addEventListener('notificationclick', function(event) {
         for (let client of clientList) {
             if (client.url.startsWith(scope)) {
                 // Update the client's URL to the image URL
-                client.navigate(event.notification.image);
+                // client.navigate(event.notification.image);
                 // Focus on the client
                 client.focus();
                 // Exit the loop after the first matching client is found
@@ -125,7 +125,8 @@ self.addEventListener('notificationclick', function(event) {
         }
         // If no matching client is found, open a new window with the image URL
         if (clients.openWindow) {
-            return clients.openWindow(event.notification.image);
+            //return clients.openWindow(event.notification.image);
+            return clients.openWindow(scope);
         }
     })
 );
