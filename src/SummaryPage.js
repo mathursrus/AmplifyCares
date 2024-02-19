@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
 import { DateRange } from "./DateRange/DateRange";
 import WordCloud from 'react-d3-cloud';
-import { getGoalSettingStep, getUserGoals, isGoalCategory } from './utils/goalsUtil';
+import { getCheckinDataForDateRange, getGoalID, getGoalSettingStep, getUserGoals, isGoalCategory, processCheckinData } from './utils/goalsUtil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import UserMode from './UserMode';
@@ -19,6 +19,7 @@ const SummaryPage = () => {
   const [activitiesData, setActivitiesData] = useState([]);
   const [habitsData, setHabitsData] = useState([]);
   const [goalsData, setGoalsData] = useState(null);
+  const [checkinData, setCheckinData] = useState([]);
   const [showSelf, setShowSelf] = useState(true);
   const [showMostOthers, setShowMostOthers] = useState(true);
   const [showTheBest, setShowTheBest] = useState(true);
@@ -113,6 +114,7 @@ const SummaryPage = () => {
       const medianCareData = await getMedianCareStats(startDay, utcEnd, selectedCategory);
       const highCareData = await getHighCareStats(startDay, utcEnd, selectedCategory);
       const goalsData = await getUserGoals();
+      const checkinData = await getCheckinDataForDateRange(startDay, utcEnd);
 
       //const habitData = await getAggregateStats(getApiUrl(`/getselfcareactivities/?item=${userName}&startDay=${startDay.toLocaleDateString()}&endDay=${utcEnd.toLocaleDateString()}`))
       //console.log("Habit data is ", habitData);
@@ -120,6 +122,7 @@ const SummaryPage = () => {
       setChartData(processChartData(selfCareData, medianCareData, highCareData, startDay, utcEnd));
       setActivitiesData(processActivitiesData(selfCareData, medianCareData, highCareData));
       setHabitsData(processHabitsData(selfCareData, startDay, utcEnd));
+      setCheckinData(processCheckinData(checkinData, startDay, utcEnd));
       setGoalsData(goalsData);
       
       setLoading(false);
@@ -335,14 +338,14 @@ return (
           <div>
             <center>
             <br></br>
-            <h2 className="subheader">Self Improvement Mode - Be consistent with your self care habits.</h2>
+            <h2 className="subheader">Self Improvement Mode - Be consistent with your self care habits, and watch yourself achieve your goals.</h2>
             {goalsData.goals && 
-                (getGoalSettingStep(goalsData) > 2)? (
+              (getGoalSettingStep(goalsData) > 2)? (
               <div>
                 <table className="summary-habit-table">
                   <thead>
                     <tr>
-                      <th>Habit</th>
+                      <th><b><i>Goal</i>/Habit</b></th>
                       {habitsData.map((data) => (
                         <th key={data.date}>{data.date.slice(8,10)}</th>
                       ))}
@@ -356,10 +359,25 @@ return (
                       }
                       if (selectedCategory.toLowerCase() === category.toLowerCase() || selectedCategory === 'total') {
                         return goals.flatMap((goal, goalIndex) => {
+                          // Create a row for CheckinData
+                          const goalrow = [(<tr key={`goal-${goal.id}`}>
+                            <td className="goal-cell">{goal.goal}</td>
+                            {/* Add the check-in data */}
+                            {checkinData.map((data) => (
+                              <td
+                                key={data.date}
+                                className='goal-cell'
+                                title={data.checkin_data.length > 0 && data.checkin_data.find((item) => item.id === getGoalID(goal)) ? data.checkin_data.find((item) => item.id === getGoalID(goal)).text : ""}
+                              >
+                                {data.checkin_data.length > 0 && data.checkin_data.find((item) => item.id === getGoalID(goal)) ? data.checkin_data.find((item) => item.id === getGoalID(goal)).value : ""}                                
+                              </td>
+                            ))}
+                          </tr>)];                        
+
                           // Create an array of rows for HabitsToAdopt
                           const habitsToAdoptRows = goal.habitsToAdopt?.map((habitToAdopt, index) => (
                             <tr key={habitToAdopt}>
-                              <td className='adopt'>(+){habitToAdopt}</td>
+                              <td className='adopt'><span className="indent">(+){habitToAdopt}</span></td>
                               {habitsData.map((data) => (
                               <td
                                 key={data.date}
@@ -374,12 +392,12 @@ return (
                                 </td>
                               ))}
                             </tr>
-                            ));
+                          ));
 
-                              // Create an array of rows for HabitsToShed
+                          // Create an array of rows for HabitsToShed
                           const habitsToShedRows = goal.habitsToShed?.map((habitToShed, index) => (
                             <tr key={habitToShed}>
-                              <td className='shed'>(-){habitToShed}</td>
+                              <td className='shed'><span className="indent">(-){habitToShed}</span></td>
                               {habitsData.map((data) => (
                                 <td
                                   key={data.date}
@@ -395,27 +413,28 @@ return (
                               ))}
                             </tr>
                           ));
-                          // Combine both arrays of rows
-                          return [...(habitsToAdoptRows || []), ...(habitsToShedRows || [])];
-                          });
-                        }
-                        return null;
-                        })}                        
-                    </tbody>
-                  </table>                  
-                </div>
-                ) : (
-                  <i>No habits being tracked. Create your goals and habits <Link to={`/goals`}>here</Link></i>
-                )}
-                </center>
+
+                          // Combine all arrays of rows
+                          return [...(goalrow || []), ...(habitsToAdoptRows || []), ...(habitsToShedRows || [])];
+                        });
+                      }
+                      return null;
+                    })}                        
+                  </tbody>
+                </table>                  
               </div>
-            )}
-          </div>
-        )}
-        <br />
+              ) : (
+                <i>No habits being tracked. Create your goals and habits <Link to={`/goals`}>here</Link></i>
+              )}
+          </center>
         </div>
-       )}
+        )}
       </div>
+      )}
+      <br />
+      </div>
+      )}
+    </div>
     </div>
   );  
 };

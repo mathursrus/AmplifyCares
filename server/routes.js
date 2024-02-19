@@ -404,6 +404,19 @@ const getUserGoalCheckIn = {
     }
 }
 
+const getUserGoalCheckInRange = {
+    method: 'get',
+    path: '/getusergoalcheckinrange',
+    handler: async (req, res) => {
+        const user = await req.query.user;
+        const startDay = await req.query.start;
+        const endDay = await req.query.end;
+        const token = getTokenFromRequest(req);        
+        const response = await handlers.getUserGoalCheckInRange(user, startDay, endDay, token);
+        res.status(200).json(response);
+    }
+}
+
 const seekCoaching = {
     method: 'post',
     path: '/seekCoaching', 
@@ -453,4 +466,4 @@ const removeNotificationSubscription = {
     }
 }
 
-module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, addHabitToDay, removeHabitFromDay, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, writeUserGoalCheckIn, getUserGoalCheckIn, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};
+module.exports = { getSecretKeyForUser, getUserFromSecretKey, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeSelfCareEntryWithToken, getSelfCareStats, getPercentiles, getIndividualData, getActivities, addHabitToDay, removeHabitFromDay, getTeamList, getTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, writeRecommendationComment, getRecommendationComments, writeReactionToComment, writeFeedback, sendInvite, getDailyChallenges, getUserGoals, writeUserGoals, writeUserGoalCheckIn, getUserGoalCheckIn, getUserGoalCheckInRange, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};

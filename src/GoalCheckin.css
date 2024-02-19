@@ -3,11 +3,11 @@
     padding: 10px;
     margin: 10px;    
     margin-left: 20px;
-    border-radius: 15px;
+    border-radius: 10px;
     width: 90%;
     border: 1px solid black;
     align-self: baseline;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
   }
 
@@ -17,6 +17,7 @@
     justify-content: space-between;
     align-items: baseline;
     margin: 10px;
+    font-size: 14px;
   }
 
   .goal-checkin table {
@@ -104,3 +105,9 @@
   .goal-checkin td:nth-child(2) {
     width: 90px; /* Fixed width of 5px for the last column */
   }
+
+@media screen and (max-width: 550px) {
+  .goal-checkin-header {
+    font-size: 12px;
+  }
+}

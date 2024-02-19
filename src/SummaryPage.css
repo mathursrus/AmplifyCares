@@ -172,7 +172,14 @@
   display: none;
 }
 
-s/* Style green cells */
+.summary-habit-table .goal-cell {
+  background-color: rgb(232, 230, 230);
+  color: black;
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* Style green cells */
 .summary-habit-table .green-cell {
   background-color: green;
   color: white;
@@ -197,11 +204,17 @@ s/* Style green cells */
 .summary-habit-table .adopt {
   color: green;
   font-weight: bold;
+  background-color: white;
 }
 
 .summary-habit-table .shed {
   color: red;
   font-weight: bold;
+  background-color: white;
+}
+
+.summary-habit-table .indent {
+  margin-left: 5px;
 }
 
 /* Add a media query to target screens with a maximum width of 768px (adjust as needed) */

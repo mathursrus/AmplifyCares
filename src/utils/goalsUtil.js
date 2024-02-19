@@ -44,6 +44,43 @@ export const getCheckinData = async (date) => {
     } 
 }
 
+export const getCheckinDataForDateRange = async (start, end) => {
+    const results = await fetchWithToken(getApiHost()+`/getusergoalcheckinrange/?user=${localStorage.getItem('userName')}&start=${start.toLocaleDateString()}&end=${end.toLocaleDateString()}`, localStorage.getItem('usertoken'));
+    const data = await results.json();
+    const retval = JSON.parse(data);
+    if (retval && retval.length > 0) {
+        //console.log("Got checkin data ", retval);
+        return retval;
+    }
+    else {
+        return [];
+    } 
+}
+
+export const processCheckinData = (checkin, start, end) => {
+    const myData = [];
+    //console.log("Processing checkin for dates ", start, " to ", end);
+
+    for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dateString = ""+year+"-"+month+"-"+day;
+
+        // populate data points per day
+        const checkinpoint = checkin.find(
+                point => point.DateTime.substring(0, 10) === dateString);
+        //console.log("Got checkin Point ", checkinpoint);
+        const checkinData = checkinpoint? checkinpoint.checkin:[];      
+        myData.push({
+            date: dateString,
+            checkin_data: checkinData
+        });      
+    }   
+    //console.log("Returning checkin data ", myData);
+    return myData;
+}
+
 export const getGoalID = (goal) => {
     if (goal.id) {
         return goal.id;

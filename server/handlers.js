@@ -1593,12 +1593,16 @@ async function writeUserGoalCheckIn(checkin, userToken) {
 }
 
 async function getUserGoalCheckIn(user, date, token) {
+  return getUserGoalCheckInRange(user, date, date, token); 
+}
+
+async function getUserGoalCheckInRange(user, startDate, endDate, token) {
   await ensureUserNameAndTokenMatch(user, token);
   console.log(`Get User Goal Checkin Data request`);
   const ct = await getGoalCheckinContainer();
-  const startOfDay = new Date(date);
+  const startOfDay = new Date(startDate);
   startOfDay.setUTCHours(0, 0, 0, 0); // Set the time to midnight for the same day
-  const endOfDay = new Date(date);
+  const endOfDay = new Date(endDate);
   endOfDay.setUTCHours(23, 59, 59, 999); // Set the time to 11:59:59.999 PM for the same day
 
   console.log("Start ", startOfDay, ", End ", endOfDay);
@@ -1838,4 +1842,4 @@ async function removeNotificationSubscription(user, subscription, token) {
   }
 }
 
-module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, addHabitToDay, removeHabitFromDay, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, writeUserGoalCheckIn, getUserGoalCheckIn, getDailyChallenges, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};
+module.exports = {getSecretKeyForUser, getUserFromSecretKey, getUserInfo, getUserInfoWithToken, setUserLoginInfo, setUserPreference, getAllUsers, writeEntry, writeEntryWithToken, readEntries, readPercentile, readIndividualData, readActivities, addHabitToDay, removeHabitFromDay, readTeamList, readTeamStats, getSelfCareInsights, getTimeInputFromSpeech, writeRecommendation, getRecommendations, getRecommendationComments, writeRecommendationComment, writeReactionToComment, writeFeedback, sendInvite, getUserGoals, writeUserGoals, writeUserGoalCheckIn, getUserGoalCheckIn, getUserGoalCheckInRange, getDailyChallenges, seekCoaching, checkNotifications, addNotificationSubscription, removeNotificationSubscription};
