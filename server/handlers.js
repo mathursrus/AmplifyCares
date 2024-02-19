@@ -15,6 +15,7 @@ const challengeId = "dailychallenge_info";
 const goalId = "goal_info";
 const goalCheckinId = "goal_checkin_info";
 const notificationId = "notification_info";
+const assistantsId = "assistants_info";
 
 const ObjectId = require('mongodb').ObjectId;
 const axios  = require('axios');
@@ -44,6 +45,7 @@ let challenge_container = null;
 let goal_container = null;
 let goal_checkin_container = null;
 let notification_container = null;
+let assistants_container = null;
 
 async function getMongoDbClient() {
   if (!dbClient) {
@@ -147,6 +149,15 @@ async function getNotificationContainer() {
     console.log(notification_container);
   }
   return notification_container;
+}
+
+async function getAssistantsContainer() {
+  if (!assistants_container) {
+    var cl = await getMongoDbClient();
+    assistants_container = await cl.collection(assistantsId);
+    console.log(assistants_container);
+  }
+  return assistants_container;
 }
 
 async function getUserNameFromToken(token) {
@@ -1673,9 +1684,35 @@ async function getDailyChallenges(date) {
   return final;
 }
 
+async function getAssistantThreadForUser(user) {
+  const ct = await getAssistantsContainer();
+  const res = await ct.findOne({name:user});
+  if (res) {
+    return res.threadId;
+  }
+  return undefined;
+}
+
+async function saveAssistantThreadForUser(user, threadId) {
+  const ct = await getAssistantsContainer();
+  const existingItem = await ct.findOne({ name: user });
+  if (existingItem) {
+    await ct.updateOne({ name: user }, { $set: { threadId: threadId } });
+  }
+  else {
+    const item = {
+      name: user,
+      threadId: threadId
+    };
+    await ct.insertOne(item);
+  }
+}
+
 async function seekCoaching(user, question, sessionToken, token) {
   await ensureUserNameAndTokenMatch(user, token);
   console.log(`Seeking coaching for ${user}, ${question}, ${sessionToken}`);
+  // ignore user supplied sessionToken and query it from db
+  sessionToken = await getAssistantThreadForUser(user);
   try {
     if (sessionToken === undefined) {
       const thread = await openai.beta.threads.create();  
@@ -1700,6 +1737,7 @@ async function seekCoaching(user, question, sessionToken, token) {
       } while (boostrap.status !== "completed");
 
       sessionToken = thread.id;
+      saveAssistantThreadForUser(user, sessionToken);
     }
 
     const message = await openai.beta.threads.messages.create(
@@ -1741,6 +1779,14 @@ async function seekCoaching(user, question, sessionToken, token) {
               output = await getUserGoals(token);
             } else if (function_name === "getsecretkeyforuser") {
               output = await getSecretKeyForUser(user, token);
+            } else if (function_name === "getusergoalcheckinrange") {
+              output = await getUserGoalCheckInRange(user, function_args.startDate, function_args.endDate, token);
+            } else if (function_name === "getusergoalcheckin") {
+              output = await getUserGoalCheckIn(user, function_args.date, token);
+            } else if (function_name === "getdailychallenges") {
+              output = await getDailyChallenges(function_args.date);
+            } else if (function_name === "gettoday") {
+              output = new Date().toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' });
             }
             else {              
               output = "Function not found"+function_name;              

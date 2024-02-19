@@ -246,13 +246,9 @@ const SubmitTimePage = () => {
             console.log("Ugh");
         }
         else {         
-            const utcDate = new Date(
-                parseInt(itemData.DateTime.slice(0, 4)),   // Year
-                parseInt(itemData.DateTime.slice(5, 7)) - 1, // Month (0-based)
-                parseInt(itemData.DateTime.slice(8, 10)),  // Day                    
-                );       
+            const utcDate = new Date(itemData.DateTime); 
             celebrate(utcDate);                
-            fetchEntries(selectedDate);
+            //fetchEntries(selectedDate);
         }
         return response;
     };

@@ -4,6 +4,7 @@ let interval = null;
 // Inside your service worker (sw.js)
 self.addEventListener('install', (event) => {
   console.log('Service Worker installed');
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -106,17 +107,26 @@ function sendNotification(title, body, urlstring) {
 self.addEventListener('notificationclick', function(event) {
   console.log("Notification clicked ", event.notification);
   event.notification.close(); // Close the notification
+ 
+  // get the scope of the serice worker
+  const scope = self.registration.scope;
 
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then(function(clientList) {
-      for (let client of clientList) {
-        if (client.url === '/' && 'focus' in client) {
-          return client.focus();
+        for (let client of clientList) {
+            if (client.url.startsWith(scope)) {
+                // Update the client's URL to the image URL
+                client.navigate(event.notification.image);
+                // Focus on the client
+                client.focus();
+                // Exit the loop after the first matching client is found
+                return;
+            }
         }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(event.notification.image); // Redirect to the root URL or your desired screen
-      }
+        // If no matching client is found, open a new window with the image URL
+        if (clients.openWindow) {
+            return clients.openWindow(event.notification.image);
+        }
     })
-  );
+);
 });
