@@ -96,18 +96,20 @@
     background-color:transparent;
     color: #fff;
     padding: 0px 0px;
+    border: transparent;
     border-radius: 20px;
     cursor: pointer;
     position: fixed;
     bottom: 10px;
     left: 10px;
-    /*z-index: 5000;*/
-    border: none;
+    /*z-index: 5000;*/    
   }
   
   .sign-out-button .signout-icon {
-    width: 40px;
-    height: 40px;
+    width: 100px;
+    height: 30px;    
+    border: 1px solid black;
+    border-radius: 20px;
   }
 
   .sign-out-button:hover {

@@ -46,7 +46,7 @@ self.addEventListener('activate', (event) => {
       const timeParts = goals.dailyCheckinInfo.time.split(':');
       const dailyHours = parseInt(timeParts[0]);
       const dailyMinutes = parseInt(timeParts[1]);
-      if (hours === dailyHours && (minutes >= dailyMinutes) && (minutes-dailyMinutes) < 1) {
+      if (hours === dailyHours && (minutes >= dailyMinutes) && (minutes-dailyMinutes) < 10) {
         matches.push('daily');
       }
     }
@@ -55,7 +55,7 @@ self.addEventListener('activate', (event) => {
       const timeParts = goals.weeklyCheckinInfo.time.split(':');
       const dailyHours = parseInt(timeParts[0]);
       const dailyMinutes = parseInt(timeParts[1]);
-      if (day === today && hours === dailyHours && (minutes >= dailyMinutes) && (minutes-dailyMinutes) < 1) {
+      if (day === today && hours === dailyHours && (minutes >= dailyMinutes) && (minutes-dailyMinutes) < 10) {
         matches.push('weekly');
       }
     }
@@ -64,7 +64,7 @@ self.addEventListener('activate', (event) => {
       const timeParts = goals.monthlyCheckinInfo.time.split(':');
       const dailyHours = parseInt(timeParts[0]);
       const dailyMinutes = parseInt(timeParts[1]);
-      if (((day === 'First' && isFirstDayOfMonth) || (day === 'Last' && isLastDayOfMonth)) && hours === dailyHours && (minutes >= dailyMinutes) && (minutes-dailyMinutes) < 1) {
+      if (((day === 'First' && isFirstDayOfMonth) || (day === 'Last' && isLastDayOfMonth)) && hours === dailyHours && (minutes >= dailyMinutes) && (minutes-dailyMinutes) < 10) {
         matches.push('monthly');
       }
     }
@@ -77,7 +77,7 @@ self.addEventListener('activate', (event) => {
       }
       sendNotification('Rock your self care goals!', notificationText, url);
     }
-  }, 60 * 1000);
+  }, 10 * 60 * 1000);
   console.log("Periodic sync registered");
   console.log('Service Worker activated');
 });
