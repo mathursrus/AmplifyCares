@@ -57,6 +57,7 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
       )}
       <div className="circle-container">              
         {circles.map((circle, index) => (
+          (circle.circlestate !== 'expired') && (
           <div key={index}>
             <div className="circle">        
               <Link to={`/?showHabits=${circle.type}&habit=${circle._id}&rand=${Math.random(1000)}`}>                
@@ -72,7 +73,8 @@ const SelfCareCircles = ({ circles, onCheckIn }) => {
               </Link>    
               <h3 className="title">{circle.title}</h3>                  
             </div>                           
-          </div>     
+          </div>    
+          )
         ))}
         {
           checkingInCircle && checkingInCircle.type === 5 && (                                

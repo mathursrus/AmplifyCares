@@ -74,9 +74,10 @@ function Goals() {
       saveGoals();
     }
     else {
-      if (window.confirm("You need to identify your best self before proceeding to goal setting. Are you sure you want to proceed?")) {
+      alert("You need to identify your best self before proceeding to goal setting.");
+      /*if (window.confirm("You need to identify your best self before proceeding to goal setting. Are you sure you want to proceed?")) {
         saveGoals();
-      }
+      }*/
     }
   }
 
@@ -87,9 +88,10 @@ function Goals() {
       saveGoals();
     }
     else {
-      if (window.confirm("You need to set at least 1 goal you want to target in your self care journey. Are you sure you want to proceed?")) {
+      alert("You need to set at least 1 goal you want to target in your self care journey.");
+      /*if (window.confirm("You need to set at least 1 goal you want to target in your self care journey. Are you sure you want to proceed?")) {
         saveGoals();
-      }
+      }*/
     }
   }
 
@@ -164,14 +166,18 @@ function Goals() {
               <Accordion.Collapse eventKey="1">
                 <Card.Body>
                   <Identity userGoals={userGoals} />                  
-                    <Button className="next-step" onClick={() => completeStep1()}><b>Save and set goals towards becoming your ideal self</b></Button>                  
+                  <Button className="next-step" onClick={() => completeStep1()}><b>Save and set goals towards becoming your ideal self</b></Button>                  
                 </Card.Body>
               </Accordion.Collapse>
               )}
             </Accordion.Item>
 
             <Accordion.Item eventKey="2">
-              <Accordion.Header>
+              <Accordion.Header onClick={() => {
+                                  if (goalSettingStep < 2) {
+                                    alert("This step will be available when you complete the previous step.");
+                                  }
+                                }}>
                 <span className='instruction'>
                   Step 2: How will you get there? (These are the goals and habits that will power you) 
                   {goalSettingStep > 2 && (
@@ -199,7 +205,11 @@ function Goals() {
             </Accordion.Item>
 
             <Accordion.Item eventKey="3">
-              <Accordion.Header>
+              <Accordion.Header onClick={() => {
+                                  if (goalSettingStep < 3) {
+                                    alert("This step will be available when you complete the previous step.");
+                                  }
+                                }}>
                 <span className='instruction'>
                   Step 3: How will you know you are succeeding? (This is how you will hold yourself accountable) 
                   {goalSettingStep > 3 && (
@@ -207,17 +217,14 @@ function Goals() {
                   )}
                 </span>
               </Accordion.Header>
+              {goalSettingStep > 2 && (                    
               <Accordion.Collapse eventKey="3">
                 <Card.Body>
-                  {goalSettingStep > 2 && (
-                    <GoalCheckin goals={userGoals.goals}/>
-                  )}
-                  {/*
-                  */                  
+                  <GoalCheckin goals={userGoals.goals}/>
                   <Button className="next-step" onClick={() => completeStep3()}><b>Rock on. Hit this button and observe the notification that will keep you accountable.</b></Button>                  
-                  }                  
                 </Card.Body>
               </Accordion.Collapse>
+              )}
             </Accordion.Item>
           </Accordion>
 

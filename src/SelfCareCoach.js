@@ -107,7 +107,9 @@ const SelfCareCoach = () => {
     <div className='self-care-coach-container'>
         <Widget
             title="Self Care Coach"
-            subtitle="Your personalized self care assistant (Beta)"
+            titleAvatar="/coach.png"
+            profileAvatar="/coach.png"
+            subtitle="Your personalized self care assistant"
             handleNewUserMessage={handleNewUserMessage}
             isOpen={true}
             handleQuickButtonClicked={handleQuickButton}

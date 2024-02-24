@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+//import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import './FirstRunExperience.css'; 
 
 export const features = [
+  {
+    date: "2/24/2023",
+    title:"Goals and Habits",
+    description: "Goal setting and habit tracking are now available. Set your self care goals and track your habits. Click on the <a href='/goals'>Goals</a> page to get started.",
+  },
   {
     date: "11/26/2023",
     title:"Daily 2 minute self care challenges",
@@ -51,7 +57,7 @@ export const features = [
   }
 ];
 
-const comingsoon = [
+/*const comingsoon = [
   {
       title:"Accessibility",
       description:"@Maggie - Thank you for calling out that the color scheme is not accessible. We will work on fixing this soon.",
@@ -64,7 +70,7 @@ const comingsoon = [
     title:"Challenges to keep you going",
     description:"Think you're doing a great job of self care? Beat the challenges and prove it to yourself.",
   },
-];
+];*/
 
 function FirstRunExperience({ screen, onClose }) {
   const [currentScreen, setCurrentScreen] = useState(screen);
@@ -88,8 +94,8 @@ function FirstRunExperience({ screen, onClose }) {
   // Define the content for each screen
   const screens = [
     {
-      title: 'Welcome to Amplify Cares',
-      content: 
+      title: 'Want to be your best self?',
+      /*content: 
         <div>
           We have a <a href="https://microsoft-my.sharepoint-df.com/:w:/p/sidm/ES-DIlQMHbJEgLz9cLSRcSsBdieBfDoaM-r5-cAjWcBwMw?e=hPhdPs" target="_blank" rel="noreferrer">hypothesis</a>. 
           That self care is the foundation of everything we do, 
@@ -103,10 +109,58 @@ function FirstRunExperience({ screen, onClose }) {
             Your browser does not support the video tag.
           </video></center>
         </div>
-      ,
+      ,*/
+      content: (
+        <div>
+          <h6><i>Invest in your self care. </i></h6>          
+          <br></br>
+          You're not alone. Join your friend and colleagues. Start simple.
+          <br></br>
+          <br></br>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{fontSize: '12px'}}>1. Join a self-care circle you like </span>
+              <img src="/self-care-circles.png" width="200 px" alt="Circles" />              
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{fontSize: '12px'}}>2. Sign up for a daily challenge</span>
+              <img src="/daily-challenge.png" width="100 px" alt="Challenge" />              
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>            
+              <span style={{fontSize: '12px'}}>3. Get your personalized coach</span>
+              <img src="/self-care-coach.png" width="200 px" alt="Coach" />
+            </div>
+          </div>
+        </div>
+      ),
     },
     {
-      title: 'What can Amplify Cares do for you?',
+      title: 'Know how to get there?',
+      content: (
+        <div>
+          <h6><i>Make self care a habit</i></h6>          
+          <br></br>
+          Need some guidance? No problem. Baby steps will get you there.
+          <br></br>
+          <br></br>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{fontSize: '12px'}}>1. Set your goals, pick your habits </span>
+              <img src="/set-goals.png" width="300 px" alt="Circles" />              
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{fontSize: '12px'}}>2. Get coaching on picking habits</span>
+              <img src="/goals-coach.png" width="300 px" alt="Challenge" />              
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>            
+              <span style={{fontSize: '12px'}}>3. Time and track your habits daily</span>
+              <img src="/track-time.png" width="300 px" alt="Coach" />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+      /*title: 'What can Amplify Cares do for you?',
       content: (
         <div>
           Have you ever wanted to meditate, exercise, pray, volunteer, 
@@ -123,23 +177,39 @@ function FirstRunExperience({ screen, onClose }) {
           </video></center>
         </div>
       ),
-    },
+    },*/
     {
-      title: "What's new for you in Amplify Cares",
+      title: 'Need Help Staying Inspired?',
+      content: (
+        <div>
+          <h6><i>See yourself improve, See your team improve</i></h6>          
+          <br></br>
+          What inspires you? Self improvement? Competition? Collaboration? You got it. 
+          <br></br>
+          <br></br>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{fontSize: '12px'}}>1. Watch yourself get better </span>
+              <img src="/inspire-self.png" width="300 px" alt="Circles" />              
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{fontSize: '12px'}}>2. Watch teams get better</span>
+              <img src="/inspire-competition.png" width="300 px" alt="Challenge" />              
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>            
+              <span style={{fontSize: '12px'}}>3. Watch others get better</span>
+              <img src="/inspire-collab.png" width="300 px" alt="Coach" />
+            </div>
+          </div>
+        </div>
+      ),
+      /*title: "What's new for you in Amplify Cares",
       content: (
         <div>
           <i>We're constantly improving Amplify Cares, so you can constantly improve your self care. Keep the feedback coming.</i>
           <br></br><br></br><br></br>
           {features.map((feature, index) => (
-            <div className="feature-row">
-                {/*
-                <div className="video-thumbnail">
-                    <video controls>
-                    <source src={feature.videoSrc} type="video/mp4" />
-                    Your browser does not support the video tag.
-                    </video>
-                </div>
-              */}
+            <div className="feature-row">                
                 <div className="featuretext-container">
                 {(new Date(feature.date) > new Date(localStorage.getItem('lastLogin'))) && (
                   <FontAwesomeIcon icon={faStar} style={{ color: 'gold', marginRight: '5px' }} />
@@ -150,10 +220,29 @@ function FirstRunExperience({ screen, onClose }) {
             </div>
           ))}                 
         </div>
-      ),
+      ),*/
     },
     {
-      title: "Coming soon to Amplify Cares",
+      title: 'Ready to get started?',
+      content: (
+        <div>
+          <h6><i>Start where you want</i></h6>          
+          <br></br>          
+          <br></br>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              1.<a href="/goals" style={{fontSize: '12px'}} onClick={handleCloseModal}>Set Goals </a>                            
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              2.<a href="/submit-time-page" style={{fontSize: '12px'}} onClick={handleCloseModal}>Track Time</a>                         
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>            
+              3.<a href="/leaderboard" style={{fontSize: '12px'}} onClick={handleCloseModal}>Leaderboard</a>              
+            </div>
+          </div>
+        </div>
+      ),
+      /*title: "Coming soon to Amplify Cares",
       content: (
         <div>
           <i>We're constantly improving Amplify Cares, so you can constantly improve your self care. Keep the feedback coming.</i>
@@ -167,7 +256,7 @@ function FirstRunExperience({ screen, onClose }) {
             </div>
           ))}          
         </div>
-      ),
+      ),*/
     },
   ];
 

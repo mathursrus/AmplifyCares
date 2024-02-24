@@ -131,7 +131,7 @@ function Layout() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      {showAboutDialog && <FirstRunExperience screen="1" onClose={() => setShowAboutDialog(false)} />}
+      {showAboutDialog && <FirstRunExperience screen={1} onClose={() => setShowAboutDialog(false)} />}
       {flyoutState && <Flyout Component={flyoutComponent==="copilot"?SelfCareCoach:null} onClose={() => {setFlyoutComponent(null); setFlyoutState(false)}} />}
       <center>
         <h2 className="header">Welcome {localStorage.getItem('userDisplayName')} to AmplifyCares</h2>

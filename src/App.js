@@ -129,7 +129,7 @@ function AppPage() {
       setShowFirstRunExperience(1);
     } else if (new Date(features[0].date) > new Date(lastLogin)) {
       console.log("Show WhatsNew here");
-      setShowFirstRunExperience(3);      
+      setShowFirstRunExperience(1);      
     }
     else {
       //console.log("Nothing to show here");
@@ -190,7 +190,7 @@ function AppPage() {
           const account = authResult.account;
           console.log("Setting active account to ", account);
           msalInstance.setActiveAccount(account);
-          console.log("Got MSALInstance token ", authResult.accessToken);
+          //console.log("Got MSALInstance token ", authResult.accessToken);
           setUser([authResult.idToken, account.username, account.name]);
         }
         else {

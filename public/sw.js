@@ -16,7 +16,7 @@ self.addEventListener('activate', (event) => {
   }
   // Set a new interval
   interval = setInterval(() => {
-    if (goals === null) {
+    if (!goals) {
       return;
     }
     const now = new Date();

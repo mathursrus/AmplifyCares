@@ -15,7 +15,7 @@
   
   .fre-content {
     background-color: rgb(139, 219, 193);
-    padding: 20px;
+    padding: 0px;
     width: 800px;
     max-width: 800px;
     height: 80vh;
@@ -33,7 +33,7 @@
     bottom: 30px;
     left: 0px;
     overflow-y: auto;
-    padding: 10px;
+    padding-left: 10px;
     width: 100%;
     height: 90%;
     font-size: 14px;
