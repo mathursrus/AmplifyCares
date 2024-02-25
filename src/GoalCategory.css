@@ -37,8 +37,7 @@
     text-align: left;
     margin-top: 10px;
     font-size: 12px;
-    border-collapse: collapse;
-    table-layout: fixed;
+    border-collapse: collapse;    
   }
   
   .goal-category th, .goal-category td {
@@ -52,12 +51,12 @@
   .goal-category td:nth-child(1), 
   .goal-category td:nth-child(2), 
   .goal-category td:nth-child(3) {
-    width: calc(100%/3); /* Equal width for the first three columns */
+    width: calc((100% / 3) - 2px);/* Equal width for the first three columns */
   }
 
   .goal-category th:nth-child(4), 
   .goal-category td:nth-child(4) {
-    width: 5px; /* Fixed width of 5px for the last column */
+    width: 6px; /* Fixed width of 5px for the last column */
   }
 
   .goal-category input[type="text"] {
@@ -70,7 +69,7 @@
   }
 
   .goal-category .delete-icon {
-    margin-right: -2px;
+    margin-right: 0px;
   }
   
   .goal-category .react-tags {

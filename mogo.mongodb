@@ -40,13 +40,26 @@ db.invite_info.find();
 
 // all daily challenges
 use('amplifycares-db-catita');
-db.dailychallenge_info.find({Date: {$gt: new Date('2024-01-01')}});
+db.dailychallenge_info.find({Date: {$gt: new Date('2024-02-24')}});
 
 // populate many daily challenges
 use('amplifycares-db-catita');
 db.dailychallenge_info.insertOne({
-  Date: new Date("2024-01-17"),
-  challenge: "Spiritual Care - The 2 minute affirmation prayer. Affirm your beliefs and seek strength or guidance from a higher power.\
+  Date: new Date("2024-02-26"),
+  challenge: "Mental Monday - You're in a room with two doors. One door leads to certain doom, and the other leads to freedom. There are two guards, one in front of each door. One guard always tells the truth, and the other always lies. You don't know which guard is which or which door is which.\
+  You can ask one guard one question to determine which door leads to freedom. What question do you ask?",
+  activityType: 1
+  });
+db.dailychallenge_info.insertOne({
+  Date: new Date("2024-02-27"),
+  challenge: "Torture Tuesday - First 30 seconds: Hold a plank position. Ensure your body forms a straight line from your head to your heels, with your elbows under your shoulders.\
+  Next 30 seconds: Perform as many squats as you can. Keep your feet shoulder-width apart, back straight, and lower yourself until your thighs are parallel to the ground, then push back up.\
+  Next 30 seconds: Return to the plank position. Final 30 seconds: Finish with another round of squats.",
+  activityType: 2
+  });
+db.dailychallenge_info.insertOne({
+  Date: new Date("2024-02-28"),
+  challenge: "Worldly Wednesday - The 2 minute affirmation prayer. Affirm your beliefs and seek strength or guidance from a higher power.\
   Minute 1: Find a quiet space where you can be undisturbed. Stand, sit, or kneel in a way that feels respectful and comfortable for your practice. Take a moment to breathe deeply and center yourself. \
   Minute 2: Select an affirmation or short prayer that resonates with your beliefs and current needs. It might be a request for strength, peace, wisdom, or gratitude. Repeat this affirmation or prayer slowly and with intention, focusing deeply on the words and their meaning. Feel the connection with your higher power as you speak.\
   Guidelines:\
@@ -54,7 +67,26 @@ db.dailychallenge_info.insertOne({
   As you repeat the words, visualize the positive change or support manifesting in your life. Feel the presence and support of the higher power enveloping you.",
   activityType: 3
   });
-
+db.dailychallenge_info.insertOne({
+  Date: new Date("2024-02-29"),
+  challenge: "Thundering Thursday - Complete as many burpees as possible in 2 minutes to get your heart rate up and work multiple muscle groups simultaneously.",
+  activityType: 2
+  });
+db.dailychallenge_info.insertOne({
+  Date: new Date("2024-03-01"),
+  challenge: "Friendly Friday - Offer genuine compliments to at least two people in 2 minutes, fostering positive interactions and strengthening your social connections.",
+  activityType: 4
+  });
+db.dailychallenge_info.insertOne({
+  Date: new Date("2024-03-02"),
+  challenge: "Spiritual Saturday - Spend 2 minutes imagining you have everything you want. What does it look like? How does it feel? What are you doing? What are you wearing? Who are you with? What are you thinking? What are you saying? What are you eating? What are you drinking? What are you hearing? What are you smelling? What are you touching? What are you feeling? What are you experiencing? What are you creating? What are you contributing? What are you receiving? What are you giving? What are you becoming? What are you believing? What are you achieving? What are you celebrating? Enjoy the experience and let it inspire you.",
+  activityType: 3
+  });
+db.dailychallenge_info.insertOne({
+  Date: new Date("2024-03-03"),
+  challenge: "Social Sunday - Spend 1 minute thinking of someone you haven't spoken to in a while. Spend the next minute sending them a message to check in and see how they're doing.",
+  activityType: 4
+  });
 
 // all goals
 use('amplifycares-db-catita');

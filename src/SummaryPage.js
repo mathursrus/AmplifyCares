@@ -359,6 +359,9 @@ return (
                       }
                       if (selectedCategory.toLowerCase() === category.toLowerCase() || selectedCategory === 'total') {
                         return goals.flatMap((goal, goalIndex) => {
+                          if (!goal.goal || goal.goal === '') {
+                            return [];
+                          }
                           // Create a row for CheckinData
                           const goalrow = [(<tr key={`goal-${goal.id}`}>
                             <td className="goal-cell">{goal.goal}</td>

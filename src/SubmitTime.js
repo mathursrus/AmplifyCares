@@ -616,13 +616,13 @@ const SubmitTimePage = () => {
                                 //console.log("Habits to adopt rows ", habitsToAdoptRows);
                                 //console.log("Habits to shed rows ", habitsToShedRows);
 
-                                if (habitsToAdoptRows.length === 0 && habitsToShedRows.length === 0) {
+                                /*if (habitsToAdoptRows.length === 0 && habitsToShedRows.length === 0) {
                                     const retval = <i>No habits being tracked. Create your goals and habits <Link to={`/goals`}>here</Link></i>;
                                     return retval;
                                 }
-                                else {
+                                else {*/
                                     return [...(habitsToAdoptRows || []), ...(habitsToShedRows || [])];
-                                }
+                                //}
                             });
                             })}
                         </tbody>
