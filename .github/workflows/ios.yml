@@ -28,9 +28,11 @@ jobs:
       
     - name: Add iOS Platform
       run: npx cordova platform add ios
+      working-directory: ./cordova
       
     - name: Build iOS App
       run: cordova build ios --${{ github.event.inputs.buildType }}
+      working-directory: ./cordova
 
     # Additional steps such as signing the app and deploying to TestFlight or App Store can be included here.
     # Note: For signing and deploying, you'll need to use appropriate actions or scripts and provide necessary secrets and credentials.
