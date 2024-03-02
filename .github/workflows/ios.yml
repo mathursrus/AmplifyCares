@@ -27,7 +27,7 @@ jobs:
       run: npm install
       
     - name: Add iOS Platform
-      run: cordova platform add ios
+      run: npx cordova platform add ios
       
     - name: Build iOS App
       run: cordova build ios --${{ github.event.inputs.buildType }}
