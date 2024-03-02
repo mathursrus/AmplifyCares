@@ -9,6 +9,12 @@ on:
       - main
     paths:
       - './server'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - './server'
   workflow_dispatch:
 
 jobs:

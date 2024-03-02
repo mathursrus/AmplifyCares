@@ -1,0 +1,36 @@
+name: Manual iOS Build for Cordova App
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildType:
+        description: 'Build Type (Debug/Release)'
+        required: true
+        default: 'Debug'
+
+jobs:
+  build_ios:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14' # Specify according to your project's need
+
+    - name: Install Cordova
+      run: npm install -g cordova
+      
+    - name: Install Project Dependencies
+      run: npm install
+      
+    - name: Add iOS Platform
+      run: cordova platform add ios
+      
+    - name: Build iOS App
+      run: cordova build ios --${{ github.event.inputs.buildType }}
+
+    # Additional steps such as signing the app and deploying to TestFlight or App Store can be included here.
+    # Note: For signing and deploying, you'll need to use appropriate actions or scripts and provide necessary secrets and credentials.
