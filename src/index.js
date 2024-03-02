@@ -45,26 +45,34 @@ if ('serviceWorker' in navigator) {
   });
 } 
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-//  <React.StrictMode>
-<div>
-    <AppPage />
-    <div id="console-output" style={{
-      whiteSpace: 'pre-wrap',
-      backgroundColor: '#f0f0f0',
-      border: '1px solid #ddd',
-      padding: '10px',
-      marginBottom: '20px',
-      maxHeight: '300px',
-      overflow: 'auto',
-      display: 'none' // Change to 'block' to make it visible
-  }}>
-      Console Output...
+let startApp = () => {
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(
+  //  <React.StrictMode>
+  <div>
+      <AppPage />
+      <div id="console-output" style={{
+        whiteSpace: 'pre-wrap',
+        backgroundColor: '#f0f0f0',
+        border: '1px solid #ddd',
+        padding: '10px',
+        marginBottom: '20px',
+        maxHeight: '300px',
+        overflow: 'auto',
+        display: 'none' // Change to 'block' to make it visible
+    }}>
+        Console Output...
+    </div>
   </div>
-</div>
-//  </React.StrictMode>
-);
+  //  </React.StrictMode>
+  );
+}
+
+if(!window.cordova) {
+  startApp()
+} else {
+  document.addEventListener('deviceready', startApp, false)
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

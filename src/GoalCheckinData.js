@@ -48,7 +48,10 @@ function GoalCheckinData({goal}) {
         if (goal.goals.hasOwnProperty(category) && isGoalCategory(category)) {
           const categoryGoals = goal.goals[category];
           console.log("Category goals for ", category, "are ", categoryGoals);          
-          categoryGoals.forEach((goal) => {            
+          categoryGoals.forEach((goal) => {       
+            if (!goal.goal || goal.goal === '') {
+              return;
+            }      
             if (!goal.frequency) {
               goal.frequency = 'daily';
             }
