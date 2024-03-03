@@ -31,8 +31,15 @@ jobs:
       working-directory: ./cordova
       
     - name: Build iOS App
-      run: npx cordova build ios --${{ github.event.inputs.buildType }}
+      run: npx cordova build ios --${{ github.event.inputs.buildType }} --device --buildFlag="-UseModernBuildSystem=0"
       working-directory: ./cordova
+
+    - name: Archive Production Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ios-app
+        path: ./cordova/platforms/ios/build/device
+
 
     # Additional steps such as signing the app and deploying to TestFlight or App Store can be included here.
     # Note: For signing and deploying, you'll need to use appropriate actions or scripts and provide necessary secrets and credentials.
