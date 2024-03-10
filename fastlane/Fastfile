@@ -1,0 +1,22 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Deploy to TestFlight"
+  lane :deploy_to_testflight do
+    # Set up the app identifier and other parameters
+    app_identifier = "com.yourorgcares.amplifycares" # Replace with your actual app identifier
+
+    # Use sigh to download and install the provisioning profile
+    sigh(
+      app_identifier: app_identifier,
+      api_key_path: ENV['FASTLANE_API_KEY'], # Ensure this is the correct path to the .p8 file
+      username: ENV['FASTLANE_APPLE_ID'] # Your Apple Developer Account email
+    )
+
+    # Build the app
+    build_app(scheme: "Self care matters") # Replace with your app's scheme
+
+    # Upload the build to TestFlight
+    upload_to_testflight
+  end
+end
