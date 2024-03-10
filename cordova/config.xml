@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="9TKF9YQDND.com.yourorgcares.amplifycares" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>HelloCordova</name>
-    <description>Sample Apache Cordova App</description>
-    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
-        Apache Cordova Team
+    <name>Self Care Matters</name>
+    <description>Self Care Matters - A Self Care App</description>
+    <author email="sid.mathur@gmail.com" href="https://yourorgcares.com">
+        Your Org Cares
     </author>
     <content src="index.html" />
     <allow-intent href="http://*/*" />
