@@ -18,26 +18,26 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14' # Specify according to your project's need
+        node-version: '14'
 
-    # Only run npm install if you have Node.js dependencies required for the build
     - name: Install Project Dependencies
       run: npm install
 
-    # Use Fastlane to build and deploy the app to TestFlight
+    - name: List iOS project directory
+      run: ls cordova/platforms/ios/
+
     - name: Install Fastlane
       run: gem install fastlane -NV
       
     - name: Deploy to TestFlight
       run: fastlane deploy_to_testflight
       env:
-        FASTLANE_APPLE_ID: ${{ secrets.APPLE_DEVELOPER_USERNAME }} # Apple Developer Account Username
-        FASTLANE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }} # Apple Team ID
-        FASTLANE_API_KEY: ${{ secrets.APPLE_API_KEY }} # Path to .p8 file
-        APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }} 
-        APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }} 
+        FASTLANE_APPLE_ID: ${{ secrets.APPLE_DEVELOPER_USERNAME }}
+        FASTLANE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        FASTLANE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+        APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+        APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
         
-    # You can still use this step if you wish to archive the .ipa file created by Fastlane
     - name: Archive Production Artifacts
       uses: actions/upload-artifact@v2
       with:
