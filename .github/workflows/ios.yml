@@ -23,6 +23,10 @@ jobs:
     - name: Install Project Dependencies
       run: npm install
 
+    - name: Add iOS Platform
+      run: npx cordova platform add ios
+      working-directory: ./cordova
+      
     - name: List iOS project directory
       run: ls cordova/platforms/ios/
 
