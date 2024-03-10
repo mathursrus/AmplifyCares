@@ -13,11 +13,10 @@ platform :ios do
       workspace: "cordova/platforms/ios/Self care matters.xcworkspace",
       scheme: "Self care matters",
       export_method: 'app-store',
-      development_team: ENV['FASTLANE_TEAM_ID'], # Use your Apple Developer Program Team ID
-      code_sign_identity: "Apple Development", # Use "Apple Development" for development builds
       export_options: {
         provisioningProfiles: { 
-          "com.yourorgcares.amplifycares": "SelfCareMatters-Test"
+          "com.yourorgcares.amplifycares": "SelfCareMatters-Test",
+          "teamID": ENV['FASTLANE_TEAM_ID'] # Specify the development team ID here
         }
       }
     )
