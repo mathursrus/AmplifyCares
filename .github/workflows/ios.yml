@@ -31,15 +31,21 @@ jobs:
       working-directory: ./cordova
       
     - name: Build iOS App
-      run: npx cordova build ios --${{ github.event.inputs.buildType }} --device
+      run: npx cordova build ios --${{ github.event.inputs.buildType }} --device --buildFlag="-UseModernBuildSystem=0"
       working-directory: ./cordova
+
+    - name: Install Fastlane
+      run: gem install fastlane -NV
+      
+    - name: Deploy to TestFlight
+      run: fastlane deploy_to_testflight
+      env:
+        FASTLANE_APPLE_ID: ${{ secrets.APPLE_DEVELOPER_USERNAME }} # Apple Developer Account Username
+        FASTLANE_API_KEY: ${{ secrets.APPLE_API_KEY }} # Path to .p8 file
+        FASTLANE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }} # Apple Team ID
 
     - name: Archive Production Artifacts
       uses: actions/upload-artifact@v2
       with:
         name: ios-app
         path: ./cordova/platforms/ios/build/device/**/*.ipa
-
-
-    # Additional steps such as signing the app and deploying to TestFlight or App Store can be included here.
-    # Note: For signing and deploying, you'll need to use appropriate actions or scripts and provide necessary secrets and credentials.
