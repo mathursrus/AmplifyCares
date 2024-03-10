@@ -5,7 +5,7 @@
         "packageType": "development",
         "automaticProvisioning": false,
         "codeSignIdentity": "iPhone Developer",
-        "provisioningProfile": "./SelfCareMattersTest.mobileprovision",
+        "provisioningProfile": "~/Library/MobileDevice/Provisioning Profiles/SelfCareMattersTest.mobileprovision",
         "developmentTeamName": "Self Care Matters"
       },
       "debug": {
@@ -13,7 +13,7 @@
         "packageType": "development",
         "automaticProvisioning": false,
         "codeSignIdentity": "iPhone Developer",
-        "provisioningProfile": "path/to/YourDevelopmentProfile.mobileprovision",
+        "provisioningProfile": "~/Library/MobileDevice/Provisioning Profiles/SelfCareMattersTest.mobileprovision",
         "developmentTeamName": "Self Care Matters"
       }
     }
