@@ -10,14 +10,7 @@ platform :ios do
       key_content: ENV['FASTLANE_API_KEY'] # Assuming the key content is stored in this variable
     )
 
-    # Ensure the provisioning profile is downloaded and installed
-    sigh(
-      app_identifier: "com.yourorgcares.amplifycares",
-      development: true, # Set to true for development distribution
-      skip_install: true, # This will install the profile on the machine
-      ignore_profiles_with_different_name: true # This will only use profiles matching the name exactly
-    )
-
+    # Build the app using the manually generated provisioning profile
     build_app(
       workspace: "cordova/platforms/ios/Self care matters.xcworkspace",
       scheme: "Self care matters",
