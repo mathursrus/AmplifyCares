@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="9TKF9YQDND.com.yourorgcares.amplifycares" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.yourorgcares.amplifycares" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Self care matters</name>
     <description>Self care matters</description>
     <author email="sid.mathur@gmail.com" href="https://yourorgcares.com">
