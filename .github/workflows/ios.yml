@@ -37,7 +37,7 @@ jobs:
     - name: Download Provisioning Profile
       run: |
            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles && 
-           cp SelfCareMattersTest.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+           cp cordova/SelfCareMattersTest.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
     - name: Install Fastlane
       run: gem install fastlane -NV
