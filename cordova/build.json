@@ -5,14 +5,14 @@
         "packageType": "development",
         "automaticProvisioning": false,
         "codeSignIdentity": "iPhone Developer",
-        "provisioningProfile": "SelfCareMatters-Test.mobileprovision"        
+        "provisioningProfile": "SelfCareMatters-Test"        
       },
       "debug": {
         "developmentTeam": "9TKF9YQDND",
         "packageType": "development",
         "automaticProvisioning": false,
         "codeSignIdentity": "iPhone Developer",
-        "provisioningProfile": "SelfCareMatters-Test.mobileprovision"
+        "provisioningProfile": "SelfCareMatters-Test"
       }
     }
   }
