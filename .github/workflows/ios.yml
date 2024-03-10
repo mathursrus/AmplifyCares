@@ -36,7 +36,7 @@ jobs:
            cp cordova/SelfCareMattersTest.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
            
     - name: Build iOS App
-      run: npx cordova build ios --${{ github.event.inputs.buildType }} --device --buildFlag="-UseModernBuildSystem=0" --provisioningProfile=./SelfCareMattersTest.mobileprovision
+      run: npx cordova build ios --${{ github.event.inputs.buildType }} --device --buildFlag="-UseModernBuildSystem=0" --provisioningProfile="~/Library/MobileDevice/Provisioning Profiles/SelfCareMattersTest.mobileprovision"
       working-directory: ./cordova
 
     - name: Install Fastlane
