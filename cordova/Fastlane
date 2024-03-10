@@ -6,7 +6,7 @@ platform :ios do
     pilot(
       api_key_path: ENV['FASTLANE_API_KEY'], # Path to your .p8 file
       issuer: ENV['FASTLANE_TEAM_ID'], # Your Apple Team ID
-      app_identifier: 'selfcarematters' # Your app identifier
+      app_identifier: '9TKF9YQDND.com.yourorgcares.amplifycares' # Your app identifier
     )
   end
 end
