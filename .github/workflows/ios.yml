@@ -34,6 +34,11 @@ jobs:
       run: npx cordova build ios --${{ github.event.inputs.buildType }} --device --buildFlag="-UseModernBuildSystem=0"
       working-directory: ./cordova
 
+    - name: Download Provisioning Profile
+      run: |
+           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles && 
+           cp SelfCareMattersTest.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
     - name: Install Fastlane
       run: gem install fastlane -NV
       
