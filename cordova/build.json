@@ -1,0 +1,21 @@
+{
+    "ios": {
+      "release": {
+        "developmentTeam": "9TKF9YQDND",
+        "packageType": "development",
+        "automaticProvisioning": false,
+        "codeSignIdentity": "iPhone Developer",
+        "provisioningProfile": "./SelfCareMattersTest.mobileprovision",
+        "developmentTeamName": "Self Care Matters"
+      },
+      "debug": {
+        "developmentTeam": "9TKF9YQDND",
+        "packageType": "development",
+        "automaticProvisioning": false,
+        "codeSignIdentity": "iPhone Developer",
+        "provisioningProfile": "path/to/YourDevelopmentProfile.mobileprovision",
+        "developmentTeamName": "Self Care Matters"
+      }
+    }
+  }
+  
