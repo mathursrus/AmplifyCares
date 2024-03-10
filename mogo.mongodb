@@ -92,6 +92,10 @@ db.dailychallenge_info.insertOne({
 use('amplifycares-db-catita');
 db.goal_info.find({username: {$regex: ".*"}});
 
+use('amplifycares-db-catita');
+db.goal_info.aggregate([{
+  $project: {username: 1}}]);
+
 // delete some goals 
 use('amplifycares-db-catita');
 db.goal_info.deleteMany({username: {$regex: "sidm*"}});
@@ -728,12 +732,12 @@ db.self_care_stats.find(
 
 /* All details for a person */
 use('amplifycares-db-catita');
-db.self_care_stats.find({name: "sid@catita365.onmicrosoft.com"}).sort({DateTime:-1});
+db.self_care_stats.find({name: {$regex:"sam.*"}}).sort({DateTime:-1});
 
 
 /* All user info */
 use('amplifycares-db-catita');
-db.userInfo.find({username: {$regex:"ja*"}});
+db.userInfo.find({username: {$regex:"ja.*"}});
 
 use('amplifycares-db-catita');
 db.userInfo.find().sort({_id:1});
