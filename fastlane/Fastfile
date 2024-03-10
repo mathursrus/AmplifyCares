@@ -14,7 +14,6 @@ platform :ios do
     sigh(
       app_identifier: "com.yourorgcares.amplifycares",
       adhoc: false,
-      development: true,
       skip_install: false, # This will install the profile on the machine
       ignore_profiles_with_different_name: true # This will only use profiles matching the name exactly
     )
