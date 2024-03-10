@@ -15,9 +15,9 @@ platform :ios do
       export_method: 'app-store',
       export_options: {
         provisioningProfiles: { 
-          "com.yourorgcares.amplifycares": "SelfCareMatters-Test",
-          "teamID": ENV['FASTLANE_TEAM_ID'] # Specify the development team ID here
-        }
+          "com.yourorgcares.amplifycares": "SelfCareMatters-Test"
+        },
+        teamID: ENV['FASTLANE_TEAM_ID']
       }
     )
     
