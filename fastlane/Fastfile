@@ -4,11 +4,13 @@ platform :ios do
   desc "Deploy to TestFlight"
   lane :deploy_to_testflight do
     # Explicitly set the development team in the Xcode project
-    update_project_team(
+    update_code_signing_settings(
       path: "cordova/platforms/ios/Self care matters.xcodeproj", # Adjust if necessary
-      teamid: ENV['FASTLANE_TEAM_ID']
+      team_id: ENV['FASTLANE_TEAM_ID'],
+      signing_identity: "Apple Development"
     )
-    
+
+
     app_store_connect_api_key(
       key_id: ENV['APPLE_API_KEY_ID'],
       issuer_id: ENV['APPLE_ISSUER_ID'],
