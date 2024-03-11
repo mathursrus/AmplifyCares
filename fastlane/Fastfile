@@ -3,6 +3,9 @@ default_platform(:ios)
 platform :ios do
   desc "Deploy to TestFlight"
   lane :deploy_to_testflight do
+
+    sh "ls cordova/platforms/ios/"
+    
     # Explicitly set the development team in the Xcode project
     update_code_signing_settings(
       path: "cordova/platforms/ios/Self care matters.xcodeproj", # Adjust if necessary
