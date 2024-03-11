@@ -25,7 +25,7 @@ platform :ios do
       export_options: {
         signingStyle: "manual",
         provisioningProfiles: { 
-          "com.yourorgcares.amplifycares": "SelfCareMatters-Test"
+          "com.yourorgcares.amplifycares": "SelfCareMatters-Test.mobileprovision"
         },
         teamID: ENV['FASTLANE_TEAM_ID']
       }
