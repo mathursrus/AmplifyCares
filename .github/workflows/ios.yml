@@ -26,12 +26,12 @@ jobs:
     - name: Add iOS Platform
       run: npx cordova platform add ios
       working-directory: ./cordova
-      
-    - name: List iOS project directory
-      run: ls cordova/platforms/ios/
 
     - name: Move provisioning profile to Xcode project directory
       run: mv cordova/SelfCareMatters-Test.mobileprovision cordova/platforms/ios/
+
+    - name: List iOS project directory
+      run: ls cordova/platforms/ios/
       
     - name: Install Fastlane
       run: gem install fastlane -NV
