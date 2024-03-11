@@ -44,11 +44,11 @@ platform :ios do
 
   desc "Print Xcode project file contents"
   lane :print_xcode_project_contents do
-    project_file_path = "cordova/platforms/ios/Self care matters.xcodeproj/project.pbxproj"
+    project_file_path = "../cordova/platforms/ios/Self care matters.xcodeproj/project.pbxproj"
     project_file_contents = File.read(project_file_path)
     puts "Xcode project file contents:"
     puts project_file_contents
-    project_file_path = "cordova/platforms/ios/Self care matters.xcworkspace/xcshareddata/xcschemes/Self care matters.xcscheme"
+    project_file_path = "../cordova/platforms/ios/Self care matters.xcworkspace/xcshareddata/xcschemes/Self care matters.xcscheme"
     project_file_contents = File.read(project_file_path)
     puts "Xcworkspace project file contents:"
     puts project_file_contents
