@@ -24,7 +24,7 @@ platform :ios do
       key_content: ENV['FASTLANE_API_KEY'] # Assuming the key content is stored in this variable
     )
 
-    Dir.chdir("..") do
+    
       # Build the app using the manually generated provisioning profile
       build_app(
         workspace: "cordova/platforms/ios/Self care matters.xcworkspace",
@@ -33,14 +33,14 @@ platform :ios do
         export_options: {
           signingStyle: "manual",
           provisioningProfiles: { 
-            "com.yourorgcares.amplifycares": "cordova/platforms/ios/SelfCareMatters-Test.mobileprovision"
+            "com.yourorgcares.amplifycares": "$HOME/cordova/platforms/ios/SelfCareMatters-Test.mobileprovision"
           },
           teamID: ENV['FASTLANE_TEAM_ID']
         }
       )
-    end
+    
 
     upload_to_testflight
-    
+
   end
 end
