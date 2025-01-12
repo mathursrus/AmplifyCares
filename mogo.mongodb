@@ -129,7 +129,7 @@ db.invite_info.deleteMany({invite: {$regex:"User janebo@.*"}});
 
 // find all entries on a particular date
 use('amplifycares-db-catita');
-db.self_care_stats.find({DateTime: { $gt: new Date('2024-02-08') }});
+db.self_care_stats.find({DateTime: { $gt: new Date('2024-04-14') }});
 
 // find entry with id 
 use('amplifycares-db-catita');
@@ -157,6 +157,13 @@ db.self_care_stats.find({
   }
 });
 
+// find assistants
+use('amplifycares-db-catita');
+db.assistants_info.find();
+
+// delete assistants
+use('amplifycares-db-catita');
+db.assistants_info.deleteMany({name: {$regex: ".*"}});
 
 // find matching entries
 use('amplifycares-db-catita');
@@ -909,6 +916,10 @@ db.reactions_info.findOne({}, { comment_id: 1 })
  // show reactions
  use('amplifycares-db-catita');
  db.reactions_info.find({comment_id:"6568bbd1e0d260102472800d"});
+
+ // show special info
+ use('amplifycares-db-catita');
+ db.mitika_info.find();
 
 // show all databases
 show databases;

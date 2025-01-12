@@ -75,10 +75,10 @@ const SelfCareCoach = () => {
     }
     if (question) {
       setQuickButtons([
-        {label: 'Why is it important to describe my ideal self?', value: 'Why is it important to describe my ideal self'},
-        {label: 'Why do I need to blend mental, physical, spiritual and social self care?', value: 'Why do I need to blend mental, physical, spiritual and social self care?'},
-        {label: 'Help me pick goals and habits', value: 'Help me pick goals and habits'},
-        {label: 'What are others doing for similar goals?', value: 'What are others doing for similar goals?'}
+        {label: 'Coach me through defining my ideal self', value: 'Coach me through defining my ideal self'},
+        {label: 'What goals should I set?', value: 'What goals should I set?'},
+        {label: 'What habits will help me hit my goals?', value: 'What habits will help me hit my goals?'},
+        {label: 'Finalize these goals', value: 'Finalize these goals'}
       ]);
     }
     else {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ReactMic } from 'react-mic';
-import { getApiHost, postWithBodyAndToken } from './utils/urlUtil';
+import { postWithBodyAndToken } from './utils/urlUtil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import './SpeechToText.css';
@@ -75,7 +75,7 @@ const SpeechRecognition = ({endpoint, onResults, onHover}) => {
             requestBody.username = localStorage.getItem('userName');
             requestBody.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            postWithBodyAndToken(getApiHost() + `/${endpoint}`, requestBody, localStorage.getItem('usertoken'))
+            postWithBodyAndToken(endpoint, requestBody, localStorage.getItem('usertoken'))
           .then(async (response) => {
           if (response.ok) {
               const result = await response.json();
