@@ -1724,19 +1724,21 @@ async function seekCoaching(user, question, sessionToken, token) {
         }
       );
   
-      let boostrap = await openai.beta.threads.runs.create(
+      let run = await openai.beta.threads.runs.createAndPoll(
         thread.id,
         { 
           assistant_id: "asst_ZMeKFAhfZQnhqGCL2ByJVk55",        
         }
       );
 
+      /* Assisants v1 code 
       do {
         boostrap = await openai.beta.threads.runs.retrieve(thread.id, boostrap.id);          
         await new Promise(resolve => setTimeout(resolve, 1000));        
       } while (boostrap.status !== "completed");
+      */
 
-      sessionToken = thread.id;
+      sessionToken = run.thread_id;
       saveAssistantThreadForUser(user, sessionToken);
     }
 
@@ -1748,16 +1750,16 @@ async function seekCoaching(user, question, sessionToken, token) {
       }
     );
 
-    let run = await openai.beta.threads.runs.create(
+    let run = await openai.beta.threads.runs.createAndPoll(
       sessionToken,
       { 
         assistant_id: "asst_ZMeKFAhfZQnhqGCL2ByJVk55",        
       }
     );
 
-    do {
+    //do {
       try {
-        run = await openai.beta.threads.runs.retrieve(sessionToken, run.id);
+        //run = await openai.beta.threads.runs.retrieve(sessionToken, run.id);
         console.log('Run status:', run.status);
   
         if (run.status === 'requires_action' && run.required_action.type === 'submit_tool_outputs') {
@@ -1802,12 +1804,12 @@ async function seekCoaching(user, question, sessionToken, token) {
             });                              
         }
         // Delay next request (wait for 1 second)
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        //await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
         console.error('Error checking run status:', error);
-        break;
+        //break;
       }
-    } while (run.status !== "completed");
+    //} while (run.status !== "completed");
       
     const messages = await openai.beta.threads.messages.list(
       sessionToken
